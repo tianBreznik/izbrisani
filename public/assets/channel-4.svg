@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <rect width="1920" height="1080" fill="#999"/>
+  <rect x="40" y="40" width="1840" height="1000" fill="#ddd" stroke="#000" stroke-width="8"/>
+  <line x1="40" y1="40" x2="1880" y2="1040" stroke="#000" stroke-width="4"/>
+  <line x1="1880" y1="40" x2="40" y2="1040" stroke="#000" stroke-width="4"/>
+  <text x="960" y="500" text-anchor="middle" fill="#000" font-family="Courier New, monospace" font-size="64" font-weight="bold">IMAGE SLOT — CH 04</text>
+  <text x="960" y="580" text-anchor="middle" fill="#444" font-family="Courier New, monospace" font-size="32">projector placeholder</text>
+</svg>

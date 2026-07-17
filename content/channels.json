@@ -1,0 +1,32 @@
+{
+  "channels": [
+    {
+      "id": 1,
+      "country": "Republic of Example",
+      "delegate": "Ambassador Ana Kovač",
+      "essay": "When the channel opens, this desk speaks. The essay scrolls here while the projector shows the paired image.\n\nReplace this text in content/channels.json with your exhibition copy. Paragraphs are separated by blank lines in the source string, or use a single block of text with automatic wrapping.\n\nThis simulator runs at 800×480 — the same resolution as common 7″ ESP32-S3 display boards.",
+      "image": "/assets/candleinholder.gif"
+    },
+    {
+      "id": 2,
+      "country": "United Territories of Sample",
+      "delegate": "Minister James Okonkwo",
+      "essay": "Second delegate station. Only one channel can be live at a time, like a single microphone in the Security Council chamber.\n\nUse the control panel or keys 1–4 to open a channel. Press Escape or Close to return to idle.",
+      "image": "/assets/apple2.gif"
+    },
+    {
+      "id": 3,
+      "country": "Free State of Demo",
+      "delegate": "Dr. Yuki Tanaka",
+      "essay": "Third station content. The show controller broadcasts state over WebSocket so every screen — and later every ESP32 — stays in sync.",
+      "image": "/assets/HShoeT.gif"
+    },
+    {
+      "id": 4,
+      "country": "Provisional Council of Test",
+      "delegate": "Representative Sam Rivera",
+      "essay": "Fourth station. Physical buttons will eventually send the same events as the control panel: channel open and channel close.",
+      "image": "/assets/shoes_27421.gif"
+    }
+  ]
+}

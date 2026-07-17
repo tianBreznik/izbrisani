@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>test control</title>
+    <link rel="stylesheet" href="/css/show.css" />
+  </head>
+  <body data-mode="control">
+    <div class="control-bar">
+      <p>channel: <span id="channel">0</span></p>
+
+      <p>
+        <span class="text-btn" data-ch="1" role="button" tabindex="0">1</span>
+        <span class="text-btn" data-ch="2" role="button" tabindex="0">2</span>
+        <span class="text-btn" data-ch="3" role="button" tabindex="0">3</span>
+        <span class="text-btn" data-ch="4" role="button" tabindex="0">4</span>
+        <span class="text-btn" id="btn-close" role="button" tabindex="0">close</span>
+      </p>
+
+      <p class="control-links">
+        <!-- <a href="/desk/1">desk 1</a>
+        <a href="/desk/2">desk 2</a>
+        <a href="/desk/3">desk 3</a>
+        <a href="/desk/4">desk 4</a> -->
+        <a href="/projector.html">projector</a>
+      </p>
+    </div>
+
+    <div id="log" class="log" aria-live="polite"></div>
+
+    <script src="/js/control.js"></script>
+  </body>
+</html>

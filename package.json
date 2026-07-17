@@ -1,0 +1,17 @@
+{
+  "name": "un-debate-show",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Museum exhibition show controller — UN debate room simulator",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ws": "^8.18.0"
+  }
+}

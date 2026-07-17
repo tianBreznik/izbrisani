@@ -1,0 +1,99 @@
+body {
+  margin: 0;
+  font-family: Georgia, serif;
+}
+
+body[data-mode="control"] {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #000;
+  color: #fff;
+}
+
+.control-bar {
+  padding: 12px 16px;
+  border-bottom: 1px solid #333;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.text-btn {
+  margin-right: 16px;
+  cursor: pointer;
+}
+
+.text-btn:hover {
+  text-decoration: underline;
+}
+
+.control-bar p {
+  margin: 0 0 8px;
+}
+
+.control-bar p:last-child {
+  margin-bottom: 0;
+}
+
+.control-links a {
+  color: #aaa;
+  margin-right: 12px;
+}
+
+.log {
+  flex: 1;
+  padding: 32px 40px;
+  overflow-y: auto;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+}
+
+.log p {
+  margin: 0 0 1rem;
+}
+
+body[data-mode="desk"] {
+  width: 800px;
+  height: 480px;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+}
+
+body[data-mode="desk"] .teleprompter {
+  height: 100%;
+  padding: 24px 32px;
+  overflow-y: auto;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+body[data-mode="desk"] .standby {
+  padding: 24px 32px;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+body[data-mode="projector"] {
+  background: #000;
+  color: #fff;
+}
+
+body[data-mode="projector"] #app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body[data-mode="projector"] .projector__gif {
+  max-width: 100%;
+  max-height: 100%;
+}
