@@ -1,90 +1,44 @@
 # UN Debate Show
 
-Boilerplate for a museum exhibition: four UN-style delegate “name tag” screens, a projector view, and a central show controller. This repo is the **web simulator** — develop content and protocol here before ESP32 hardware arrives.
+Show controller for a museum UN-debate installation.
 
-## Quick start
+**Architecture:** Mac Mini hub + 4 desk Raspberry Pis + 2 shadow projectors + Kodak (relay).
+
+## Quick start (Mac Mini / laptop)
 
 ```bash
 npm install
 npm start
 ```
 
-Open [http://localhost:3847/control.html](http://localhost:3847/control.html) and use the links to open desk and projector windows.
+| URL | Role |
+|-----|------|
+| http://localhost:3847/control.html | Operator |
+| http://localhost:3847/shadow/1 | Shadow projector 1 |
+| http://localhost:3847/shadow/2 | Shadow projector 2 |
+| http://localhost:3847/desk/1 … `/desk/4` | Name-tag screens |
 
-Development with auto-restart on server changes:
+Keys on control: `1`–`4` open, `Esc` close.
 
-```bash
-npm run dev
-```
+## Docs
 
-## Simulator layout
-
-| URL | Purpose |
-|-----|---------|
-| `/control.html` | Staff panel — open/close channels |
-| `/desk/1` … `/desk/4` | 800×480 delegate screens |
-| `/projector.html` | Full-screen image for the projector |
-
-**Keyboard (on control panel):** `1`–`4` open a channel, `Esc` closes.
-
-For a realistic test, open four desk windows sized to 800×480 and fullscreen the projector on a second monitor.
-
-## Show protocol
-
-State is held by the server and broadcast over WebSocket.
-
-| State | Behavior |
-|-------|----------|
-| `idle` | All desks show country + delegate only; projector is black |
-| `channel_open(n)` | Desk *n* shows its essay; projector shows channel *n* image |
-
-### HTTP API
-
-| Method | Path | Action |
-|--------|------|--------|
-| `GET` | `/api/state` | Current show state |
-| `GET` | `/api/channels` | Channel content |
-| `POST` | `/api/channel/:id/open` | Open channel |
-| `POST` | `/api/channel/close` | Return to idle |
-| `POST` | `/api/reload-content` | Re-read `content/channels.json` |
-
-Physical buttons (ESP32, GPIO, etc.) can call the same `POST` endpoints later.
+- [`IMPLEMENTATION.md`](./IMPLEMENTATION.md) — architecture / handoff  
+- [`deploy/README.md`](./deploy/README.md) — deploy index  
+- [`deploy/PHYSICAL.md`](./deploy/PHYSICAL.md) — wiring & layout  
+- [`deploy/CHECKLIST.md`](./deploy/CHECKLIST.md) — on-site checklist  
+- [`deploy/desk-pi/`](./deploy/desk-pi/) — load kiosk onto Pis  
+- [`firmware/pico/`](./firmware/pico/) — mic buttons  
 
 ## Content
 
-Edit `content/channels.json`:
+Edit `content/channels.json` (`essay`, `shadow`, `shadowMedia`, later `audio`).
 
-```json
-{
-  "id": 1,
-  "country": "…",
-  "delegate": "…",
-  "essay": "…",
-  "image": "/assets/your-photo.jpg"
-}
+## Physical I/O
+
+- **Desk buttons:** `deploy/desk-pi/agent/` on each Pi (not Pico)
+- **Kodak:** `KODAK_RELAY_ON` / `KODAK_RELAY_OFF` when starting the Mac server
+
+```bash
+npm start
+MOCK=1 DESK_ID=1 SHOW_URL=http://127.0.0.1:3847 python3 deploy/desk-pi/agent/desk_agent.py
 ```
-
-Put images in `public/assets/`. After editing JSON during a run, click **Reload content** on the control panel (or restart the server).
-
-## Project structure
-
-```
-content/channels.json   # essays + image paths
-server/index.js         # Express + WebSocket show controller
-public/
-  control.html          # operator panel
-  desk.html             # delegate screen (800×480)
-  projector.html        # projector output
-  css/show.css
-  js/client.js          # shared desk/projector client
-  js/control.js
-  assets/               # placeholder projector images
-```
-
-## Next steps (hardware)
-
-1. ESP32-S3 + 7″ panels: LVGL UI mirroring `desk.html`, subscribing to the same WebSocket/API.
-2. Buttons: send `POST /api/channel/:id/open` to this server on the local network.
-3. Projector: dedicated machine opening `/projector.html` in kiosk mode via HDMI.
-
-Port defaults to `3847`; override with `PORT=3000 npm start`.

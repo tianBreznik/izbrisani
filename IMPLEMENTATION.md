@@ -1,177 +1,118 @@
 # UN Debate Exhibition — Implementation Plan (Handoff)
 
-Last updated: 2026-07-17  
+Last updated: 2026-07-29  
 Purpose: summary for another Cursor agent (including iOS) to continue work.
+
+---
+
+## Locked architecture (current)
+
+```text
+Mac Mini (hub)
+  ├── Node show server (:3847)
+  ├── /shadow/1 + /shadow/2 → 2 digital projectors
+  ├── /control.html (operator; ?force=1)
+  ├── USB relay → Kodak (KODAK_RELAY_ON / OFF)
+  └── Ethernet → 4 desk Pis
+
+Desk Pi ×4
+  ├── Chromium kiosk → /desk/N
+  ├── desk_agent.py → desk button GPIO → POST /api/channel/N/open
+  ├── optional LED (sine when idle)
+  └── 7″ HDMI (3D-printed case)
+```
+
+**No Pico.** Buttons live on each desk → that Pi’s GPIO. Kodak is Mac-side relay only.
+
+Exclusive: other desks get `409` while busy; same desk press toggles close.
+
+Docs: **`deploy/`** (especially `desk-pi/agent/`, `PHYSICAL.md`, `CHECKLIST.md`).
 
 ---
 
 ## Project intent
 
-Museum exhibition with a UN debate-room metaphor:
-
-- Visitor/staff presses a **channel button** (1 of 3–4) → that “delegate” speaks.
-- Only **one channel open at a time**.
-- Opening a channel syncs: desk text, audio, spotlights (or similar), Kodak film projection on/off.
-- When idle: buttons glow sinusoidally; when a channel is live: buttons off / ignored (avoid sync issues).
-
-Working repo: web **simulator** of the show controller (Node + Express + WebSocket). Physical install targets **Raspberry Pi** + desk clients.
+- One channel open at a time (UN “mic live”).
+- Inputs: mic/button **on each desk** → desk Pi companion → API.
+- Outputs synced: desk text, shadow media, Kodak on/off, audio (TBD).
+- Idle: name plate + standby; shadows black; Kodak off; button LEDs sine.
 
 ---
 
-## Confirmed show protocol
+## Show protocol
 
-| State | Behavior |
-|-------|----------|
-| `idle` | Desks standby; audio silent (except optional generative ambient — TBD); spotlights off; Kodak **off**; button LEDs sine-glow |
-| `channel_open(n)` | Desk *n* shows essay; channel audio *n*; spotlight *n* on; Kodak **on** (same film every time); button LEDs off, inputs ignored |
-| `channel_close` | Return to idle |
+| State | Desks | Shadows | Kodak |
+|-------|-------|---------|-------|
+| `idle` | name plate + “standby” | black | off |
+| `channel_open(n)` | desk *n* essay | projector `channels[n].shadow` shows `shadowMedia` | on |
+| `channel_close` | idle | black | off |
 
-Exclusive channels (one mic live).
-
-### Content mapping (not projector slides)
-
-- **Kodak Ektalite**: one **short film loop** in the gate. No tray advance during show. Only start/stop projecting.
-- Channels differ by: **essay text, audio file, spotlight**, not by film content.
-- Dev simulator still has GIFs in `content/channels.json` as placeholders for projector imagery — **not used on install** (carousel is analog).
+Default mapping in `content/channels.json`: channels **1–2 → shadow 1**, **3–4 → shadow 2**.
 
 ---
 
-## Target hardware architecture (preferred)
+## Hardware BOM (locked direction)
 
-```
-1× main Raspberry Pi (4 or 5)
-  - Node show server (state machine, HTTP + WebSocket)
-  - GPIO: buttons, button LEDs (PWM sine when idle), spotlight relays, Kodak control
-  - Audio: bass / global / optional generative conductor
-  - optional: channel audio if not delegated to desks
+| Item | Qty | Notes |
+|------|-----|--------|
+| Mac Mini | 1 | Confirmed hub |
+| Desk Pi 4/5 | 4 (+1 spare) | Not 3B+ for production |
+| 7″ HDMI IPS | 4 (+1) | Waveshare 7″ HDMI LCD (C) or Elecrow 7″ 1024×600 |
+| 3D-printed cases | 4 | Measure panel before final CAD |
+| Pi Pico | — | **Not required** (deprecated path in `firmware/pico/`) |
+| USB relay | 1 | Kodak on Mac Mini |
+| Switch + Ethernet | 1 + cables | Prefer wired LAN |
+| Shadow projectors | 2 | From Mac displays |
+| Kodak Ektalite | 1 | Analog; relay only |
 
-4× desk units (Pi Zero/4 OR ESP32-S3 + 7″ 800×480 RGB LCD)
-  - Subscribe to show state via WebSocket
-  - Show UN-style name tag + essay when that channel is open
-  - Optional: drive directional speaker for that desk
-
-Kodak Ektalite (analog)
-  - Film loop fixed; Pi controls on/off via relay/module (not HDMI)
-
-Spotlights
-  - 1 per channel (3 or 4 total), GPIO → relays
-```
-
-**One Pi is enough for logic + GPIO + audio orchestration** if desks are network clients (ESP32 or thin Pis).  
-**One Pi alone cannot drive 4 independent HDMI desk screens** — use ESP32/Pi clients or a multi-output PC.
-
-### Artist audio idea (fit into 1+4)
-
-Proposed by sound designer (Tina) via Maja:
-
-- 4 directional speakers + 1 quieter bass
-- Generative background (not a fixed loop) — Tina still checking feasibility
-- Question: does this work with **1 + 4 Raspberry Pis**?
-
-**Answer for architecture:** Yes — **same 1+4 skeleton**, not a second cluster:
-
-| Device | Existing role | Audio role |
-|--------|---------------|------------|
-| Main Pi | Show + GPIO | Bass + optional generative brain / cues |
-| Desk Pi 1–4 | Screen | Directional speaker *n* (+ local channel clip / light generative layer) |
-
-Still need Tina to specify: true real-time generative vs “endless” randomised material; where the patch runs (main vs each desk); behavior when a channel opens (duck / mute / continue).
-
-### Rejected / deferred (for now)
-
-- **3 digital projectors for generated shadows** instead of spotlights: artist floated it; technical lead prefers **spotlights** — less equipment, less failure modes. Treat as deferred unless forced.
-- **HDMI digital projector** for show images: not the plan; Kodak carousel only for film.
-- **Carousel forward/reverse during show**: not needed with one film loop.
+**Not using:** spotlights, e-ink/reMarkable, ESP32 desks, 10″ monitors.
 
 ---
 
-## Kodak Ektalite findings
-
-- Unit has **IR remote** catalog **CAT 873 5086** (handheld + typically 6-pin IR receiver).
-- IR/remote 6-pin is primarily **forward / reverse / focus** — **not** lamp on/off.
-- Forward/reverse: no meaningful electronic debounce; **mechanical cycle ~1–2+ s**; do not spam from GPIO.
-- For this show: **do not advance tray**; only **project on/off**.
-- Preferred control: mains relay, or (if model 2000) 12-pin dissolve lamp / shutter with INT/EXT — **exact model TBD** (technician email sent; awaiting reply).
-- Leave IR for install/focus only.
-
----
-
-## Software in this repo (simulator)
+## Software in repo
 
 | Path | Role |
 |------|------|
-| `server/index.js` | Express + WebSocket show controller; reloads `content/channels.json` |
-| `content/channels.json` | Channel essays, image paths (sim GIFs), later: `audio`, `slide` unused |
-| `public/control.html` | Black teleprompter-style control: channel counter, text buttons 1–4 + close, event log |
-| `public/desk.html` | Desk view (800×480), bold Helvetica essay when live |
-| `public/projector.html` | Sim only: shows channel GIF when open |
-| `public/js/client.js` | Desk + projector WebSocket client |
-| `public/js/control.js` | Control panel + log |
-| `public/css/show.css` | Teleprompter black/white; bold Helvetica on log/essay |
+| `server/index.js` | Hub API + WebSocket; listens `0.0.0.0:3847` |
+| `server/hardware.js` | Kodak USB relay via `KODAK_RELAY_ON` / `OFF` |
+| `deploy/desk-pi/agent/` | Desk GPIO companion |
+| `content/channels.json` | Essays + `shadow` + `shadowMedia` |
+| `public/desk.html` | Name-tag UI for Pis |
+| `public/shadow.html` | Mac Mini projector outputs |
+| `public/control.html` | Operator + log |
+| `deploy/README.md` | Mac + Pi deploy notes |
 
 ### API
 
-- `GET /api/state`
-- `GET /api/channels`
-- `POST /api/channel/:id/open`
-- `POST /api/channel/close`
+- `GET /api/state`, `GET /api/channels`
+- `POST /api/channel/:id/open`, `POST /api/channel/close`
 - `POST /api/reload-content`
-- WebSocket: `{ type: "state", payload }` and `{ type: "channels", payload }`
-
-Port default: **3847** (`npm start` / `npm run dev`).
-
-### UI decisions (current)
-
-- Control: minimal HTML, text buttons (not styled `<button>` widgets), event log (`channel 1 opened`, etc.).
-- Log / desk essay: **bold Helvetica**, white on black.
-- Desk links on control page: commented out.
-- Desk essays currently shown when channel live; desk links optional for testing.
+- WebSocket: `state`, `channels`
 
 ---
 
-## Planned extensions (not built yet)
+## Next implementation steps
 
-1. **`audio` field** per channel in JSON + playback hook on open/close.
-2. **GPIO service** on Pi: lamp/Kodak, spotlights, button inputs, PWM LED sine idle.
-3. **Desk firmware/clients**: ESP32 LVGL or Pi Chromium kiosk at `/desk/:id`.
-4. **Generative ambient** integration with Tina (if kept) — cues from main state machine.
-5. Remove or quarantine `projector.html` for production (sim-only).
-6. Document exact Kodak wiring once model confirmed.
+1. Bench: Mac `npm start` + shadows + `MOCK=1` desk agent.
+2. Wire real GPIO on one Pi; systemd enable agent.
+3. Set `KODAK_RELAY_ON/OFF` when USB relay arrives.
+4. Desk local audio when live.
+5. `launchd` multi-display shadows on Mac.
+6. 3D case after one 7″ panel measured.
 
 ---
 
 ## Open questions
 
-1. Exact Kodak Ektalite model (500/1000/1500/2000) + 12-pin dissolve / shutter / INT-EXT?
-2. Channel count: **3 or 4**?
-3. Desk clients: ESP32-S3 7″ vs Pi per desk?
-4. Generative audio: confirmed? tool (Pd/SC/…)? main vs per-desk? interaction with channel open?
-5. Spotlights confirmed over shadow-projectors?
-6. Who provides essays, audio stems, film loop, and (if any) generative patches?
+1. Mac Mini ports / adapters for 2 projectors?
+2. Kodak model / lamp control method?
+3. Exact artist shadow mapping (override JSON if needed)?
+4. Generative ambient (Tina)?
+5. Mic LED glow hardware?
 
 ---
 
-## Feasibility notes (for agents guiding a less-experienced builder)
-
-- **Doable** with disciplined scope: one state machine, relays, network desks, soak tests.
-- Avoid feature creep (extra projector arrays, IR lamp hacks, USB–HDMI dongles for 3+ displays).
-- Prefer: one main Pi + network desk clients + relays; multi-output PC only if many HDMI surfaces required.
-- Safety: mains via proper relays/modules; optoisolate projector control; never drive lamp AC from GPIO.
-
----
-
-## Suggested next steps for follow-up agent
-
-1. Confirm with user: channel count, desk client type, generative audio status.
-2. Extend `channels.json` + server hooks for `audio` (mockable without Pi).
-3. Add stub `gpio/` or `hardware/` module interface (dry-run on laptop).
-4. Keep simulator as source of truth for protocol until hardware arrives.
-5. When Kodak model known: update this doc with pin/relay plan.
-
----
-
-## Related conversation context (agents)
+## Related
 
 - Workspace: `/Users/Tian/izbrisani`
-- Artist contact thread: generative ambient + 4 directional + bass on **1+4 Pis** — interpret as **alongside** existing desk architecture, not replacing it.
-- User prefers Slovenian drafts when messaging artists; keep technical docs in English unless asked otherwise.
+- Main hub: **Mac Mini**; desks: **4 Pis + 7″ HDMI + 3D cases**

@@ -55,36 +55,72 @@ body[data-mode="control"] {
   margin: 0 0 1rem;
 }
 
+/* Desk — target Waveshare/Elecrow 7″ 1024×600 */
 body[data-mode="desk"] {
-  width: 800px;
-  height: 480px;
+  width: 100vw;
+  height: 100vh;
+  max-width: 1024px;
+  max-height: 600px;
   overflow: hidden;
   background: #000;
   color: #fff;
 }
 
-body[data-mode="desk"] .teleprompter {
+.desk {
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  padding: 24px 32px;
+  box-sizing: border-box;
+}
+
+.desk--idle {
+  background: #000;
+}
+
+body[data-mode="desk"] .karaoke {
+  flex: 1;
+  padding: 20px 24px;
   overflow-y: auto;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 1.6rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  line-height: 1.5;
-  white-space: pre-wrap;
+  line-height: 1.55;
+}
+
+body[data-mode="desk"] .karaoke-word {
+  display: inline;
+  transition: color 0.12s ease, opacity 0.12s ease;
+}
+
+body[data-mode="desk"] .karaoke-word.is-future {
+  color: #3a3a3a;
+}
+
+body[data-mode="desk"] .karaoke-word.is-past {
+  color: #8a8a8a;
+}
+
+body[data-mode="desk"] .karaoke-word.is-active {
+  color: #fff;
 }
 
 body[data-mode="desk"] .standby {
-  padding: 24px 32px;
-  color: #666;
-  font-size: 1.2rem;
+  margin: 0;
+  padding: 16px 20px;
+  color: #555;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 400;
 }
 
+/* Shadow projectors on Mac Mini displays */
+body[data-mode="shadow"],
 body[data-mode="projector"] {
   background: #000;
   color: #fff;
 }
 
+body[data-mode="shadow"] #app,
 body[data-mode="projector"] #app {
   width: 100vw;
   height: 100vh;
@@ -93,7 +129,21 @@ body[data-mode="projector"] #app {
   justify-content: center;
 }
 
-body[data-mode="projector"] .projector__gif {
+.shadow {
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+.shadow--live {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shadow__media,
+.projector__gif {
   max-width: 100%;
   max-height: 100%;
+  object-fit: contain;
 }

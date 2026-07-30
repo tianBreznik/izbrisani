@@ -5,13 +5,17 @@
   "description": "Museum exhibition show controller — UN debate room simulator",
   "scripts": {
     "start": "node server/index.js",
-    "dev": "node --watch server/index.js"
+    "dev": "node --watch server/index.js",
+    "io": "node server/io-bridge.js",
+    "start:all": "node server/index.js & node server/io-bridge.js; wait"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
+    "@serialport/parser-readline": "^12.0.0",
     "express": "^4.21.2",
+    "serialport": "^12.0.0",
     "ws": "^8.18.0"
   }
 }

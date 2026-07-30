@@ -39,7 +39,12 @@
   }
 
   async function openChannel(id) {
-    state = await api(`/api/channel/${id}/open`, { method: "POST" });
+    const res = await fetch(`/api/channel/${id}/open?force=1`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    });
+    state = await res.json();
     render();
   }
 

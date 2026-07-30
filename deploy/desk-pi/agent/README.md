@@ -1,0 +1,59 @@
+# Desk companion (GPIO → Mac Mini)
+
+Runs **on each desk Pi**. Reads the mic/button on **this desk**, calls the Mac show API.
+
+```text
+PTT on desk N → GPIO → desk_agent.py → POST /api/channel/N/open
+Mac Mini       → state → all kiosks + shadows + Kodak USB relay
+```
+
+## Wiring (BCM)
+
+| Signal | Default BCM | Notes |
+|--------|-------------|--------|
+| PTT / button | **17** | Other side to GND; internal pull-up |
+| LED (optional) | **27** | PWM sine when idle; off when any channel live |
+
+Change with `BUTTON_GPIO` / `LED_GPIO`.
+
+## Install on a Pi
+
+```bash
+mkdir -p ~/izbrisani-agent
+# copy desk_agent.py + requirements.txt from Mac:
+#   scp deploy/desk-pi/agent/* user@desk-1:~/izbrisani-agent/
+
+cd ~/izbrisani-agent
+pip3 install --user -r requirements.txt
+
+export DESK_ID=1
+export SHOW_URL=http://MAC_IP:3847
+python3 desk_agent.py
+```
+
+Dev without GPIO (on Mac or Pi):
+
+```bash
+MOCK=1 DESK_ID=2 SHOW_URL=http://127.0.0.1:3847 python3 desk_agent.py
+# press Enter to simulate button
+```
+
+## systemd
+
+Edit `desk-agent.service` (`DESK_ID`, `SHOW_URL`, paths, `User`), then:
+
+```bash
+sudo cp desk-agent.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now desk-agent
+```
+
+## Behaviour
+
+| Situation | Result |
+|-----------|--------|
+| Idle, press | Open this desk’s channel |
+| This channel live, press again | Toggle close |
+| Other channel live, press | Ignored (`409 channel_busy`) |
+
+Kodak is **not** driven from the desk — only from the Mac hub relay.
