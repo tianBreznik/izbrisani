@@ -1,0 +1,29 @@
+{
+  "source": "7inch_cad.zip \u2192 7inch HDMI LCD (C)/1118.stp (2017-11-18, Creo)",
+  "also": "1118.prt.40 = same model native Creo",
+  "mount_holes": {
+    "diameter_mm": 3.3,
+    "radius_mm": 1.65,
+    "centers_XZ_mm": [
+      [
+        -78.5,
+        -57.45
+      ],
+      [
+        78.5,
+        -57.45
+      ],
+      [
+        -78.5,
+        57.45
+      ],
+      [
+        78.5,
+        57.45
+      ]
+    ],
+    "spacing_X_mm": 157.0,
+    "spacing_Z_mm": 114.9
+  },
+  "note": "Official wiki 164.90x106.96x8 is LCM glass outline; this STP is full module and is larger (~183 x ~127) with PCB/connectors. Corner holes ARE in the STP."
+}

@@ -3,7 +3,11 @@ const path = require("path");
 const http = require("http");
 const express = require("express");
 const { WebSocketServer } = require("ws");
-const { onShowStateChange } = require("./hardware");
+const {
+  onShowStateChange,
+  getHardwareState,
+  setHardwareChangeListener,
+} = require("./hardware");
 
 const PORT = Number(process.env.PORT) || 3847;
 const HOST = process.env.HOST || "0.0.0.0";
@@ -15,57 +19,38 @@ app.use(express.json());
 app.use(express.static(path.join(ROOT, "public")));
 app.use("/content", express.static(path.join(ROOT, "content")));
 
-function loadContent() {
-  return JSON.parse(fs.readFileSync(CONTENT_PATH, "utf8"));
-}
-
-function loadChannels() {
-  return loadContent().channels;
-}
-
-let channels = loadChannels();
-
 function getChannels() {
-  channels = loadChannels();
-  return channels;
+  return JSON.parse(fs.readFileSync(CONTENT_PATH, "utf8")).channels;
 }
 
-function broadcastChannels() {
-  const message = JSON.stringify({
-    type: "channels",
-    payload: { channels: getChannels() },
-  });
-  for (const client of wss.clients) {
-    if (client.readyState === 1) {
-      client.send(message);
-    }
-  }
-}
-
-/** @type {{ status: 'idle' } | { status: 'channel_open', channelId: number }} */
 let showState = { status: "idle" };
 
 function getPublicState() {
   return {
     ...showState,
+    hardware: getHardwareState(),
     updatedAt: Date.now(),
   };
 }
+
+function broadcast(type, payload) {
+  const message = JSON.stringify({ type, payload });
+  for (const client of wss.clients) {
+    if (client.readyState === 1) client.send(message);
+  }
+}
+
+function broadcastState() {
+  broadcast("state", getPublicState());
+}
+
+setHardwareChangeListener(broadcastState);
 
 function setShowState(next) {
   const prev = showState;
   showState = next;
   onShowStateChange(prev, next);
-  broadcast(getPublicState());
-}
-
-function broadcast(payload) {
-  const message = JSON.stringify({ type: "state", payload });
-  for (const client of wss.clients) {
-    if (client.readyState === 1) {
-      client.send(message);
-    }
-  }
+  broadcastState();
 }
 
 app.get("/api/health", (_req, res) => {
@@ -88,7 +73,6 @@ app.post("/api/channel/:id/open", (req, res) => {
     return res.status(404).json({ error: `Unknown channel ${channelId}` });
   }
 
-  // Exclusive mic: other channel live → ignore (desks should not steal)
   if (
     !force &&
     showState.status === "channel_open" &&
@@ -101,7 +85,6 @@ app.post("/api/channel/:id/open", (req, res) => {
     });
   }
 
-  // Same channel pressed again → release (toggle off)
   if (
     !force &&
     showState.status === "channel_open" &&
@@ -122,9 +105,9 @@ app.post("/api/channel/close", (_req, res) => {
 
 app.post("/api/reload-content", (_req, res) => {
   try {
-    const next = getChannels();
-    broadcastChannels();
-    res.json({ ok: true, channels: next });
+    const channels = getChannels();
+    broadcast("channels", { channels });
+    res.json({ ok: true, channels });
   } catch (err) {
     res.status(500).json({ error: String(err.message || err) });
   }
@@ -151,11 +134,10 @@ wss.on("connection", (socket) => {
 server.listen(PORT, HOST, () => {
   const base = `http://localhost:${PORT}`;
   console.log("");
-  console.log("  UN Debate Show — Mac Mini hub");
+  console.log("  anatomija pregona — Mac Mini hub");
   console.log("");
-  console.log(`  Control     ${base}/control.html`);
-  console.log(`  Shadow 1–2  ${base}/shadow/1  ${base}/shadow/2`);
-  console.log(`  Desk 1–4    ${base}/desk/1  …  ${base}/desk/4`);
+  console.log(`  Operator    npm run control   (terminal — keys 1–4 / Esc)`);
+  console.log(`  Desk kiosk  ${base}/desk/1  …  /desk/4`);
   console.log(`  Listening   ${HOST}:${PORT}`);
   console.log("");
 });

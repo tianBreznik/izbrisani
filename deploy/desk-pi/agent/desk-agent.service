@@ -1,17 +1,19 @@
 [Unit]
-Description=UN Debate desk companion (GPIO button → show server)
+Description=anatomija pregona desk companion (GPIO button → show server)
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
-User=pi
-WorkingDirectory=/home/pi/izbrisani-agent
+User=moderna
+WorkingDirectory=/home/moderna/izbrisani-agent
+# Edit DESK_ID (1–4) and SHOW_URL (Mac Mini / laptop IP) per desk / venue network
 Environment=DESK_ID=1
-Environment=SHOW_URL=http://192.168.50.10:3847
+Environment=SHOW_URL=http://172.20.10.4:3847
 Environment=BUTTON_GPIO=17
-Environment=LED_GPIO=27
-ExecStart=/usr/bin/python3 /home/pi/izbrisani-agent/desk_agent.py
+Environment=LED_GPIO=
+Environment=GPIOZERO_PIN_FACTORY=lgpio
+ExecStart=/usr/bin/python3 /home/moderna/izbrisani-agent/desk_agent.py
 Restart=always
 RestartSec=2
 

@@ -1,12 +1,8 @@
-"""
-Mic PTT → USB serial for Mac Mini io-bridge.
-MicroPython on Raspberry Pi Pico.
-"""
+# Deprecated. Desk Pi GPIO agent is the real path.
 import sys
 import time
 from machine import Pin
 
-# channel id → GPIO (active low, internal pull-up)
 BUTTONS = {
     1: Pin(2, Pin.IN, Pin.PULL_UP),
     2: Pin(3, Pin.IN, Pin.PULL_UP),
@@ -47,7 +43,6 @@ def main():
         if time.ticks_diff(now, glow_t) > 500:
             glow = not glow
             glow_t = now
-            # Only idle-glow when no button held; simple default
             if all(pin.value() for pin in BUTTONS.values()):
                 set_leds_idle_glow(glow)
             else:

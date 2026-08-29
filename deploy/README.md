@@ -3,11 +3,11 @@
 ## Architecture (current)
 
 ```text
-Mac Mini = show server + 2 shadows + USB Kodak relay
-Desk Pi ×4 = kiosk /desk/N + GPIO button agent (+ speaker later)
+Mac Mini = show server + terminal operator + ESP32 séance + Kodak
+Desk Pi ×4 = Chromium kiosk /desk/N + GPIO button agent
 ```
 
-**No Pico.** Buttons are on each desk → that Pi’s GPIO.
+**No Pico.** Buttons are on each desk → that Pi’s GPIO. Mac has **no GUI** — use `npm run control`.
 
 ## Docs
 
@@ -18,16 +18,19 @@ Desk Pi ×4 = kiosk /desk/N + GPIO button agent (+ speaker later)
 | [`desk-pi/README.md`](./desk-pi/README.md) | Kiosk imaging |
 | [`desk-pi/setup-kiosk.sh`](./desk-pi/setup-kiosk.sh) | Autostart Chromium |
 | [`desk-pi/agent/`](./desk-pi/agent/) | **GPIO companion** |
-| [`mac/open-shadows.sh`](./mac/open-shadows.sh) | Open control + shadows |
+| [`checkpoint_kodak.md`](./checkpoint_kodak.md) | Kodak Plan A: 6-pin relay; Plan B: IR blaster |
+| [`checkpoint_seance.md`](./checkpoint_seance.md) | ESP32 séance lights |
+| [`mac/open-shadows.sh`](./mac/open-shadows.sh) | Legacy — not needed on Mac Mini |
 
 ## Mac Mini
 
 ```bash
 npm install
-npm start
-# optional Kodak:
-# KODAK_RELAY_ON='…' KODAK_RELAY_OFF='…' npm start
-bash deploy/mac/open-shadows.sh
+npm start                 # leave running (SSH ok)
+# second session:
+npm run control           # keys 1–4 / Esc — SHOW_URL optional
+# optional Kodak / séance env on the npm start process:
+# KODAK_FORWARD='…' ESP32_URL='…' npm start
 ```
 
 ## Each desk Pi

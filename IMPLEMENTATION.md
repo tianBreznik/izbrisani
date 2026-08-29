@@ -1,4 +1,4 @@
-# UN Debate Exhibition — Implementation Plan (Handoff)
+# anatomija pregona — Implementation Plan (Handoff)
 
 Last updated: 2026-07-29  
 Purpose: summary for another Cursor agent (including iOS) to continue work.
@@ -32,10 +32,10 @@ Docs: **`deploy/`** (especially `desk-pi/agent/`, `PHYSICAL.md`, `CHECKLIST.md`)
 
 ## Project intent
 
-- One channel open at a time (UN “mic live”).
+- One channel open at a time (“mic live”).
 - Inputs: mic/button **on each desk** → desk Pi companion → API.
-- Outputs synced: desk text, shadow media, Kodak on/off, audio (TBD).
-- Idle: name plate + standby; shadows black; Kodak off; button LEDs sine.
+- Outputs synced: desk text, Kodak on/off, ESP32 séance lights, audio (TBD). Optional `/shadow/*` HTML.
+- Idle: name plate + standby; Kodak off; ESP32 `/stop?light=all`; button LEDs sine.
 
 ---
 
@@ -105,7 +105,7 @@ Default mapping in `content/channels.json`: channels **1–2 → shadow 1**, **3
 ## Open questions
 
 1. Mac Mini ports / adapters for 2 projectors?
-2. Kodak model / lamp control method?
+2. Kodak model / lamp control method? → **500 confirmed** — no 12-pin; see `deploy/checkpoint_kodak.md`
 3. Exact artist shadow mapping (override JSON if needed)?
 4. Generative ambient (Tina)?
 5. Mic LED glow hardware?

@@ -1,18 +1,13 @@
 (function () {
   const deskMatch = location.pathname.match(/\/desk\/(\d+)/);
-  const shadowMatch = location.pathname.match(/\/shadow\/(\d+)/);
   const deskId = deskMatch
     ? Number(deskMatch[1])
     : Number(document.body.dataset.deskId);
-  const shadowId = shadowMatch
-    ? Number(shadowMatch[1])
-    : Number(document.body.dataset.shadowId);
 
   const protocol = location.protocol === "https:" ? "wss:" : "ws:";
   let channels = [];
   let state = { status: "idle" };
 
-  /** Test copy for desk karaoke (no name tags). */
   const LOREM =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
@@ -33,11 +28,6 @@
       karaokeTimer = null;
     }
     karaokeIndex = 0;
-  }
-
-  function activeChannel() {
-    if (state.status !== "channel_open") return null;
-    return channels.find((c) => c.id === state.channelId) || null;
   }
 
   function wordsFrom(text) {
@@ -72,67 +62,31 @@
 
   function render() {
     const root = document.getElementById("app");
-    const mode = document.body.dataset.mode;
-
-    if (mode === "shadow") {
+    const ch = channels.find((c) => c.id === deskId);
+    if (!ch) {
       stopKaraoke();
-      const ch = activeChannel();
-      const live = ch && Number(ch.shadow) === shadowId;
-      if (!live) {
-        root.innerHTML = '<div class="shadow shadow--idle"></div>';
-        return;
-      }
-      const src = ch.shadowMedia || ch.image || "";
-      root.innerHTML = `
-        <div class="shadow shadow--live">
-          <img class="shadow__media" src="${esc(src)}" alt="" />
-        </div>
-      `;
+      root.innerHTML = `<p class="standby">desk ${deskId} — not found</p>`;
       return;
     }
 
-    if (mode === "projector") {
+    const live = state.status === "channel_open" && state.channelId === deskId;
+    if (!live) {
       stopKaraoke();
-      const ch = activeChannel();
-      if (!ch) {
-        root.innerHTML = '<div class="standby">channel 0</div>';
-        return;
-      }
-      const src = ch.shadowMedia || ch.image || "";
-      root.innerHTML = `<img class="projector__gif" src="${esc(src)}" alt="" />`;
+      root.innerHTML = `<div class="desk desk--idle"></div>`;
       return;
     }
 
-    if (mode === "desk") {
-      const ch = channels.find((c) => c.id === deskId);
-      if (!ch) {
-        stopKaraoke();
-        root.innerHTML = `<p class="standby">desk ${deskId} — not found</p>`;
-        return;
-      }
-      const live = state.status === "channel_open" && state.channelId === deskId;
-      if (!live) {
-        stopKaraoke();
-        root.innerHTML = `<div class="desk desk--idle"></div>`;
-        return;
-      }
-
-      const words = wordsFrom(LOREM);
-      root.innerHTML = `
-        <div class="desk desk--live">
-          <div class="karaoke" id="karaoke">
-            ${words
-              .map(
-                (w) =>
-                  `<span class="karaoke-word is-future">${esc(w)}</span>`
-              )
-              .join(" ")}
-          </div>
+    const words = wordsFrom(LOREM);
+    root.innerHTML = `
+      <div class="desk desk--live">
+        <div class="karaoke" id="karaoke">
+          ${words
+            .map((w) => `<span class="karaoke-word is-future">${esc(w)}</span>`)
+            .join(" ")}
         </div>
-      `;
-      const box = document.getElementById("karaoke");
-      startKaraoke(box, words);
-    }
+      </div>
+    `;
+    startKaraoke(document.getElementById("karaoke"), words);
   }
 
   async function init() {

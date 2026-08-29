@@ -3,12 +3,12 @@
 ## A. Before site
 
 - [ ] Mac Mini: repo cloned, `npm install`, `npm start` works
-- [ ] Control + shadow/1 + shadow/2 tested
+- [ ] `npm run control` — keys 1–4 / Esc (TTY / SSH `-t`)
 - [ ] `MOCK=1` desk agent tested against local server
 - [ ] 4× Pi imaged (or 1 test Pi first)
 - [ ] 4× 7″ panels + HDMI + power
 - [ ] Switch + labeled Ethernet
-- [ ] USB relay for Kodak (not on mains until step F)
+- [ ] USB relay for Kodak Plan A (not on projector until step F)
 - [ ] Mic/button continuity per desk; short GPIO leads labeled
 
 ## B. Network
@@ -19,9 +19,9 @@
 
 ## C. Mac hub
 
-- [ ] `npm start`
-- [ ] Shadows fullscreen on correct projectors
-- [ ] Keys 1 / 3 move correct shadow; Esc → black
+- [ ] `npm start` (SSH or launchd — no display needed)
+- [ ] `npm run control` in second session
+- [ ] Keys 1–4 force-open; Esc → idle; desk kiosk follows
 
 ## D. Desk kiosk (×4)
 
@@ -38,12 +38,15 @@
 - [ ] Other desk while busy → ignored
 - [ ] Idle LED glow works (if wired)
 
-## F. Kodak (last)
+## F. Kodak + séance (last)
 
-- [ ] `KODAK_RELAY_ON` / `OFF` configured
-- [ ] Dry-run relay LED follows open/close
-- [ ] Technician OK; live Kodak test
-- [ ] No mains on bare GPIO
+- [ ] **Plan A:** 2-ch USB relay wired COM+NO → 6-pin plug pins 1–3 (`checkpoint_kodak.md`)
+- [ ] 6-pin plug sourced; IR receiver unplugged for show (or twin socket)
+- [ ] Pulse test forward/reverse; `KODAK_FORWARD` / `REVERSE` env on Mac
+- [ ] **Plan B only if A blocked:** USB IR blaster + learned codes
+- [ ] Lamp: manual mains or document standby path separately
+- [ ] ESP32 séance: `ESP32_URL` (`checkpoint_seance.md`)
+- [ ] **Slide movement algorithm** defined (desk click → forward/reverse) — `checkpoint_kodak.md`
 
 ## G. Soak
 

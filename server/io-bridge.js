@@ -1,15 +1,3 @@
-/**
- * USB serial bridge: Pico → show API on Mac Mini.
- *
- * Usage:
- *   npm start          # terminal 1
- *   npm run io         # terminal 2
- *
- * Env:
- *   SERIAL_PATH   e.g. /dev/cu.usbmodem14101  (macOS)
- *   SHOW_URL      default http://127.0.0.1:3847
- */
-
 const { SerialPort } = require("serialport");
 const { ReadlineParser } = require("@serialport/parser-readline");
 

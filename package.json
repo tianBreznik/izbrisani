@@ -1,12 +1,14 @@
 {
-  "name": "un-debate-show",
+  "name": "anatomija-pregona",
   "version": "0.1.0",
   "private": true,
-  "description": "Museum exhibition show controller — UN debate room simulator",
+  "description": "Museum exhibition show controller — anatomija pregona",
   "scripts": {
     "start": "node server/index.js",
+    "control": "node server/control-cli.js",
     "dev": "node --watch server/index.js",
     "io": "node server/io-bridge.js",
+    "kodak:pulse": "node scripts/kodak-pulse.js",
     "start:all": "node server/index.js & node server/io-bridge.js; wait"
   },
   "engines": {
@@ -15,6 +17,7 @@
   "dependencies": {
     "@serialport/parser-readline": "^12.0.0",
     "express": "^4.21.2",
+    "node-hid": "^3.1.2",
     "serialport": "^12.0.0",
     "ws": "^8.18.0"
   }

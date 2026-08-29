@@ -1,7 +1,5 @@
 #!/bin/bash
-# Open control + two shadow windows (Chrome on macOS).
-# Usage: ./open-shadows.sh
-# Optional: SHOW_URL=http://127.0.0.1:3847
+# Opens control + shadow/1 + shadow/2 in Chrome. SHOW_URL optional.
 
 set -euo pipefail
 BASE="${SHOW_URL:-http://127.0.0.1:3847}"

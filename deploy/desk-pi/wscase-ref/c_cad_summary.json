@@ -1,0 +1,20 @@
+{
+  "source": "7inch_cad.zip \u2192 7inch HDMI LCD (C)/1118.stp (2017-11-18, Creo)",
+  "also": "1118.prt.40 = same model native Creo",
+  "mount_holes_STP_2017": {
+    "diameter_mm": 3.3,
+    "radius_mm": 1.65,
+    "spacing_X_mm": 157.0,
+    "spacing_Z_mm": 114.9,
+    "note": "From 1118.stp cylinders — DO NOT use for Rev4.1 case; disagrees with Exterior-Size.jpg"
+  },
+  "mount_holes_ExteriorSize_Rev4.1": {
+    "spacing_X_mm": 148.90,
+    "spacing_Y_mm": 114.96,
+    "inset_from_outer_BL_mm": [8.0, 4.655],
+    "source": "Exterior-Size.jpg dimension lines to hole centres",
+    "note": "156.90 is PCB body width, NOT hole spacing",
+    "use_in_wscase": true
+  },
+  "note": "Wiki 164.90x106.96x8 is LCM glass only. Full module with tabs 164.90x124.27. Prefer Exterior-Size hole spacing over STP for current boards."
+}

@@ -1,9 +1,5 @@
 #!/bin/bash
-# Run ON each desk Raspberry Pi (Bookworm Desktop recommended).
-# Usage:
-#   sudo bash setup-kiosk.sh <desk_number> <mac_ip>
-# Example:
-#   sudo bash setup-kiosk.sh 1 192.168.50.10
+# On each desk Pi: sudo bash setup-kiosk.sh <1-4> <mac_ip>
 
 set -euo pipefail
 
@@ -46,7 +42,7 @@ mkdir -p "$AUTOSTART_DIR"
 cat > "${AUTOSTART_DIR}/desk-kiosk.desktop" <<EOF
 [Desktop Entry]
 Type=Application
-Name=UN Desk Kiosk
+Name=anatomija pregona desk kiosk
 Exec=${CHROMIUM} --kiosk --noerrdialogs --disable-infobars --check-for-update-interval=31536000 --app=${KIOSK_URL}
 X-GNOME-Autostart-enabled=true
 EOF
@@ -59,7 +55,6 @@ Exec=unclutter -idle 0.5 -root
 X-GNOME-Autostart-enabled=true
 EOF
 
-# Disable screen blanking for lightdm/labwc/wayfire varies; set common X hint via autostart
 cat > "${AUTOSTART_DIR}/no-blank.desktop" <<'EOF'
 [Desktop Entry]
 Type=Application

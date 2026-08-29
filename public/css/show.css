@@ -55,7 +55,7 @@ body[data-mode="control"] {
   margin: 0 0 1rem;
 }
 
-/* Desk — target Waveshare/Elecrow 7″ 1024×600 */
+/* desk: 7" 1024x600 */
 body[data-mode="desk"] {
   width: 100vw;
   height: 100vh;
@@ -113,7 +113,7 @@ body[data-mode="desk"] .standby {
   font-weight: 400;
 }
 
-/* Shadow projectors on Mac Mini displays */
+/* shadow outputs */
 body[data-mode="shadow"],
 body[data-mode="projector"] {
   background: #000;

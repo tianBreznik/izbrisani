@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html class="client-nojs" lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<title>7inch HDMI LCD (C) - Waveshare Wiki</title>
+<script>document.documentElement.className="client-js";RLCONF={"wgBreakFrames":!1,"wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgRequestId":"dafc585715105789a4347589","wgCSPNonce":!1,"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":!1,"wgNamespaceNumber":0,"wgPageName":"7inch_HDMI_LCD_(C)","wgTitle":"7inch HDMI LCD (C)","wgCurRevisionId":105264,"wgRevisionId":105264,"wgArticleId":3062,"wgIsArticle":!0,"wgIsRedirect":!1,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["USB interface","HDMI interface","OLEDs / LCDs","LCD","Raspberry Pi","Raspberry Pi LCD"],"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgRelevantPageName":"7inch_HDMI_LCD_(C)","wgRelevantArticleId":3062,"wgIsProbablyEditable":!1,"wgRelevantPageIsProbablyEditable":!1,"wgRestrictionEdit":[
+],"wgRestrictionMove":[]};RLSTATE={"ext.gadget.tabber":"ready","site.styles":"ready","noscript":"ready","user.styles":"ready","user":"ready","user.options":"loading","mediawiki.toc.styles":"ready","skins.tweeki.styles":"ready","skins.tweeki.bootstraptheme.styles":"ready","skins.tweeki.externallinks.styles":"ready","skins.tweeki.awesome.styles":"ready"};RLPAGEMODULES=["site","mediawiki.page.startup","mediawiki.page.ready","mediawiki.toc","ext.FancyBoxThumbs","ext.HighlightjsIntegration","skins.tweeki.messages","skins.tweeki.scripts"];</script>
+<script>(RLQ=window.RLQ||[]).push(function(){mw.loader.implement("user.options@1hzgi",function($,jQuery,require,module){/*@nomin*/mw.user.tokens.set({"patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});
+});});</script>
+<link rel="stylesheet" href="/w/Uy8Yw0y/aAdkk0o.php?lang=en&amp;modules=mediawiki.toc.styles%7Cskins.tweeki.awesome.styles%7Cskins.tweeki.bootstraptheme.styles%7Cskins.tweeki.externallinks.styles%7Cskins.tweeki.styles&amp;only=styles&amp;skin=tweeki"/>
+<script async="" src="/w/Uy8Yw0y/aAdkk0o.php?lang=en&amp;modules=startup&amp;only=scripts&amp;raw=1&amp;skin=tweeki"></script>
+<meta name="ResourceLoaderDynamicStyles" content=""/>
+<link rel="stylesheet" href="/w/Uy8Yw0y/aAdkk0o.php?lang=en&amp;modules=ext.gadget.tabber&amp;only=styles&amp;skin=tweeki"/>
+<link rel="stylesheet" href="/w/Uy8Yw0y/aAdkk0o.php?lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=tweeki"/>
+<meta name="generator" content="MediaWiki 1.35.5"/>
+<meta property="og:image" content="https://www.waveshare.com/w/upload/thumb/2/2f/7inch-HDMI-LCD-C_l.jpg/1200px-7inch-HDMI-LCD-C_l.jpg"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="shortcut icon" href="/w/favicon.ico"/>
+<link rel="search" type="application/opensearchdescription+xml" href="/w/opensearch_desc.php" title="Waveshare Wiki (en)"/>
+<link rel="EditURI" type="application/rsd+xml" href="https://www.waveshare.com/w/api.php?action=rsd"/>
+<link rel="alternate" type="application/atom+xml" title="Waveshare Wiki Atom feed" href="/w/index.php?title=Special:RecentChanges&amp;feed=atom"/>
+<!--[if lt IE 9]><script src="/w/resources/lib/html5shiv/html5shiv.js"></script><![endif]-->
+</head>
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-7inch_HDMI_LCD_C rootpage-7inch_HDMI_LCD_C skin-tweeki action-view tweeki-animateLayout tweeki-non-advanced tweeki-user-anon">			<!-- navbar -->
+			<div id="mw-navigation" class="navbar navbar-default navbar-fixed-top navbar-expand-lg fixed-top navbar-light bg-light" role="navigation">
+				<h2>Navigation menu</h2>
+				<div id="mw-head" class="navbar-inner">
+					<div class="container">
+
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+
+							<a href="/wiki/Main_Page" class="navbar-brand"><img src="https://www.waveshare.com/w/upload/a/a7/Ws-watermark-en.svg" alt="Waveshare Wiki" /></a>
+						</div>
+
+						<div id="navbar" class="navbar-collapse collapse">
+													<ul class="nav navbar-nav">
+							<li class="nav"><a href="#" id="n-raspberry-pi" class="dropdown-toggle" data-toggle="dropdown">Raspberry Pi <b class="caret"></b></a><ul class="dropdown-menu " role="menu"><li id="n-main_page.2523rpi-boards"><a href="/wiki/Main_Page#RPi-Boards" tabindex="-1">Boards/Kits</a></li><li id="n-main_page.2523rpi-displays"><a href="/wiki/Main_Page#RPi-Displays" tabindex="-1">Displays</a></li><li id="n-main_page.2523rpi-cameras"><a href="/wiki/Main_Page#RPi-Cameras" tabindex="-1">Cameras</a></li><li id="n-main_page.2523rpi-expansions"><a href="/wiki/Main_Page#RPi-Expansions" tabindex="-1">Expansions</a></li><li id="n-main_page.2523rpi-laptops"><a href="/wiki/Main_Page#RPi-Laptops" tabindex="-1">All-in-one</a></li><li id="n-main_page.2523rpi-robots"><a href="/wiki/Main_Page#RPi-Robots" tabindex="-1">Robots</a></li><li id="n-main_page.2523rpi-games"><a href="/wiki/Main_Page#RPi-Games" tabindex="-1">Portable Gaming</a></li><li id="n-main_page.2523rpi-acces"><a href="/wiki/Main_Page#RPi-Acces" tabindex="-1">Accessories</a></li><li id="n-main_page.2523android-linux-boards"><a href="/wiki/Main_Page#Android-Linux-Boards" tabindex="-1">Other Android/Linux Boards</a></li></ul></li><li class="nav"><a href="#" id="n-ai" class="dropdown-toggle" data-toggle="dropdown">AI <b class="caret"></b></a><ul class="dropdown-menu " role="menu"><li id="n-main_page.2523jetson-ai-boards"><a href="/wiki/Main_Page#Jetson-AI-Boards" tabindex="-1">Boards/Kits</a></li><li id="n-main_page.2523jetson-ai-displays"><a href="/wiki/Main_Page#Jetson-AI-Displays" tabindex="-1">Displays</a></li><li id="n-main_page.2523jetson-ai-cameras"><a href="/wiki/Main_Page#Jetson-AI-Cameras" tabindex="-1">Cameras</a></li><li id="n-main_page.2523jetson-ai-hat"><a href="/wiki/Main_Page#Jetson-AI-HAT" tabindex="-1">Expansions</a></li><li id="n-main_page.2523jetson-ai-robots"><a href="/wiki/Main_Page#Jetson-AI-Robots" tabindex="-1">Robots</a></li></ul></li><li class="nav"><a href="#" id="n-displays" class="dropdown-toggle" data-toggle="dropdown">Displays <b class="caret"></b></a><ul class="dropdown-menu " role="menu"><li id="n-main_page.2523display-lcd-oleds"><a href="/wiki/Main_Page#Display-LCD-OLEDs" tabindex="-1">LCD/OLED</a></li><li id="n-main_page.2523display-e-paper"><a href="/wiki/Main_Page#Display-e-Paper" tabindex="-1">e-Paper</a></li></ul></li><li class="nav"><a href="#" id="n-iot" class="dropdown-toggle" data-toggle="dropdown">IoT <b class="caret"></b></a><ul class="dropdown-menu " role="menu"><li id="n-main_page.2523long-range-wireless-comm"><a href="/wiki/Main_Page#Long-range-wireless-comm" tabindex="-1">Long Range Wireless</a></li><li id="n-main_page.2523short-range-wireless-comm"><a href="/wiki/Main_Page#Short-range-wireless-comm" tabindex="-1">Short Range Wireless</a></li><li id="n-main_page.2523wired-communication"><a href="/wiki/Main_Page#Wired-communication" tabindex="-1">Wired Comm / Converter</a></li><li id="n-main_page.2523misc-cameras-av"><a href="/wiki/Main_Page#Misc-cameras-av" tabindex="-1">Cameras / Audio / Video</a></li><li id="n-main_page.2523misc-sensor-modules"><a href="/wiki/Main_Page#Misc-sensor-modules" tabindex="-1">Sensors</a></li><li id="n-main_page.2523misc-servos-motors"><a href="/wiki/Main_Page#Misc-servos-motors" tabindex="-1">Motors / Servos</a></li><li id="n-main_page.2523misc-other-modules"><a href="/wiki/Main_Page#Misc-other-modules" tabindex="-1">others</a></li></ul></li><li class="nav"><a href="#" id="n-robotics" class="dropdown-toggle" data-toggle="dropdown">Robotics <b class="caret"></b></a><ul class="dropdown-menu " role="menu"><li id="n-main_page.2523robotics-cars"><a href="/wiki/Main_Page#Robotics-cars" tabindex="-1">Mobile Robots</a></li><li id="n-main_page.2523dog-like-robots"><a href="/wiki/Main_Page#Dog-like-Robots" tabindex="-1">Dog-like Robots</a></li><li id="n-main_page.2523robotics-drivers-sensors"><a href="/wiki/Main_Page#Robotics-drivers-sensors" tabindex="-1">Drivers / Sensors</a></li><li id="n-main_page.2523robotics-robot-arms"><a href="/wiki/Main_Page#Robotics-robot-arms" tabindex="-1">Robot Arm / Control</a></li></ul></li><li class="nav"><a href="#" id="n-mcu.252Ffpga" class="dropdown-toggle" data-toggle="dropdown">MCU/FPGA <b class="caret"></b></a><ul class="dropdown-menu " role="menu"><li id="n-main_page.2523arduino-main-boards"><a href="/wiki/Main_Page#Arduino-main-boards" tabindex="-1">Arduino</a></li><li id="n-main_page.2523micro.253Abit"><a href="/wiki/Main_Page#micro:bit" tabindex="-1">micro:bit</a></li><li id="n-main_page.2523mcu.2farm" class="LPC"><a href="/wiki/Main_Page#MCU.2FARM" tabindex="-1">STM32</a></li><li id="n-main_page.2523fpga"><a href="/wiki/Main_Page#FPGA" tabindex="-1">FPGA</a></li></ul></li><li class="nav"><a href="https://service.waveshare.com" id="n-https.253A.252F.252Fservice.waveshare.com" rel="nofollow" target="_blank">Support</a></li>							</ul>
+						
+													<ul class="nav navbar-nav navbar-right">
+							</ul>
+				<form class="navbar-form navbar-right" action="/w/index.php" id="searchform">
+					<div class="form-group"><input type="search" name="search" placeholder="Product name search" title="Search Waveshare Wiki [f]" accesskey="f" id="searchInput" class="search-query form-control"/><input type="submit" name="go" value="Go" title="Go to a page with this exact name if it exists" id="mw-searchButton" class="searchButton btn hidden"/>
+					</div>
+				</form><ul class="nav navbar-nav navbar-right">							</ul>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			<!-- /navbar -->
+					<div id="mw-page-base"></div>
+			<div id="mw-head-base"></div>
+			<a id="top"></a>
+
+			<!-- content -->
+			<div id="contentwrapper" class="user-loggedout not-editable container with-navbar with-navbar-fixed">
+
+				
+				<div class="row">
+					<div class="col-md-offset-2 col-md-10" role="main">
+								<div class="mw-body" id="content">
+			<div id="mw-js-message" style="display:none;"></div>
+									<h1 id="firstHeading" class="firstHeading page-header" lang="en"><span dir="auto">7inch HDMI LCD (C)</span></h1>
+									<!-- bodyContent -->
+			<div id="bodyContent">
+								<div id="siteSub">From Waveshare Wiki</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Jump to:					<a href="#mw-navigation">navigation</a>, 					<a href="#p-search">search</a>
+				</div>
+				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><div class="wiki-pages jet-green-color">
+<div class="tabber">
+<div class="tabbertab" title="Introduction">
+<table id="infotable" class="a-r at-c roundy bgd-green bl-white" style="margin-left: 5px; margin-bottom: 5px; width: 30%;">
+
+<tbody><tr>
+<td>
+<table class="at-c roundy" style="background: transparent;width:100%;">
+
+<tbody><tr>
+<td class="at-c textwhite"><b>7inch HDMI LCD (C)</b>
+</td></tr>
+<tr>
+<td class="at-c bgwhite" style="margin:5px;"><div class="subnavber"><div class="subnavbertab" title="Standard Version">
+<a href="http://www.waveshare.com/7inch-HDMI-LCD-C.htm" target="_blank" rel="nofollow noreferrer noopener"><img alt="7inch HDMI LCD (C)" src="/w/upload/thumb/2/2f/7inch-HDMI-LCD-C_l.jpg/300px-7inch-HDMI-LCD-C_l.jpg" decoding="async" loading="lazy" width="300" height="225" srcset="/w/upload/thumb/2/2f/7inch-HDMI-LCD-C_l.jpg/450px-7inch-HDMI-LCD-C_l.jpg 1.5x, /w/upload/thumb/2/2f/7inch-HDMI-LCD-C_l.jpg/600px-7inch-HDMI-LCD-C_l.jpg 2x" /></a></div>
+<div class="subnavbertab" title="Case Version"><a href="http://www.waveshare.com/7inch-hdmi-lcd-c-with-bicolor-case.htm" target="_blank" rel="nofollow noreferrer noopener"><img alt="7inch HDMI LCD (C) (bicolor version" src="/w/upload/thumb/3/3e/7inch-HDMI-LCD-Bicolor-Holder-2.jpg/300px-7inch-HDMI-LCD-Bicolor-Holder-2.jpg" decoding="async" loading="lazy" width="300" height="225" srcset="/w/upload/thumb/3/3e/7inch-HDMI-LCD-Bicolor-Holder-2.jpg/450px-7inch-HDMI-LCD-Bicolor-Holder-2.jpg 1.5x, /w/upload/thumb/3/3e/7inch-HDMI-LCD-Bicolor-Holder-2.jpg/600px-7inch-HDMI-LCD-Bicolor-Holder-2.jpg 2x" /></a></div></div><br />
+</td></tr></tbody></table>
+</td></tr>
+<tr style="display:none;">
+<td>
+<table class="roundy" style="background: transparent;width:100%;">
+
+<tbody><tr>
+<td class="at-c textwhite"><b>{{{name2}}}</b>
+</td></tr>
+<tr>
+<td class="at-c bgwhite" style="margin:5px;"><br />
+</td></tr></tbody></table>
+</td></tr>
+<tr style="display:none;">
+<td>
+<table class="roundy" style="background: transparent;width:100%;">
+
+<tbody><tr>
+<td class="at-c textwhite"><b>{{{name3}}}</b>
+</td></tr>
+<tr>
+<td class="at-c bgwhite" style="margin:5px;"><br />
+</td></tr></tbody></table>
+</td></tr>
+<tr style="display:none;">
+<td>
+<table class="roundy" style="background: transparent;width:100%;">
+
+<tbody><tr>
+<td class="at-c textwhite"><b>{{{name4}}}</b>
+</td></tr>
+<tr>
+<td class="at-c bgwhite" style="margin:5px;"><br />
+</td></tr></tbody></table>
+</td></tr>
+<tr style="display:none;">
+<td>
+<table class="roundy" style="background: transparent;width:100%;">
+
+<tbody><tr>
+<td class="at-c textwhite"><b>{{{name5}}}</b>
+</td></tr>
+<tr>
+<td class="at-c bgwhite" style="margin:5px;"><br />
+</td></tr></tbody></table>
+</td></tr>
+<tr style="display:none;">
+<td>
+<table class="roundy" style="background: transparent;width:100%;">
+
+<tbody><tr>
+<td class="at-c textwhite"><b>{{{name6}}}</b>
+</td></tr>
+<tr>
+<td class="at-c bgwhite" style="margin:5px;"><br />
+</td></tr></tbody></table>
+</td></tr>
+<tr>
+<td>
+<table class="roundy" style="display:none;">
+<tbody><tr>
+<td style="width:2%;">
+</td>
+<td style="width:3%;">
+</td>
+<th colspan="2" width="90%" class="at-c roundytop bgl-white">Primary Attribute
+</th>
+<td style="width:3%;">
+</td>
+<td style="width:2%;">
+</td></tr>
+<tr>
+<td colspan="6" width="90px" class="at-c roundytl roundytr bgwhite b-green" style="border-width: 0 0 1px 0;"><b>Category:</b> <a href="/wiki/Category:OLEDs_/_LCDs" title="Category:OLEDs / LCDs">OLEDs / LCDs</a>, <a href="/wiki/Category:LCD" title="Category:LCD">LCD</a>, <a href="/wiki/Category:Raspberry_Pi_LCD" title="Category:Raspberry Pi LCD">Raspberry Pi LCD</a>
+</td></tr>
+<tr style="display:none;">
+<th colspan="3" width="90px" class="at-r bgwhite b-green" style="border-width: 0 0 1px 0;">{{{userDefinedInfo}}}:
+</th>
+<td colspan="3" class="at-l b-green bgwhite" style="border-width: 0 0 1px 0;">7inch HDMI LCD (C)
+</td></tr>
+<tr style="display:none;">
+<td colspan="6" width="90px" class="at-c roundybl roundybr bgwhite"><b>Brand:</b> Waveshare
+</td></tr></tbody></table>
+</td></tr>
+<tr>
+<td>
+<table class="a-r roundy" style="display:none;">
+<tbody><tr>
+<td style="width:2%;">
+</td>
+<td style="width:3%;">
+</td>
+<th colspan="2" width="90%" class="at-c roundytop bgl-white">Website
+</th>
+<td style="width:3%;">
+</td>
+<td style="width:2%;">
+</td></tr>
+<tr>
+<td colspan="6" width="90px" class="at-c roundytl roundytr bgwhite b-green" style="border-width: 0 0 1px 0;"><b>International:</b> <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://www.waveshare.com/7inch-hdmi-lcd-c.htm">7inch HDMI LCD (C)</a>
+</td></tr>
+<tr>
+<td colspan="6" width="90px" class="at-c roundybl roundybr bgwhite"><b>Chinese:</b> <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://www.waveshare.net/shop/7inch-HDMI-LCD-C.htm">7inch HDMI LCD (C)</a>
+</td></tr></tbody></table>
+</td></tr>
+<tr>
+<td>
+<table class="a-r roundy" style="background: transparent; border-collapse:collapse;width:100%;display:none;">
+<tbody><tr>
+<td style="width:2%;">
+</td>
+<td style="width:3%;">
+</td>
+<th colspan="2" width="90%" class="at-c roundytop bgl-white">Onboard Interfaces
+</th>
+<td style="width:3%;">
+</td>
+<td style="width:2%;">
+</td></tr>
+<tr>
+<td colspan="6" width="90px" class="at-l roundy bgwhite b-green" style="border-width: 0 0 1px 0;">
+<table class="roundy bgwhite fulltable" style="text-align:center;">
+
+<tbody><tr>
+<td class="roundy bl-gray bw-1" style="width:25%;;"><small><b><a href="/wiki/Category:USB_interface" title="Category:USB interface">USB</a></b></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;;"><small><b><a href="/wiki/Category:HDMI_interface" title="Category:HDMI interface">HDMI</a></b></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td></tr>
+<tr>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td></tr>
+<tr>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td></tr>
+<tr>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td></tr>
+<tr>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td>
+<td class="roundy bl-gray bw-1" style="width:25%;display:none;"><small></small>
+</td></tr></tbody></table>
+</td></tr></tbody></table>
+</td></tr>
+<tr>
+<td>
+<table class="a-r roundy" style="background: transparent; border-collapse:collapse;width:100%;;display:none;">
+<tbody><tr>
+<td style="width:2%;">
+</td>
+<td style="width:3%;">
+</td>
+<th colspan="2" width="90%" class="at-c roundytop bgl-white">Related Products
+</th>
+<td style="width:3%;">
+</td>
+<td style="width:2%;">
+</td></tr>
+<tr>
+<td colspan="6" width="90px" class="at-l roundy bgwhite b-green" style="border-width: 0 0 1px 0;">
+<ul><li><a href="/wiki/15.6inch_HDMI_LCD_(H)_(with_case)" title="15.6inch HDMI LCD (H) (with case)">15.6inch HDMI LCD (H) (with case)</a></li>
+<li><a href="/wiki/15.6inch_HDMI_LCD_(H)" class="mw-redirect" title="15.6inch HDMI LCD (H)">15.6inch HDMI LCD (H)</a></li>
+<li><a href="/wiki/15.6inch_FHD_Monitor" title="15.6inch FHD Monitor">15.6inch FHD Monitor</a></li>
+<li><a href="/wiki/13.3inch_HDMI_LCD_(H)_(with_case)_V2" class="mw-redirect" title="13.3inch HDMI LCD (H) (with case) V2">13.3inch HDMI LCD (H) (with case) V2</a></li>
+<li><a href="/wiki/13.3inch_HDMI_LCD_(H)_(with_case)" title="13.3inch HDMI LCD (H) (with case)">13.3inch HDMI LCD (H) (with case)</a></li>
+<li><a href="/wiki/13.3inch_HDMI_LCD_(H)" title="13.3inch HDMI LCD (H)">13.3inch HDMI LCD (H)</a></li>
+<li><a href="/wiki/13.3inch_Magic_Mirror" title="13.3inch Magic Mirror">13.3inch Magic Mirror</a></li>
+<li><a href="/wiki/13.3inch_Magic_Mirror_C4" title="13.3inch Magic Mirror C4">13.3inch Magic Mirror C4</a></li>
+<li><a href="/wiki/13.3inch_PiPad" title="13.3inch PiPad">13.3inch PiPad</a></li>
+<li><a href="/wiki/13.3inch_PiPad_C4" title="13.3inch PiPad C4">13.3inch PiPad C4</a></li>
+<li><a href="/wiki/12.5inch_FHD_Monitor" title="12.5inch FHD Monitor">12.5inch FHD Monitor</a></li>
+<li><a href="/wiki/11.6inch_HDMI_LCD_(H)_(with_case)" title="11.6inch HDMI LCD (H) (with case)">11.6inch HDMI LCD (H) (with case)</a></li>
+<li><a href="/wiki/11.6inch_HDMI_LCD_(H)" title="11.6inch HDMI LCD (H)">11.6inch HDMI LCD (H)</a></li>
+<li><a href="/wiki/11.9inch_HDMI_LCD" title="11.9inch HDMI LCD">11.9inch HDMI LCD </a></li>
+<li><a href="/wiki/10.5inch_HDMI_AMOLED" title="10.5inch HDMI AMOLED">10.5inch HDMI AMOLED</a></li>
+<li><a href="/wiki/10.1inch_HDMI_LCD" title="10.1inch HDMI LCD">10.1inch HDMI LCD</a></li>
+<li><a href="/wiki/10.1inch_HDMI_LCD_(B)_(with_case)" title="10.1inch HDMI LCD (B) (with case)">10.1inch HDMI LCD (B) (with case)</a></li>
+<li><a href="/wiki/10.1inch_HDMI_LCD_(E)" title="10.1inch HDMI LCD (E)">10.1inch HDMI LCD (E)</a></li>
+<li><a href="/wiki/10.1inch_HDMI_LCD_(G)_(with_case)" title="10.1inch HDMI LCD (G) (with case)">10.1inch HDMI LCD (G) (with case)</a></li>
+<li><a href="/wiki/10.1inch_HDMI_LCD_(H)_(with_case)" title="10.1inch HDMI LCD (H) (with case)">10.1inch HDMI LCD (H) (with case)</a></li>
+<li><a href="/wiki/10.1HP-CAPQLED" title="10.1HP-CAPQLED">10.1HP-CAPQLED</a></li>
+<li><a href="/wiki/9inch_2560x1600_Monitor" title="9inch 2560x1600 Monitor">9inch 2560x1600 Monitor</a></li>
+<li><a href="/wiki/9HP-CAPQLED" title="9HP-CAPQLED">9HP-CAPQLED</a></li>
+<li><a href="/wiki/8.8inch_Side_Monitor" title="8.8inch Side Monitor">8.8inch Side Monitor</a></li>
+<li><a href="/wiki/8inch_DSI_LCD" title="8inch DSI LCD">8inch DSI LCD</a></li>
+<li><a href="/wiki/8inch_DSI_LCD_(with_cam)" title="8inch DSI LCD (with cam)">8inch DSI LCD (with cam)</a></li>
+<li><a href="/wiki/7.9inch_HDMI_LCD" title="7.9inch HDMI LCD">7.9inch HDMI LCD</a></li>
+<li><a href="/wiki/7inch_FHD_Monitor" title="7inch FHD Monitor">7inch FHD Monitor</a></li>
+<li><a href="/wiki/7inch_HDMI_LCD_(H)_(with_case)" title="7inch HDMI LCD (H) (with case)">7inch HDMI LCD (H) (with case)</a></li>
+<li><a class="mw-selflink selflink">7inch HDMI LCD (C)</a></li>
+<li><a href="/wiki/7inch_HDMI_LCD_(B)" title="7inch HDMI LCD (B)">7inch HDMI LCD (B)</a></li>
+<li><a href="/wiki/7inch_HDMI_LCD" title="7inch HDMI LCD">7inch HDMI LCD</a></li>
+<li><a href="/wiki/7inch_DPI_LCD" class="mw-redirect" title="7inch DPI LCD">7inch DPI LCD</a></li>
+<li><a href="/wiki/7HP-CAPQLED" title="7HP-CAPQLED">7HP-CAPQLED</a></li>
+<li><a href="/wiki/7inch_DSI_LCD" title="7inch DSI LCD">7inch DSI LCD</a></li>
+<li><a href="/wiki/7inch_DSI_LCD_(with_cam)" title="7inch DSI LCD (with cam)">7inch DSI LCD (with cam)</a></li>
+<li><a href="/wiki/7inch_DSI_LCD" title="7inch DSI LCD">7inch DSI LCD (with case A)</a></li>
+<li><a href="/wiki/7inch_DSI_LCD_(C)" title="7inch DSI LCD (C)">7inch DSI LCD (C)</a></li>
+<li><a href="/wiki/6inch_HDMI_AMOLED" title="6inch HDMI AMOLED">6inch HDMI AMOLED</a></li>
+<li><a href="/wiki/5inch_HDMI_LCD_(H)" title="5inch HDMI LCD (H)">5inch HDMI LCD (H)</a></li>
+<li><a href="/wiki/5inch_HDMI_LCD_(H)_V4" title="5inch HDMI LCD (H) V4">5inch HDMI LCD (H) V4</a></li>
+<li><a href="/wiki/5inch_HDMI_LCD_(G)" title="5inch HDMI LCD (G)">5inch HDMI LCD (G)</a></li>
+<li><a href="/wiki/5inch_HDMI_LCD_(B)" title="5inch HDMI LCD (B)">5inch HDMI LCD (B)</a></li>
+<li><a href="/wiki/5inch_HDMI_LCD" title="5inch HDMI LCD">5inch HDMI LCD</a></li>
+<li><a href="/wiki/5inch_HDMI_AMOLED" title="5inch HDMI AMOLED">5inch HDMI AMOLED</a></li>
+<li><a href="/wiki/5inch_DPI_LCD" class="mw-redirect" title="5inch DPI LCD">5inch DPI LCD</a></li>
+<li><a href="/wiki/5inch_DSI_LCD" title="5inch DSI LCD">5inch DSI LCD</a></li>
+<li><a href="/wiki/5.5inch_HDMI_AMOLED" title="5.5inch HDMI AMOLED">5.5inch HDMI AMOLED</a></li>
+<li><a href="/wiki/4inch_HDMI_LCD_(C)" title="4inch HDMI LCD (C)">4inch HDMI LCD (C)</a></li>
+<li><a href="/wiki/4inch_DSI_LCD" title="4inch DSI LCD">4inch DSI LCD</a></li>
+<li><a href="/wiki/4.3inch_HDMI_LCD_(B)" title="4.3inch HDMI LCD (B)">4.3inch HDMI LCD (B)</a></li>
+<li><a href="/wiki/4.3inch_DSI_LCD" title="4.3inch DSI LCD">4.3inch DSI LCD</a></li>
+<li><a href="/wiki/4inch_DSI_LCD" title="4inch DSI LCD">4inch DSI LCD</a></li>
+<li><a href="/wiki/4inch_DPI_LCD_(B)" title="4inch DPI LCD (B)">4inch DPI LCD (B)</a></li>
+<li><a href="/wiki/4inch_DPI_LCD_(C)" title="4inch DPI LCD (C)">4inch DPI LCD (C)</a></li>
+<li><a href="/wiki/4inch_HDMI_LCD_(H)" title="4inch HDMI LCD (H)">4inch HDMI LCD (H)</a></li>
+<li><a href="/wiki/4inch_HDMI_LCD" title="4inch HDMI LCD">4inch HDMI LCD</a></li>
+<li><a href="/wiki/4inch_RPi_LCD_(C)" title="4inch RPi LCD (C)">4inch RPi LCD (C)</a></li>
+<li><a href="/wiki/4inch_RPi_LCD_(A)" title="4inch RPi LCD (A)">4inch RPi LCD (A)</a></li>
+<li><a href="/wiki/3.5inch_DPI_LCD" title="3.5inch DPI LCD">3.5inch DPI LCD</a></li>
+<li><a href="/wiki/3.5inch_HDMI_LCD" title="3.5inch HDMI LCD">3.5inch HDMI LCD</a></li>
+<li><a href="/wiki/3.5inch_RPi_LCD_(C)" title="3.5inch RPi LCD (C)">3.5inch RPi LCD (C)</a></li>
+<li><a href="/wiki/3.5inch_RPi_LCD_(B)" title="3.5inch RPi LCD (B)">3.5inch RPi LCD (B)</a></li>
+<li><a href="/wiki/3.5inch_RPi_LCD_(A)" title="3.5inch RPi LCD (A)">3.5inch RPi LCD (A)</a></li>
+<li><a href="/wiki/3.2inch_HDMI_LCD_(H)" title="3.2inch HDMI LCD (H)">3.2inch HDMI LCD (H)</a></li>
+<li><a href="/wiki/3.2inch_RPi_LCD_(B)" title="3.2inch RPi LCD (B)">3.2inch RPi LCD (B)</a></li>
+<li><a href="/wiki/2.8inch_HDMI_LCD_(H)" title="2.8inch HDMI LCD (H)">2.8inch HDMI LCD (H)</a></li>
+<li><a href="/wiki/2.8inch_DPI_LCD" title="2.8inch DPI LCD">2.8inch DPI LCD</a></li>
+<li><a href="/wiki/2.8inch_RPi_LCD_(A)" title="2.8inch RPi LCD (A)">2.8inch RPi LCD (A)</a></li>
+<li><a href="/wiki/2.23inch_OLED_HAT" title="2.23inch OLED HAT">2.23inch OLED HAT</a></li>
+<li><a href="/wiki/1.3inch_OLED_HAT" title="1.3inch OLED HAT">1.3inch OLED HAT</a></li>
+<li><a href="/wiki/1.3inch_LCD_HAT" title="1.3inch LCD HAT">1.3inch LCD HAT</a></li>
+<li><a href="/wiki/1.44inch_LCD_HAT" title="1.44inch LCD HAT">1.44inch LCD HAT</a></li>
+<li><a href="/wiki/1.8inch_LCD_Module" title="1.8inch LCD Module">1.8inch LCD Module</a></li>
+<li><a href="/wiki/EINK-DISP-103" title="EINK-DISP-103">EINK-DISP-103</a></li>
+<li><a href="/wiki/LCD1602_RGB_Module" title="LCD1602 RGB Module">LCD1602 RGB Module</a></li>
+<li><a href="/wiki/Pico-Clock-Green" title="Pico-Clock-Green">Pico-Clock-Green</a></li>
+<li><a href="/wiki/Pico-RGB-Matrix-P3-64x32" title="Pico-RGB-Matrix-P3-64x32">Pico-RGB-Matrix-P3-64x32</a></li>
+<li><a href="/wiki/RGB-Matrix-P3-64x32" title="RGB-Matrix-P3-64x32">RGB-Matrix-P3-64x32</a></li></ul>
+</td></tr></tbody></table>
+</td></tr></tbody></table>
+<div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><input type="checkbox" role="button" id="toctogglecheckbox" class="toctogglecheckbox" style="display:none" /><div class="toctitle" lang="en" dir="ltr"><h2 id="mw-toc-heading">Contents</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"></label></span></div>
+<ul>
+<li class="toclevel-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Features"><span class="tocnumber">1.1</span> <span class="toctext">Features</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#Specification"><span class="tocnumber">2</span> <span class="toctext">Specification</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Electrical_Parameters"><span class="tocnumber">2.1</span> <span class="toctext">Electrical Parameters</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#EDID_Sequence_Parameters"><span class="tocnumber">3</span> <span class="toctext">EDID Sequence Parameters</span></a></li>
+<li class="toclevel-1"><a href="#Interface_Introduction"><span class="tocnumber">4</span> <span class="toctext">Interface Introduction</span></a>
+<ul>
+<li class="toclevel-2"><a href="#About_the_version"><span class="tocnumber">4.1</span> <span class="toctext">About the version</span></a></li>
+<li class="toclevel-2"><a href="#Anti-Piracy"><span class="tocnumber">4.2</span> <span class="toctext"><b>Anti-Piracy</b></span></a></li>
+<li class="toclevel-2"><a href="#Beware_of_knock-offs"><span class="tocnumber">4.3</span> <span class="toctext">Beware of knock-offs</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#How_to_use"><span class="tocnumber">5</span> <span class="toctext">How to use</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Working_with_Raspberry_Pi"><span class="tocnumber">5.1</span> <span class="toctext">Working with Raspberry Pi</span></a>
+<ul>
+<li class="toclevel-3"><a href="#Hardware_Connection"><span class="tocnumber">5.1.1</span> <span class="toctext">Hardware Connection</span></a></li>
+<li class="toclevel-3"><a href="#Software_Setting"><span class="tocnumber">5.1.2</span> <span class="toctext">Software Setting</span></a></li>
+<li class="toclevel-3"><a href="#Backlight_Adjustment"><span class="tocnumber">5.1.3</span> <span class="toctext">Backlight Adjustment</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2"><a href="#Working_with_PC"><span class="tocnumber">5.2</span> <span class="toctext">Working with PC</span></a>
+<ul>
+<li class="toclevel-3"><a href="#Support_Windows_11_.2F_10_.2F_8.1_.2F_8_.2F_7"><span class="tocnumber">5.2.1</span> <span class="toctext">Support Windows 11 / 10 / 8.1 / 8 / 7</span></a></li>
+<li class="toclevel-3"><a href="#Brightness_Adjustment_on_Windows_via_Software"><span class="tocnumber">5.2.2</span> <span class="toctext">Brightness Adjustment on Windows via Software</span></a></li>
+<li class="toclevel-3"><a href="#Calibration_Touch_on_Win_10_PC"><span class="tocnumber">5.2.3</span> <span class="toctext">Calibration Touch on Win 10 PC</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#Dimensions"><span class="tocnumber">6</span> <span class="toctext">Dimensions</span></a></li>
+<li class="toclevel-1 tocsection-1"><a href="#Resource"><span class="tocnumber">7</span> <span class="toctext">Resource</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Documents"><span class="tocnumber">7.1</span> <span class="toctext">Documents</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Software"><span class="tocnumber">7.2</span> <span class="toctext">Software</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#3D_Drawings"><span class="tocnumber">7.3</span> <span class="toctext">3D Drawings</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-5"><a href="#FAQ"><span class="tocnumber">8</span> <span class="toctext">FAQ</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Support"><span class="tocnumber">9</span> <span class="toctext">Support</span></a></li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="Overview">Overview</span></h1>
+<p>7-inch HDMI display, with a resolution of 1024 × 600 and a capacitive touch panel, which supports Raspberry Pi and can also be used as a computer monitor.
+</p>
+<table>
+
+<tbody><tr>
+<td><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="http://www.waveshare.com/7inch-HDMI-LCD-C.htm">More</a>
+</td></tr></tbody></table>
+<h2><span class="mw-headline" id="Features">Features</span></h2>
+<ul><li>7-inch IPS screen with a hardware resolution of 1024 × 600.</li>
+<li>5-point capacitive touch control.</li>
+<li>When used with Raspberry Pi, supports Raspberry Pi OS/Ubuntu/Kali and Retropie</li>
+<li>Use as a computer monitor, it supports Windows 11/10/8.1/8/7, five-point touch, no need to install any drivers.</li>
+<li>Support Ubuntu when working with Jetson Nano.</li>
+<li>Support backlight control, more power saving.</li></ul>
+<p><a href="/wiki/File:7inch_HDMI_LCD_C_Spec.png" class="image"><img alt="7inch HDMI LCD C Spec.png" src="/w/upload/e/e1/7inch_HDMI_LCD_C_Spec.png" decoding="async" loading="lazy" width="755" height="291" /></a>
+</p>
+<h1><span class="mw-headline" id="Specification">Specification</span></h1>
+<table class="wikitable">
+<tbody><tr>
+<th>Item</th>
+<th>Description</th>
+<th>Unit
+</th></tr>
+<tr>
+<td>Model</td>
+<td>7inch HDMI LCD (C)</td>
+<td>/
+</td></tr>
+<tr>
+<td>Size</td>
+<td>7.0</td>
+<td>Inch
+</td></tr>
+<tr>
+<td>Viewing Angle</td>
+<td>170</td>
+<td>Deg
+</td></tr>
+<tr>
+<td>Resolution</td>
+<td>1024×600</td>
+<td>Pixels
+</td></tr>
+<tr>
+<td>Dimension</td>
+<td>164.90(H)×106.96(V)×8(D)</td>
+<td>mm
+</td></tr>
+<tr>
+<td>Display Area</td>
+<td>154.21(H)×85.92(V)</td>
+<td>mm
+</td></tr>
+<tr>
+<td>Pixel Pitch</td>
+<td>0.1506(H)×0.1432(V)</td>
+<td>mm
+</td></tr>
+<tr>
+<td>Color Gamut</td>
+<td>45%</td>
+<td>NTSC
+</td></tr>
+<tr>
+<td>Max Brightness</td>
+<td>300</td>
+<td>cd/m²
+</td></tr>
+<tr>
+<td>Contrast</td>
+<td>800:1</td>
+<td>/
+</td></tr>
+<tr>
+<td>Backlight Adjustment</td>
+<td>PWM Software Adjustment</td>
+<td>/
+</td></tr>
+<tr>
+<td>Refresh Rate</td>
+<td>60</td>
+<td>Hz
+</td></tr>
+<tr>
+<td>Display Interface</td>
+<td>Standard HDMI interface</td>
+<td>/
+</td></tr>
+<tr>
+<td>Power Port</td>
+<td>5V</td>
+<td>/
+</td></tr>
+<tr>
+<td>Power Consumption</td>
+<td>2.5</td>
+<td>Watt
+</td></tr></tbody></table>
+<h2><span class="mw-headline" id="Electrical_Parameters">Electrical Parameters</span></h2>
+<table class="wikitable">
+<tbody><tr>
+<th>Parameter</th>
+<th>Min. Value</th>
+<th>Standard Value</th>
+<th>Max. Value</th>
+<th>Unit</th>
+<th>Note
+</th></tr>
+<tr>
+<td>Input Voltage</td>
+<td>4.75</td>
+<td>5.00</td>
+<td>5.25</td>
+<td>V</td>
+<td>Note 1
+</td></tr>
+<tr>
+<td>Input Current</td>
+<td>500</td>
+<td>500</td>
+<td>TBD</td>
+<td>mA</td>
+<td>Note 2
+</td></tr>
+<tr>
+<td>Operating Temperature</td>
+<td>0</td>
+<td>25</td>
+<td>60</td>
+<td>℃</td>
+<td>Note 3
+</td></tr>
+<tr>
+<td>Storage Temperature</td>
+<td>-10</td>
+<td>25</td>
+<td>70</td>
+<td>℃</td>
+<td>Note 3
+</td></tr></tbody></table>
+<p><b>•Note 1:</b> Input voltage exceeding the maximum value or improper operation may cause permanent damage to the device.<br />
+<b>•Note 2:</b> The input current should be ≥500mA, otherwise it will lead to start-up failure or abnormal display, and a long time in an abnormal state may cause permanent damage to the device.<br />
+<b>•Note 3:</b> Please do not put the display in a high temperature and high humidity storage environment for a long time, the display needs to work within the limit value, otherwise it will be possible to damage the display.<br />
+</p>
+<h1><span class="mw-headline" id="EDID_Sequence_Parameters">EDID Sequence Parameters</span></h1>
+<p>If the system of the main control board can automatically identify the EDID for display, there is no need to set the relevant timing parameters additionally.<br />
+Otherwise, you can refer to the following EDID settings:<br />
+</p>
+<table class="wikitable">
+<tbody><tr>
+<th>Pixel Clock</th>
+<th>H Addressable</th>
+<th>H Blanking</th>
+<th>V Addressable</th>
+<th>V Blanking</th>
+<th>H Front Porch</th>
+<th>H Sync Width</th>
+<th>V Front Porch</th>
+<th>V Sync Width</th>
+<th>H Image Size</th>
+<th>V Image Size</th>
+<th>H Border</th>
+<th>V Border
+</th></tr>
+<tr>
+<td>49.00</td>
+<td>1024</td>
+<td>288</td>
+<td>600</td>
+<td>24</td>
+<td>48</td>
+<td>96</td>
+<td>3</td>
+<td>10</td>
+<td>154</td>
+<td>86</td>
+<td>0</td>
+<td>0
+</td></tr></tbody></table>
+<h1><span class="mw-headline" id="Interface_Introduction">Interface Introduction</span></h1>
+<p><a href="/wiki/File:7inch_HDMI_LCD_C_Interface.jpg" class="image"><img alt="7inch HDMI LCD C Interface.jpg" src="/w/upload/d/de/7inch_HDMI_LCD_C_Interface.jpg" decoding="async" loading="lazy" width="800" height="600" /></a><br />
+</p>
+<dl><dd>① <b>Standard HDMI interface</b>: control the display.</dd>
+<dd>② <b>micro USB interface</b>: for power supply and touch.</dd>
+<dd>③ <b>Backlight On/Off</b>: for backlight control.</dd></dl>
+<h2><span class="mw-headline" id="About_the_version">About the version</span></h2>
+<p>Rev4.1 version
+</p>
+<ul><li>Update the USB touch protocol to improve compatibility.</li>
+<li>Brightness is adjustable by the USB interface.</li>
+<li>Modify the drive circuit to enhance the anti-interference ability.</li>
+<li>Change the touch panel color to black.</li></ul>
+<p>Rev3.1 version
+</p>
+<ul><li>The Rev3.1 version mainly changes the touch chip of the Rev2.2 version from GT811 to GT911. The touch effect is better, and the anti-interference ability is enhanced at the same time.</li>
+<li>This version is fully compatible with Rev2.1 and Rev2.2, and users can replace it with confidence.</li></ul>
+<p>Rev2.2 version
+</p>
+<ul><li>Rev2.2 version mainly adds a VCOM adjustable potentiometer and related circuits of electromagnetic compatibility based on Rev2.1.</li>
+<li>This version is fully compatible with the Rev2.1 version, and users can replace it with confidence.</li></ul>
+<p>Rev2.1 version:
+</p>
+<ul><li>Upgrade to IPS screen, with a larger viewing angle and a clearer display effect, I believe you will like it.</li>
+<li>Use standard HID protocol, you can transplant your own system conveniently.</li>
+<li>Using with Raspberry Pi, it supports Raspbian/Ubuntu/Kali/Retropie and WIN10 IoT, single touch, no need to install any drivers.</li>
+<li>Using as a computer monitor, it supports Windows 10/8.1/8/7, five-point touch, no need to install any drivers.</li></ul>
+<p>Rev1.1 version:
+</p>
+<ul><li>Using private HID protocol, it is difficult to transplant to your own system.</li>
+<li>Using Raspberry Pi, you need to install a driver when the display connects to Raspbian or Ubuntu systems. and it doesn't support Kali, Retropie, and Windows 10 IoT.</li></ul>
+<h2><span class="mw-headline" id="Anti-Piracy"><b>Anti-Piracy</b></span></h2>
+<p>Since the first-generation Raspberry Pi released, Waveshare has been working on designing, developing, and producing various fantastic touch LCDs for the Pi. Unfortunately, there are quite a few pirated/knock-off products in the market. They're usually some poor copies of our early hardware revisions, and comes with none support service.
+</p><p>To avoid becoming a victim of pirated products, please pay attention to the following features when purchasing:
+</p><p><a href="https://www.waveshare.com/w/upload/6/6d/RPi-LCD-Anti-Piracy-l.jpg" target="_blank" rel="nofollow noreferrer noopener"><img alt="RPi-LCD-Anti-Piracy.jpg" src="/w/upload/thumb/3/33/RPi-LCD-Anti-Piracy.jpg/600px-RPi-LCD-Anti-Piracy.jpg" decoding="async" loading="lazy" width="600" height="313" srcset="/w/upload/3/33/RPi-LCD-Anti-Piracy.jpg 1.5x" /></a>
+</p><p>(<a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://www.waveshare.com/w/upload/6/6d/RPi-LCD-Anti-Piracy-l.jpg">Click to enlarge</a>)
+</p>
+<h2><span class="mw-headline" id="Beware_of_knock-offs"><font color="red">Beware of knock-offs</font></span></h2>
+<p>Please note that we've found some poor copies of this item in the market. They are usually made of inferior materials and shipped without any testing.
+</p><p>You might be wondering if the one you're watching or you've purchased in other non-official stores is original, feel free to contact us.
+</p>
+</div>
+<div class="tabbertab" title="Raspberry Pi Guides">
+<h1><span class="mw-headline" id="How_to_use">How to use</span></h1>
+<h2><span class="mw-headline" id="Working_with_Raspberry_Pi">Working with Raspberry Pi</span></h2>
+<h3><span class="mw-headline" id="Hardware_Connection">Hardware Connection</span></h3>
+<dl><dd>1. Connect the Touch interface to the USB interface of the Raspberry Pi.</dd>
+<dd>2. Connect the HDMI interface to the HDMI interface of the Raspberry Pi.</dd>
+<dd><a href="/wiki/File:7inch_HDMI_LCD_C_Pi_Guides_01.jpg" class="image"><img alt="7inch HDMI LCD C Pi Guides 01.jpg" src="/w/upload/a/a0/7inch_HDMI_LCD_C_Pi_Guides_01.jpg" decoding="async" loading="lazy" width="600" height="225" /></a></dd></dl>
+<h3><span class="mw-headline" id="Software_Setting">Software Setting</span></h3>
+<pre>This LCD can support Raspberry Pi OS/Ubuntu/Kali/Retropie systems. When the LCD works on systems such as Raspberry Pi OS, the resolution must be set manually, otherwise, it will cause an abnormal display.
+</pre>
+<p>Please download the latest version of the image on the <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://www.raspberrypi.com/software/operating-systems/">Raspberry Pi official website.</a>
+</p><p>1) Download the compressed file to the PC, and unzip it to get the .img file.
+</p><p>2) Connect the TF card to the PC, and use <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://files.waveshare.com/upload/d/d7/Panasonic_SDFormatter.zip">SDFormatter</a> software to format the TF card.
+</p><p>3) Open the <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://files.waveshare.com/upload/7/76/Win32DiskImager.zip">Win32DiskImager</a> software, select the system image downloaded in step 1, and click 'Write' to write the system image.
+</p><p>4) After the image has finished writing, open the config.txt file in the root directory of the TF card, add the following code at the end of config.txt, then save and quit the TF card safely.
+</p>
+<pre>hdmi_group=2
+hdmi_mode=87
+hdmi_cvt 1024 600 60 6 0 0 0
+hdmi_drive=1
+</pre>
+<p>5) Insert the TF card into the Raspberry Pi, power on it, and wait a few seconds for a normal display.
+</p>
+<h3><span class="mw-headline" id="Backlight_Adjustment">Backlight Adjustment</span></h3>
+<pre class="code2highlight lang-c">wget https://files.waveshare.com/upload/0/01/Brightness-HDMI.zip
+unzip Brightness-HDMI.zip
+cd Brightness-HDMI
+sudo chmod +x install.sh
+./install.sh</pre>
+<p><a href="/wiki/File:5inch-DSI-LCD-3.gif" class="image"><img alt="5inch-DSI-LCD-3.gif" src="/w/upload/b/ba/5inch-DSI-LCD-3.gif" decoding="async" loading="lazy" width="960" height="632" /></a>
+</p><p><br />
+</p>
+</div>
+<div class="tabbertab" title="Windows Guides">
+<h2><span class="mw-headline" id="Working_with_PC">Working with PC</span></h2>
+<h3><span id="Support_Windows_11_/_10_/_8.1_/_8_/_7"></span><span class="mw-headline" id="Support_Windows_11_.2F_10_.2F_8.1_.2F_8_.2F_7">Support Windows 11 / 10 / 8.1 / 8 / 7</span></h3>
+<p>1) Connect the Touch interface of the LCD to the USB interface of the PC. Wait for a while, the windows will automatically recognize the touch function.
+</p><p>2) Connect the HDMI interface of the LCD to the HDMI interface of the PC. Wait for a while, the windows will automatically recognize the display function.
+</p><p>Note:<br />
+1) When the computer is connected to multiple monitors at the same time, the touch effect of the 7-inch LCD will be applied to the main screen by default. If you need to specify the touch to the secondary screen, see <a href="#Calibration_touch_on_Win_10_PC">#Calibration touch on Win 10 PC</a><br />
+2) Some of PC cannot support the HDMI screen Hot Plug. In this case, restarting the PC can solve.<br />
+3) Sometimes LCD will flicker because of undersupplying from the USB cable of the PC. You need to connect an external power supply (5V/2A)  to the DC port.<br />
+</p>
+<h3><span class="mw-headline" id="Brightness_Adjustment_on_Windows_via_Software">Brightness Adjustment on Windows via Software</span></h3>
+<dl><dd>1. Download and unzip <a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://files.waveshare.com/wiki/7inch-HDMI-LCD-(C)/WS_USB_Brightness_Win.zip">USB Brightness Adjustment Demo</a>.</dd>
+<dd>2. Enter "WS_USB_Brightness_Win.exe", and then Windows can recognize it normally and prompt "the device is connected". You can drag the slider to adjust the backlight.</dd></dl>
+<p><a href="/wiki/File:7C-wiki-5.png" class="image"><img alt="7C-wiki-5.png" src="/w/upload/f/fd/7C-wiki-5.png" decoding="async" loading="lazy" width="446" height="124" /></a>
+</p>
+<h3><span class="mw-headline" id="Calibration_Touch_on_Win_10_PC">Calibration Touch on Win 10 PC</span></h3>
+<p>Take the windows10 system as an example:
+</p>
+<ul><li>1. Enter the Windows settings of the system, type in the search bar, and click "Calibrate the screen for pen or touch input" (as shown in the picture below):</li></ul>
+<p><a href="/wiki/File:Win10_touch011.png" class="image"><img alt="Win10 touch011.png" src="/w/upload/3/38/Win10_touch011.png" decoding="async" loading="lazy" width="700" height="452" /></a>
+</p>
+<ul><li>2. Click "Setup" in the pop-up "Tablet PC Settings" interface:</li></ul>
+<p><a href="/wiki/File:Win10_touch02.png" class="image"><img alt="Win10 touch02.png" src="/w/upload/9/99/Win10_touch02.png" decoding="async" loading="lazy" width="400" height="455" /></a>
+</p><p><br />
+</p>
+<ul><li>3. The following text prompt will appear on the screen. Please tap the touch screen with your finger, and the computer will recognize it as a touch screen.</li></ul>
+<p><font color="red">【Note】If the touch screen is blank, press the "Enter" key, and the text prompt will switch to the touch screen. (The screen which displays the text prompt will be used as a touch screen!) </font>
+</p><p><a href="/wiki/File:Win10_touch03.png" class="image"><img alt="Win10 touch03.png" src="/w/upload/2/24/Win10_touch03.png" decoding="async" loading="lazy" width="800" height="439" /></a>
+</p>
+<h1><span class="mw-headline" id="Dimensions">Dimensions</span></h1>
+<p><a href="/wiki/File:7inch_HDMI_LCD_C_Windows.png" class="image"><img alt="7inch HDMI LCD C Windows.png" src="/w/upload/7/76/7inch_HDMI_LCD_C_Windows.png" decoding="async" loading="lazy" width="800" height="612" /></a>
+</p>
+</div>
+<div class="tabbertab" title="Resources">
+<h1><span class="mw-headline" id="Resource">Resource</span></h1>
+<h2><span class="mw-headline" id="Documents">Documents</span></h2>
+<ul><li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://files.waveshare.com/upload/c/cc/7inch_HDMI_LCD_%28C%29_User_Manual.pdf">7inch HDMI LCD (C) User Manual</a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://files.waveshare.com/upload/3/33/7inch-hdmi-lcd-c-panel-dimension.pdf">7inch HDMI LCD (C) panel dimension</a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://www.waveshare.com/img/devkit/accessories/7inch-HDMI-LCD-Bicolor-Holder/7inch-HDMI-LCD-C-assemble.jpg">Assembly tutorial with 7inch HDMI LCD (C) (with bicolor case)</a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://files.waveshare.com/upload/1/1f/Working_with_Volumio.pdf">Working with Volumio</a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://files.waveshare.com/upload/a/a5/7inch_HDMI_LCD_%28C%29_Certification.rar">CE RoHS</a></li></ul>
+<h2><span class="mw-headline" id="Software">Software</span></h2>
+<ul><li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://files.waveshare.com/upload/d/d7/Panasonic_SDFormatter.zip">Panasonic SDFormatter</a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://files.waveshare.com/upload/7/76/Win32DiskImager.zip">Win32DiskImager</a></li>
+<li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://files.waveshare.com/upload/5/56/Putty.zip">PuTTY</a></li></ul>
+<h2><span class="mw-headline" id="3D_Drawings">3D Drawings</span></h2>
+<ul><li><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://files.waveshare.com/upload/f/f4/7inch_cad.zip">7inch HDMI LCD B/C Drawings</a></li></ul>
+<h1><span class="mw-headline" id="FAQ">FAQ</span></h1>
+<div class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#accordion1">
+								Question: How to remove the colored squares during GPU self-test on Raspberry Pi boot-up?
+
+							</a>
+						</h4>
+					</div>
+					<div id="accordion1" class="panel-collapse collapse in">
+						<div class="panel-body">
+<div>&#160;<b>Answer:</b></div>
+<div>
+<p>Add the following command to /boot/config.txt:
+</p>
+<pre class="code2highlight lang-c">disable_splash=1</pre>
+</div>
+<div style="display:none;">{{{3}}}</div>
+<div style="display:none;">{{{4}}}</div>
+<p><font color="red" style="display:none;">{{{5}}}</font>
+</p>
+						</div>
+					</div>
+				</div>
+</div>
+<p><br />
+</p>
+<div class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#accordion2">
+								Question: How to replace the Raspberry Pi startup logo image?
+
+							</a>
+						</h4>
+					</div>
+					<div id="accordion2" class="panel-collapse collapse in">
+						<div class="panel-body">
+<div>&#160;<b>Answer:</b></div>
+<div>
+<p>Replace the custom image with the image in this directory /usr/share/plymouth/themes/pix/splash.png.
+</p>
+</div>
+<div style="display:none;">{{{3}}}</div>
+<div style="display:none;">{{{4}}}</div>
+<p><font color="red" style="display:none;">{{{5}}}</font>
+</p>
+						</div>
+					</div>
+				</div>
+</div>
+<p><br />
+</p>
+<div class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#accordion3">
+								Question: How to set long press touch on Raspberry Pi capacitive touch screen?
+
+							</a>
+						</h4>
+					</div>
+					<div id="accordion3" class="panel-collapse collapse in">
+						<div class="panel-body">
+<div>&#160;<b>Answer:</b></div>
+<div>
+<p><b>Test environment: 2022-04-04-raspios-bullseye-armhf 32-bit system</b><br />
+<b> Supported models: Support Waveshare DSI LCD, DPI LCD, and HDMI LCD capacitive touch screen series.64bit system does not support by default</b>
+</p>
+<h3><span class="mw-headline" id="Software_Installation">Software Installation</span></h3>
+<pre class="code2highlight lang-c">wget https://files.waveshare.com/upload/1/18/Evdev-right-click-emulation.zip
+unzip Evdev-right-click-emulation.zip
+cd evdev-right-click-emulation
+sudo apt install build-essential libevdev2 libevdev-dev
+cd 'evdev-right-click-emulation'
+sudo cp 'out/evdev-rce' '/usr/local/bin/'
+sudo chmod +x '/usr/local/bin/evdev-rce'</pre>
+<p>Enter the command:<br />
+</p>
+<pre>sudo evdev-rce</pre>
+<p>After running, you can touch and long press to realize the right-click function.
+</p>
+<h4><span class="mw-headline" id="Set_IP">Set IP</span></h4>
+<pre class="code2highlight lang-c">sudo usermod -G 'input' -a pi
+echo 'uinput' | sudo tee -a /etc/modules
+sudo nano  /etc/udev/rules.d/99-uinput.rules</pre>
+<p>Add in 99-uinput.rules file.<br />
+</p>
+<pre>KERNEL=="uinput", MODE="0660", GROUP="input"
+</pre>
+<p>save it and run it in the terminal.<br />
+</p>
+<pre class="code2highlight lang-c">sudo udevadm control --reload-rules
+sudo udevadm trigger</pre>
+<p>Then reboot:<br />
+</p>
+<pre>sudo reboot
+</pre>
+<p>Run after reboot (no sudo needed at this point).<br />
+</p>
+<pre>evdev-rce
+</pre>
+<p>After running, you can touch and long press to realize the right-click function.<br />
+</p>
+<h4><span class="mw-headline" id="Set_Startup">Set Startup</span></h4>
+<p>Enter the terminal:<br />
+</p>
+<pre>sudo mkdir ~/.config/autostart
+sudo nano ~/.config/autostart/right_click.desktop
+</pre>
+<p>Add the following in right_click.desktop.<br />
+</p>
+<pre>[Desktop Entry]
+Version=1.0
+Type=Application
+Name=evdev-rce
+GenericName=Enable long-press-to-right-click gesture
+Exec=env LONG_CLICK_INTERVAL=1000 LONG_CLICK_FUZZ=200  /usr/local/bin/evdev-rce
+Terminal=true
+StartupNotify=false
+
+#If you want to modify the sensitivity, you can modify the size of the two parameters, LONG_CLICK_INTERVAL=1000 LONG_CLICK_FUZZ=200.
+</pre>
+</div>
+<div style="display:none;"></div>
+<div style="display:none;"></div>
+<p><font color="red" style="display:none;">{{{5}}}</font>
+</p>
+						</div>
+					</div>
+				</div>
+</div>
+<p><br />
+</p>
+<div class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#accordion4">
+								Question: What can I do if the thin red lines appear on the edge of the screen?
+
+							</a>
+						</h4>
+					</div>
+					<div id="accordion4" class="panel-collapse collapse in">
+						<div class="panel-body">
+<div>&#160;<b>Answer:</b></div>
+<div> 
+<ul><li>Edit the config.txt and add this line at the end of the config.txt file:</li></ul>
+<pre>hdmi_drive=1</pre>
+</div>
+<div style="display:none;">{{{3}}}</div>
+<div style="display:none;">{{{4}}}</div>
+<p><font color="red" style="display:none;">{{{5}}}</font>
+</p>
+						</div>
+					</div>
+				</div>
+</div>
+<p><br />
+</p>
+<div class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#accordion5">
+								Question: What should I do if the screen has a ghosting problem?
+
+							</a>
+						</h4>
+					</div>
+					<div id="accordion5" class="panel-collapse collapse in">
+						<div class="panel-body">
+<div>&#160;<b>Answer:</b></div>
+<div>Adjust the adjustable potentiometer on the back. After the desktop is displayed, adjust the potentiometer to the best display effect, and then leave the screen for a while and wait for the ghost to disappear (it may take several hours).
+<p><a href="/wiki/File:Potentiometer_of_7C.jpg" class="image"><img alt="Potentiometer of 7C.jpg" src="/w/upload/thumb/0/07/Potentiometer_of_7C.jpg/200px-Potentiometer_of_7C.jpg" decoding="async" loading="lazy" width="200" height="181" srcset="/w/upload/0/07/Potentiometer_of_7C.jpg 1.5x" /></a>
+</p>
+</div>
+<div style="display:none;"></div>
+<div style="display:none;"></div>
+<p><font color="red" style="display:none;"></font>
+</p>
+						</div>
+					</div>
+				</div>
+</div>
+<p><br />
+</p>
+<div class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#accordion6">
+								Question: How to use the touch function when connected to a Linux PC that is non-designated?
+
+							</a>
+						</h4>
+					</div>
+					<div id="accordion6" class="panel-collapse collapse in">
+						<div class="panel-body">
+<div>&#160;<b>Answer:</b></div>
+<div>You can try to compile the universal touch driver "hid-multitouch" into the kernel, which generally can make the touch function work.
+</div>
+<div style="display:none;">{{{3}}}</div>
+<div style="display:none;">{{{4}}}</div>
+<p><font color="red" style="display:none;">{{{5}}}</font>
+</p>
+						</div>
+					</div>
+				</div>
+</div>
+<p><br />
+</p>
+<div class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#accordion7">
+								Question: Can the brightness of the 7-inch HDMI LCD (C) be adjusted by modifying the resistance?
+
+							</a>
+						</h4>
+					</div>
+					<div id="accordion7" class="panel-collapse collapse in">
+						<div class="panel-body">
+<div>&#160;<b>Answer:</b></div>
+<div>The default brightness has been adjusted to the highest, you can reduce the screen brightness by increasing the resistance of these two resistors in the picture below.<br />
+<p>The picture below shows the Rev3.1 version, which is similar to other versions.<br />
+</p>
+<dl><dd><a href="/wiki/File:7inch_HDMI_LCD_FAQ02.jpg" class="image"><img alt="7inch HDMI LCD FAQ02.jpg" src="/w/upload/thumb/a/ac/7inch_HDMI_LCD_FAQ02.jpg/400px-7inch_HDMI_LCD_FAQ02.jpg" decoding="async" loading="lazy" width="400" height="299" srcset="/w/upload/thumb/a/ac/7inch_HDMI_LCD_FAQ02.jpg/600px-7inch_HDMI_LCD_FAQ02.jpg 1.5x, /w/upload/thumb/a/ac/7inch_HDMI_LCD_FAQ02.jpg/800px-7inch_HDMI_LCD_FAQ02.jpg 2x" /></a></dd></dl>
+</div>
+<div style="display:none;"></div>
+<div style="display:none;"></div>
+<p><font color="red" style="display:none;"></font>
+</p>
+						</div>
+					</div>
+				</div>
+</div>
+<p><br />
+</p>
+<div class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#accordion8">
+								Question:  How to disable the bootloader message while booting if it displays abnormally?
+</a><dl><a data-toggle="collapse" data-parent="#accordion" href="#accordion8"></a><dd><a data-toggle="collapse" data-parent="#accordion" href="#accordion8"></a><a href="/wiki/File:7inchC_ghost.png" class="image"><img alt="7inchC ghost.png" src="/w/upload/thumb/f/f1/7inchC_ghost.png/400px-7inchC_ghost.png" decoding="async" loading="lazy" width="400" height="277" srcset="/w/upload/thumb/f/f1/7inchC_ghost.png/600px-7inchC_ghost.png 1.5x, /w/upload/thumb/f/f1/7inchC_ghost.png/800px-7inchC_ghost.png 2x" /></a></dd></dl>
+
+							
+						</h4>
+					</div>
+					<div id="accordion8" class="panel-collapse collapse in">
+						<div class="panel-body">
+<div>&#160;<b>Answer:</b></div>
+<div>Please run the following command to modify
+<pre>sudo -E rpi-eeprom-config --edit
+</pre>
+<p>Change the DISABLE_HDMI value from 0 to 1, or add the line:
+</p>
+<dl><dd><a href="/wiki/File:7inchC_modification.png" class="image"><img alt="7inchC modification.png" src="/w/upload/thumb/e/ee/7inchC_modification.png/400px-7inchC_modification.png" decoding="async" loading="lazy" width="400" height="241" srcset="/w/upload/thumb/e/ee/7inchC_modification.png/600px-7inchC_modification.png 1.5x, /w/upload/e/ee/7inchC_modification.png 2x" /></a></dd></dl>
+</div>
+<div style="display:none;">{{{3}}}</div>
+<div style="display:none;">{{{4}}}</div>
+<p><font color="red" style="display:none;">{{{5}}}</font>
+</p>
+						</div>
+					</div>
+				</div>
+</div>
+<p><br />
+</p>
+<div class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#accordion9">
+								Question: What is the working current for the 7inch HDMI LCD (C) when it works normally?
+
+							</a>
+						</h4>
+					</div>
+					<div id="accordion9" class="panel-collapse collapse in">
+						<div class="panel-body">
+<div>&#160;<b>Answer:</b></div>
+<div>Using a 5V power supply, the working current of turning on the backlight is about 490mA, and the working current of turning off the backlight is about 90mA.
+</div>
+<div style="display:none;">{{{3}}}</div>
+<div style="display:none;">{{{4}}}</div>
+<p><font color="red" style="display:none;">{{{5}}}</font>
+</p>
+						</div>
+					</div>
+				</div>
+</div>
+<p><br />
+</p>
+<div class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#accordion10">
+								Question: How does 7inch HDMI LCD (C)Rev4.1 use PWM to control the backlight?
+							</a>
+						</h4>
+					</div>
+					<div id="accordion10" class="panel-collapse collapse in">
+						<div class="panel-body">
+<div>&#160;<b>Answer:</b></div>
+<div> First remove the 0 ohm resistor here<br />
+<p><a href="/wiki/File:7inch_HDMI_LCD_(C)_PWM_1.png" class="image"><img alt="7inch HDMI LCD (C) PWM 1.png" src="/w/upload/thumb/5/50/7inch_HDMI_LCD_%28C%29_PWM_1.png/800px-7inch_HDMI_LCD_%28C%29_PWM_1.png" decoding="async" loading="lazy" width="800" height="624" srcset="/w/upload/5/50/7inch_HDMI_LCD_%28C%29_PWM_1.png 1.5x" /></a><br />
+Then connect the PWM backlight adjustment signal pin to the reserved PWM GND pad<br />
+<a href="/wiki/File:7inch_HDMI_LCD_(C)_PWM_2.png" class="image"><img alt="7inch HDMI LCD (C) PWM 2.png" src="/w/upload/f/ff/7inch_HDMI_LCD_%28C%29_PWM_2.png" decoding="async" loading="lazy" width="800" height="645" /></a><br />
+When backlight adjustment, the backlight adjustment frequency must be greater than 1khz, the voltage is 3.3V, and the duty cycle is set according to customer needs
+</p>
+</div>
+<div style="display:none;">{{{3}}}</div>
+<div style="display:none;">{{{4}}}</div>
+<p><font color="red" style="display:none;">{{{5}}}</font>
+</p>
+						</div>
+					</div>
+				</div>
+</div>
+<p><br />
+</p>
+</div>
+<div class="tabbertab" title="Support">
+<h1><span class="mw-headline" id="Support">Support</span></h1>
+<p><br />
+<br />
+</p>
+<div style="background:linear-gradient(to bottom right,#91C942,#7DB036); border-radius:15px; width:100%;min-width:750px;">
+<div style="display:flex;flex-direction: row;align-items: flex-start;">
+<div style="flex:l; font-size:15px; width:70%; margin-top:20px; margin-bottom:20px; margin-right:40px;padding-left:40px;">
+<p style="font-size:20px; font-weight:bold;">
+Technical Support
+</p>
+<p>
+If you need technical support or have any feedback/review, please click the <b>Submit Now</b> button to submit a ticket, Our support team will check and reply to you within 1 to 2 working days. Please be patient as we make every effort to help you to resolve the issue. 
+<br /> 
+Working Time: 9 AM - 6 PM GMT+8 (Monday to Friday)
+</p>
+</div>
+<div style="margin-top:94px;">
+<div id="service" style="display:flex; flex:r; background-color:#393939; color:white; text-align:center; font-size:20px; border-radius:20px;">
+<p><a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="https://service.waveshare.com/">Submit Now</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</div>
+<!-- 
+NewPP limit report
+Cached time: 20260825170437
+Cache expiry: 0
+Dynamic content: true
+Complications: []
+CPU time usage: 0.276 seconds
+Real time usage: 0.422 seconds
+Preprocessor visited node count: 904/1000000
+Post‐expand include size: 25899/2097152 bytes
+Template argument size: 11324/2097152 bytes
+Highest expansion depth: 8/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 1/20
+Unstrip post‐expand size: 12565/5000000 bytes
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%  229.669      1 -total
+ 35.09%   80.586     10 Template:FAQ
+ 20.47%   47.009      1 Template:7inch_HDMI_LCD_C_Spec
+ 19.47%   44.723      1 Template:Infobox_item
+ 14.63%   33.601      1 Template:7HP_inch_LCD_FAQ
+  6.94%   15.939      1 Template:Product_List
+  6.79%   15.603      1 Template:7inch_HDMI_LCD_C_Pi_Guides
+  6.07%   13.948      1 Template:Beware_of_knock-offs
+  5.78%   13.265      1 Template:7inch_HDMI_LCD_C_Windows_Guides
+  5.33%   12.240      1 Template:Servicebox1
+-->
+</div></div>								<div class="printfooter">
+				Retrieved from "<a dir="ltr" href="https://www.waveshare.com/w/index.php?title=7inch_HDMI_LCD_(C)&amp;oldid=105264">https://www.waveshare.com/w/index.php?title=7inch_HDMI_LCD_(C)&amp;oldid=105264</a>"				</div>
+												<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/wiki/Special:Categories" title="Special:Categories">Categories</a>: <ul><li><a href="/wiki/Category:OLEDs_/_LCDs" title="Category:OLEDs / LCDs">OLEDs / LCDs</a></li><li><a href="/wiki/Category:LCD" title="Category:LCD">LCD</a></li><li><a href="/wiki/Category:Raspberry_Pi" title="Category:Raspberry Pi">Raspberry Pi</a></li><li><a href="/wiki/Category:Raspberry_Pi_LCD" title="Category:Raspberry Pi LCD">Raspberry Pi LCD</a></li></ul></div><div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul><li><a href="/wiki/Category:USB_interface" title="Category:USB interface">USB interface</a></li><li><a href="/wiki/Category:HDMI_interface" title="Category:HDMI interface">HDMI interface</a></li></ul></div></div>												<div class="visualClear"></div>
+							</div>
+			<!-- /bodyContent -->
+		</div>
+						</div>
+				</div>
+			</div>
+			<!-- /content -->
+
+			<!-- sidebar-left -->
+			<div class="sidebar-wrapper sidebar-left-wrapper">
+				<div class="sidebar-container container">
+					<div class="row">
+						<div id="sidebar-left" class="col-md-2 col-md-offset-0">
+							<div id="tweekiTOC"></div>						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /sidebar-left -->
+					<!-- footer -->
+			<div id="footer" role="contentinfo" class="footer container footer-sticky bg-light">
+			<ul id="footer-custom"><li class="dropup"><a href="/w/index.php?title=Special:UserLogin&amp;returnto=7inch+HDMI+LCD+%28C%29" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Login / Create Account</a></li></ul><div style="clear:both"></div>			</div>
+			<!-- /footer -->
+		
+<script>
+var fbtFancyBoxOptions = {};
+</script>
+
+<script>(RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgPageParseReport":{"limitreport":{"cputime":"0.276","walltime":"0.422","ppvisitednodes":{"value":904,"limit":1000000},"postexpandincludesize":{"value":25899,"limit":2097152},"templateargumentsize":{"value":11324,"limit":2097152},"expansiondepth":{"value":8,"limit":40},"expensivefunctioncount":{"value":0,"limit":100},"unstrip-depth":{"value":1,"limit":20},"unstrip-size":{"value":12565,"limit":5000000},"timingprofile":["100.00%  229.669      1 -total"," 35.09%   80.586     10 Template:FAQ"," 20.47%   47.009      1 Template:7inch_HDMI_LCD_C_Spec"," 19.47%   44.723      1 Template:Infobox_item"," 14.63%   33.601      1 Template:7HP_inch_LCD_FAQ","  6.94%   15.939      1 Template:Product_List","  6.79%   15.603      1 Template:7inch_HDMI_LCD_C_Pi_Guides","  6.07%   13.948      1 Template:Beware_of_knock-offs","  5.78%   13.265      1 Template:7inch_HDMI_LCD_C_Windows_Guides","  5.33%   12.240      1 Template:Servicebox1"]},"cachereport":{"timestamp":"20260825170437","ttl":0,"transientcontent":true}}});mw.config.set({"wgBackendResponseTime":935});});</script>	<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a30c2d437f71c228',t:'MTc4NzY3NzQ3Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

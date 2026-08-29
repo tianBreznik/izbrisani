@@ -1,23 +1,9 @@
 #!/usr/bin/env python3
 """
-Desk companion — runs on each desk Raspberry Pi.
+Desk Pi button agent.
 
-Reads a local PTT/button on GPIO, talks to Mac Mini show server.
-- Press while idle → POST /api/channel/<DESK_ID>/open
-- Press again while this desk is live → toggle close (server handles)
-- Press while another desk is live → server returns 409; ignored
-- Idle LED sine glow; LEDs off when any channel is live
-
-Env:
-  DESK_ID=1
-  SHOW_URL=http://192.168.50.10:3847
-  BUTTON_GPIO=17          # BCM numbering, active low to GND
-  LED_GPIO=27             # optional; omit or empty to disable
-  MOCK=1                  # no gpiozero — keyboard: Enter=press (dev)
-
-Install on Pi:
-  pip3 install --user gpiozero requests websocket-client
-  # or: pip3 install -r requirements.txt
+DESK_ID, SHOW_URL, BUTTON_GPIO (BCM, to GND), LED_GPIO (optional), MOCK=1.
+DAP MA-8120PM Talk pads are NC: idle short, Talk opens → fire on release edge.
 """
 
 from __future__ import annotations
@@ -86,7 +72,7 @@ def state_listener() -> None:
     try:
         import websocket
     except ImportError:
-        log("websocket-client not installed; polling /api/state")
+        log("websocket-client missing; polling /api/state")
         while True:
             try:
                 with state_lock:
@@ -119,14 +105,13 @@ def state_listener() -> None:
                 )
                 ws.run_forever(ping_interval=20, ping_timeout=10)
             except Exception as err:  # noqa: BLE001
-                log(f"ws reconnect soon: {err}")
+                log(f"ws reconnect: {err}")
             time.sleep(1.5)
 
     threading.Thread(target=run, daemon=True).start()
 
 
 def led_loop(led) -> None:
-    """Sine glow when idle; off when any channel live."""
     t0 = time.time()
     while True:
         with state_lock:
@@ -163,16 +148,17 @@ def run_gpio() -> None:
             led = PWMLED(LED_GPIO)
         except Exception:
             led = LED(LED_GPIO)
-            log("PWMLED unavailable; using on/off LED")
+            log("PWMLED failed; using on/off LED")
 
-    button.when_pressed = on_button_pressed
-    log(f"GPIO button BCM{BUTTON_GPIO}; LED={LED_GPIO}; SHOW_URL={SHOW_URL}")
+    # DAP mic Talk pads: NC (idle = short to GND, Talk = open)
+    button.when_released = on_button_pressed
+    log(f"button BCM{BUTTON_GPIO} (NC); LED={LED_GPIO}; {SHOW_URL}")
     state_listener()
     led_loop(led)
 
 
 def run_mock() -> None:
-    log(f"MOCK mode — press Enter to fire desk {DESK_ID} button (Ctrl+C quit)")
+    log(f"MOCK — Enter = desk {DESK_ID} button")
     state_listener()
     threading.Thread(target=led_loop, args=(None,), daemon=True).start()
     while True:
@@ -185,14 +171,14 @@ def run_mock() -> None:
 
 def main() -> None:
     global show_state
-    log(f"starting companion → {SHOW_URL}")
+    log(f"start → {SHOW_URL}")
     try:
         st = fetch_state()
         with state_lock:
             show_state = st
-        log(f"initial state: {st.get('status')}")
+        log(f"state: {st.get('status')}")
     except Exception as err:  # noqa: BLE001
-        log(f"warning: cannot reach show server yet: {err}")
+        log(f"server not reachable yet: {err}")
 
     if MOCK:
         run_mock()
@@ -200,7 +186,7 @@ def main() -> None:
         try:
             run_gpio()
         except Exception as err:  # noqa: BLE001
-            log(f"gpiozero failed ({err}); set MOCK=1 for keyboard test")
+            log(f"gpiozero failed ({err}); try MOCK=1")
             sys.exit(1)
 
 
