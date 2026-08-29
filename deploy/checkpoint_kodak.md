@@ -184,14 +184,14 @@ Opening the projector you may find:
 
 `server/hardware.js` still has ON/OFF stubs — replace with **forward pulse only**.
 
-**Bench pulse (no Homebrew):** Node script in repo — needs Xcode CLT once so `node-hid` can build:
+**Bench pulse (no Homebrew):** Node script — Mac Mini on **Sierra / Node 16** is OK if you use pinned `node-hid@2.1.2` (already in `package.json`). Do **not** upgrade to Node 18 on Sierra (unsupported).
 
 ```bash
-xcode-select --install          # Apple git + compiler; skip broken Homebrew
+xcode-select --install          # if native build needed
 cd /path/to/izbrisani
-npm install
-npm run kodak:pulse             # one Forward click (~300ms)
-# KODAK_PULSE_MS=500 npm run kodak:pulse
+npm install                     # EBADENGINE noise for some deps is OK if install finishes
+npm run kodak:pulse
+npm run kodak:loop              # repeat until Ctrl+C
 ```
 
 Later for show server:
