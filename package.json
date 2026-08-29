@@ -9,6 +9,7 @@
     "dev": "node --watch server/index.js",
     "io": "node server/io-bridge.js",
     "kodak:pulse": "node scripts/kodak-pulse.js",
+    "kodak:loop": "KODAK_LOOP=1 node scripts/kodak-pulse.js",
     "start:all": "node server/index.js & node server/io-bridge.js; wait"
   },
   "engines": {
