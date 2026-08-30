@@ -1,0 +1,3 @@
+pygame>=2.1
+websocket-client>=1.6
+gpiozero>=2.0

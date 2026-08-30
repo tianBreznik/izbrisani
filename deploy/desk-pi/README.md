@@ -31,6 +31,14 @@ Use the Mac’s real LAN IP instead of `192.168.50.10`.
 
 Repeat with `2`, `3`, `4` on the other Pis.
 
+## Pi 3B+ — pygame client (no Chromium)
+
+Chromium is too heavy on Pi 3B+ (1 GB RAM). Use the native pyclient instead:
+
+→ **[`pyclient/README.md`](./pyclient/README.md)** — install, test, systemd
+
+Same Mac Mini server; desk still uses the Waveshare panel over HDMI.
+
 **Audio:** kiosk Chromium needs `--autoplay-policy=no-user-gesture-required` (included in `setup-kiosk.sh` when present) so desk audio starts when the channel opens from the GPIO button.
 
 ## Copy script from Mac to Pi
