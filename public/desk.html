@@ -4,14 +4,23 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=1024, height=600, initial-scale=1" />
     <title>desk</title>
-    <link rel="stylesheet" href="/css/show.css" />
+    <link rel="stylesheet" href="/css/show.css?v=4" />
   </head>
   <body data-mode="desk" data-desk-id="">
+    <svg class="desk-filters" aria-hidden="true" focusable="false">
+      <filter id="tv-subtitle" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" seed="3" result="noise" />
+        <feColorMatrix in="noise" type="matrix"
+          values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.38 0" result="noiseAlpha" />
+        <feBlend in="SourceGraphic" in2="noiseAlpha" mode="soft-light" result="grain" />
+        <feGaussianBlur in="grain" stdDeviation="0.25" />
+      </filter>
+    </svg>
     <div id="app">loading</div>
     <script>
       const m = location.pathname.match(/\/desk\/(\d+)/);
       if (m) document.body.dataset.deskId = m[1];
     </script>
-    <script src="/js/client.js"></script>
+    <script src="/js/client.js?v=3"></script>
   </body>
 </html>

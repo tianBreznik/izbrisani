@@ -27,9 +27,11 @@ sudo reboot
 Use the Mac’s real LAN IP instead of `192.168.50.10`.
 
 4. After reboot Chromium should open `http://MAC_IP:3847/desk/1`.  
-5. On Mac control panel press `1` — essay appears.
+5. On Mac control panel press `1` — timed subtitles appear (film style).
 
 Repeat with `2`, `3`, `4` on the other Pis.
+
+**Audio:** kiosk Chromium needs `--autoplay-policy=no-user-gesture-required` (included in `setup-kiosk.sh` when present) so desk audio starts when the channel opens from the GPIO button.
 
 ## Copy script from Mac to Pi
 

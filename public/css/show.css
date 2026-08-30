@@ -56,7 +56,12 @@ body[data-mode="control"] {
 }
 
 /* desk: 7" 1024x600 */
+html {
+  height: 100%;
+}
+
 body[data-mode="desk"] {
+  position: relative;
   width: 100vw;
   height: 100vh;
   max-width: 1024px;
@@ -64,44 +69,89 @@ body[data-mode="desk"] {
   overflow: hidden;
   background: #000;
   color: #fff;
+  margin: 0;
+}
+
+body[data-mode="desk"] #app {
+  position: absolute;
+  inset: 0;
 }
 
 .desk {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
   box-sizing: border-box;
 }
 
 .desk--idle {
+  width: 100%;
+  height: 100%;
   background: #000;
 }
 
-body[data-mode="desk"] .karaoke {
-  flex: 1;
-  padding: 20px 24px;
-  overflow-y: auto;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+body[data-mode="desk"] .desk--live {
+  position: absolute;
+  inset: 0;
+  background: #000;
+}
+
+body[data-mode="desk"] .subtitles {
+  position: absolute;
+  top: 70%;
+  left: 0;
+  right: 0;
+  width: 100%;
+  transform: translateY(-50%);
+  padding: 0 48px;
+  box-sizing: border-box;
+  text-align: center;
+  background: transparent;
+}
+
+body[data-mode="desk"] .subtitles__text {
+  display: inline-block;
+  max-width: 880px;
+  margin: 0 auto;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 1.35rem;
-  font-weight: 700;
-  line-height: 1.55;
+  font-weight: 500;
+  line-height: 1.38;
+  letter-spacing: 0.015em;
+  color: #ecece6;
+  white-space: pre-wrap;
+  background: transparent;
+  filter: url(#tv-subtitle);
+  -webkit-font-smoothing: antialiased;
+  text-shadow:
+    1px 0 0 rgba(0, 0, 0, 0.95),
+    -1px 0 0 rgba(0, 0, 0, 0.95),
+    0 1px 0 rgba(0, 0, 0, 0.95),
+    0 -1px 0 rgba(0, 0, 0, 0.95),
+    1px 1px 0 rgba(0, 0, 0, 0.88),
+    -1px -1px 0 rgba(0, 0, 0, 0.88),
+    1px -1px 0 rgba(0, 0, 0, 0.88),
+    -1px 1px 0 rgba(0, 0, 0, 0.88),
+    0 0 5px rgba(0, 0, 0, 0.65),
+    0 0 1px rgba(255, 255, 255, 0.18);
 }
 
-body[data-mode="desk"] .karaoke-word {
-  display: inline;
-  transition: color 0.12s ease, opacity 0.12s ease;
+body[data-mode="desk"] .desk-filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 
-body[data-mode="desk"] .karaoke-word.is-future {
-  color: #3a3a3a;
+body[data-mode="desk"] .subtitles--empty .subtitles__text {
+  color: transparent;
+  text-shadow: none;
+  filter: none;
 }
 
-body[data-mode="desk"] .karaoke-word.is-past {
-  color: #8a8a8a;
-}
-
-body[data-mode="desk"] .karaoke-word.is-active {
-  color: #fff;
+body[data-mode="desk"] .subtitles--error .subtitles__text {
+  color: #c44;
+  font-size: 1rem;
+  font-weight: 400;
+  text-shadow: none;
+  filter: none;
 }
 
 body[data-mode="desk"] .standby {

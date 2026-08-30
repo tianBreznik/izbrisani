@@ -43,7 +43,7 @@ cat > "${AUTOSTART_DIR}/desk-kiosk.desktop" <<EOF
 [Desktop Entry]
 Type=Application
 Name=anatomija pregona desk kiosk
-Exec=${CHROMIUM} --kiosk --noerrdialogs --disable-infobars --check-for-update-interval=31536000 --app=${KIOSK_URL}
+Exec=${CHROMIUM} --kiosk --noerrdialogs --disable-infobars --autoplay-policy=no-user-gesture-required --check-for-update-interval=31536000 --app=${KIOSK_URL}
 X-GNOME-Autostart-enabled=true
 EOF
 

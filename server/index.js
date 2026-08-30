@@ -24,12 +24,13 @@ function getChannels() {
 }
 
 let showState = { status: "idle" };
+let stateUpdatedAt = Date.now();
 
 function getPublicState() {
   return {
     ...showState,
     hardware: getHardwareState(),
-    updatedAt: Date.now(),
+    updatedAt: stateUpdatedAt,
   };
 }
 
@@ -49,6 +50,7 @@ setHardwareChangeListener(broadcastState);
 function setShowState(next) {
   const prev = showState;
   showState = next;
+  stateUpdatedAt = Date.now();
   onShowStateChange(prev, next);
   broadcastState();
 }

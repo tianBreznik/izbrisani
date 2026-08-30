@@ -5,37 +5,37 @@
       "id": 1,
       "country": "Republic of Example",
       "delegate": "Ambassador Ana Kovač",
-      "essay": "When the channel opens, this desk speaks. The essay scrolls on the 7″ name-tag screen while Mac Mini drives the paired shadow projector.\n\nReplace this text in content/channels.json with your exhibition copy.",
+      "subtitles": "/content/subtitles/desk-1.vtt",
+      "audio": null,
       "shadow": 1,
-      "shadowMedia": "/assets/candleinholder.gif",
-      "audio": null
+      "shadowMedia": "/assets/candleinholder.gif"
     },
     {
       "id": 2,
       "country": "United Territories of Sample",
       "delegate": "Minister James Okonkwo",
-      "essay": "Second delegate station. Only one channel can be live at a time.\n\nUse the control panel or keys 1–4. Escape closes.",
+      "subtitles": "/content/subtitles/desk-2.vtt",
+      "audio": null,
       "shadow": 1,
-      "shadowMedia": "/assets/apple2.gif",
-      "audio": null
+      "shadowMedia": "/assets/apple2.gif"
     },
     {
       "id": 3,
       "country": "Free State of Demo",
       "delegate": "Dr. Yuki Tanaka",
-      "essay": "Third station. Desk Pis subscribe over WebSocket; Mac Mini is the show hub.",
+      "subtitles": "/content/subtitles/desk-3.vtt",
+      "audio": null,
       "shadow": 2,
-      "shadowMedia": "/assets/HShoeT.gif",
-      "audio": null
+      "shadowMedia": "/assets/HShoeT.gif"
     },
     {
       "id": 4,
       "country": "Provisional Council of Test",
       "delegate": "Representative Sam Rivera",
-      "essay": "Fourth station. Mic PTT buttons will call the same open/close API as this control panel.",
+      "subtitles": "/content/subtitles/desk-4.vtt",
+      "audio": null,
       "shadow": 2,
-      "shadowMedia": "/assets/shoes_27421.gif",
-      "audio": null
+      "shadowMedia": "/assets/shoes_27421.gif"
     }
   ]
 }
