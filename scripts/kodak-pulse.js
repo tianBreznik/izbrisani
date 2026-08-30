@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * Pulse USB HID relay channel 1 (Kodak Forward).
+ * Pulse USB HID relay (default ch2 = Reverse on current wiring).
  *
- *   npm run kodak:pulse          # one Forward
+ *   npm run kodak:pulse          # one pulse
  *   npm run kodak:loop           # repeat until Ctrl+C
  *
  * Env:
- *   KODAK_RELAY_CH=1
+ *   KODAK_RELAY_CH=2             default (Reverse). Use 1 for Forward.
  *   KODAK_PULSE_MS=300           hold closed (the “press”)
  *   KODAK_INTERVAL_MS=2000       pause after each press (tray needs time)
  *   KODAK_HID_VID=0x16c0
@@ -18,7 +18,7 @@ const HID = require("node-hid");
 
 const VID = Number(process.env.KODAK_HID_VID || 0x16c0);
 const PID = Number(process.env.KODAK_HID_PID || 0x05df);
-const CH = Number(process.env.KODAK_RELAY_CH || 1);
+const CH = Number(process.env.KODAK_RELAY_CH || 2);
 const PULSE_MS = Number(process.env.KODAK_PULSE_MS || 300);
 const INTERVAL_MS = Number(process.env.KODAK_INTERVAL_MS || 2000);
 const LOOP = process.env.KODAK_LOOP === "1" || process.argv.includes("--loop");
