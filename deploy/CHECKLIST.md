@@ -23,14 +23,21 @@
 - [ ] `npm run control` in second session
 - [ ] Keys 1–4 force-open; Esc → idle; desk kiosk follows
 
-## D. Desk kiosk (×4)
+## D. Desk display (×4)
 
-- [ ] Hostname `desk-N`, URL `/desk/N`
-- [ ] Name plate visible
-- [ ] Control opens channel N → essay only on that desk
-- [ ] Survives reboot into kiosk
+**Pyclient (recommended):** see [`desk-pi/pyclient/CHECKLIST.md`](./desk-pi/pyclient/CHECKLIST.md)
 
-## E. Desk GPIO agent (×4)
+- [ ] Hostname `desk-N`; pyclient or Chromium → `/desk/N`
+- [ ] Control opens channel N → subtitles on that desk only
+- [ ] Quick retest: control + mic toggle; survives reboot (systemd)
+
+**Legacy Chromium kiosk:** [`desk-pi/setup-kiosk.sh`](./desk-pi/setup-kiosk.sh) — Pi 4 only if not on pyclient yet
+
+## E. Desk GPIO
+
+With **pyclient:** button is built in — skip separate agent if pyclient is enabled.
+
+With **Chromium only:** separate agent required:
 
 - [ ] `desk_agent` running (`DESK_ID` + `SHOW_URL`)
 - [ ] Press desk button → that channel opens

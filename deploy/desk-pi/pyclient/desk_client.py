@@ -12,6 +12,8 @@ Env:
   MOCK=1           Enter = button; windowed if no fullscreen
   WINDOWED=1       1024×600 window (dev / desktop)
   NO_GPIO=1        display only, no button thread
+  SDL_VIDEODRIVER  x11 | kmsdrm | fbcon (auto-tried if unset)
+  DISPLAY          :0 when using X11 from SSH
   GPIOZERO_PIN_FACTORY=lgpio
 """
 
@@ -391,9 +393,14 @@ class ShowClient:
     def gpio_thread(self) -> None:
         from gpiozero import Button, LED, PWMLED
 
+        # NO dry contact: Talk shorts GPIO→GND. Use BUTTON_NC=1 if idle is shorted.
         button = Button(BUTTON_GPIO, pull_up=True, bounce_time=0.05)
-        button.when_released = self.on_button_pressed
-        log(f"button BCM{BUTTON_GPIO} (NC mic pad)")
+        if os.environ.get("BUTTON_NC", "").lower() in ("1", "true", "yes"):
+            button.when_released = self.on_button_pressed
+            log(f"button BCM{BUTTON_GPIO} (NC — fire on open)")
+        else:
+            button.when_pressed = self.on_button_pressed
+            log(f"button BCM{BUTTON_GPIO} (NO — fire on short to GND)")
 
         led = None
         if LED_GPIO is not None:
@@ -490,16 +497,49 @@ class ShowClient:
             surf.blit(rendered, (WIDTH // 2 - rendered.get_width() // 2, y))
         return surf
 
+    def init_pygame_display(self, pygame: Any) -> Any:
+        """Try X11 (desktop) then direct framebuffer drivers used on Pi OS."""
+        if os.environ.get("SDL_VIDEODRIVER"):
+            drivers = [os.environ["SDL_VIDEODRIVER"]]
+        else:
+            drivers = []
+            if os.environ.get("DISPLAY") or os.path.exists("/tmp/.X11-unix/X0"):
+                os.environ.setdefault("DISPLAY", ":0")
+                drivers.append("x11")
+            drivers.extend(["kmsdrm", "fbcon"])
+
+        flags = 0 if WINDOWED else pygame.FULLSCREEN
+        last_err: Exception | None = None
+
+        for driver in drivers:
+            os.environ["SDL_VIDEODRIVER"] = driver
+            try:
+                if pygame.get_init():
+                    pygame.quit()
+                pygame.init()
+                pygame.display.set_caption(f"desk {DESK_ID}")
+                screen = pygame.display.set_mode((WIDTH, HEIGHT), flags)
+                log(f"display ok — SDL_VIDEODRIVER={driver} DISPLAY={os.environ.get('DISPLAY', '')}")
+                return screen
+            except pygame.error as err:
+                last_err = err
+                log(f"display driver {driver} failed: {err}")
+            except Exception as err:  # noqa: BLE001
+                last_err = err
+                log(f"display driver {driver} failed: {err}")
+
+        log(
+            "no display driver worked — if SSH: run on Pi desktop Terminal, or "
+            "DISPLAY=:0 SDL_VIDEODRIVER=x11 python3 desk_client.py"
+        )
+        if last_err:
+            raise last_err
+        raise RuntimeError("no display available")
+
     def run_pygame(self) -> None:
         import pygame
 
-        os.environ.setdefault("SDL_VIDEODRIVER", "x11")
-        pygame.init()
-        pygame.display.set_caption(f"desk {DESK_ID}")
-        flags = 0
-        if not WINDOWED:
-            flags |= pygame.FULLSCREEN
-        screen = pygame.display.set_mode((WIDTH, HEIGHT), flags)
+        screen = self.init_pygame_display(pygame)
         clock = pygame.time.Clock()
         font = self.load_font(pygame)
 

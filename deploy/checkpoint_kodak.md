@@ -18,8 +18,31 @@ Séance lights replace digital shadow projectors; Kodak stays as the **analog fi
 | 2026-08-29 | **Plan A (locked):** Mac → **USB relay ch1** → parallel across **wired remote Forward** switch. Plug stays in projector 6-pin. |
 | 2026-08-29 | **Forward only** — reverse not needed for show |
 | 2026-08-29 | IR hand TX + receiver (873 5086) / USB IR blaster = **manual / fallback only** |
+| 2026-08-31 | **Smart plug acquired:** **Shelly Plug S Gen3** (EU). Mains path: wall → Shelly → Kodak cord; **no cord splice**. Front switch left **ON** for show run. Local HTTP from Mac (`curl` to fixed LAN IP). ~~Tasmota / Nous A8T~~ not used — IoTronX had no stock. |
+| 2026-08-31 | **Shelly setup TODO:** join museum Wi‑Fi (2.4 GHz), fixed IP, test ON/OFF, set `KODAK_POWER_ON` / `KODAK_POWER_OFF` env on Mac Mini. |
 
 Wired remote stays plugged into the projector for the run. Staff can still press Forward by hand (parallel with relay).
+
+### Shelly Plug S Gen3 (acquired)
+
+```text
+Wall ──► Shelly Plug S Gen3 ──► Kodak mains plug
+              ▲
+         Wi‑Fi / HTTP (Mac Mini)
+```
+
+**Do not** plug RJ45 or desk Pis into this — Mac-side only, same as USB relay.
+
+```bash
+# ON / OFF (set SHELLY_IP after setup; auth off or add credentials)
+curl -X POST -d '{"id":0,"on":true}'  "http://SHELLY_IP/rpc/Switch.Set"
+curl -X POST -d '{"id":0,"on":false}' "http://SHELLY_IP/rpc/Switch.Set"
+```
+
+```bash
+export KODAK_POWER_ON='curl -s -X POST -d "{\"id\":0,\"on\":true}" "http://SHELLY_IP/rpc/Switch.Set"'
+export KODAK_POWER_OFF='curl -s -X POST -d "{\"id\":0,\"on\":false}" "http://SHELLY_IP/rpc/Switch.Set"'
+```
 
 ---
 

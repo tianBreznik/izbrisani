@@ -14,7 +14,9 @@ Talk (alligator clips on mic pads)
 **Still to do next lab:** permanent solder (clips only so far) → **systemd `desk-agent`** → stable network (`SHOW_URL`).
 
 **Mic model:** DAP Audio **MA-8120PM** Paging Microphone V1  
-**Do not use:** RJ45 on the mic — amp data link only, not a Pi button.
+**RJ45:** not for amp or Pi Ethernet — **repurpose as a 8-pin cable connector** only (see § C2).
+
+**Lab wiring (2026-08-31):** soldering Talk switch pad → RJ45 pin so one Cat5 run reaches the desk Pi (reuse existing RJ45 hole in base). Multimeter: button pad ↔ chosen RJ45 pin **beeps only while Talk held** = correct.
 
 `desk_agent.py` **is** the real desk software (not a throwaway test client).
 
@@ -94,6 +96,32 @@ Mic PTT ─── pin 11 (GPIO17)
 
 **Permanent joint (next lab):** tin pad + wire, hook/wrap for grip, solder one pad at a time, hot-glue strain relief, remeter Dupont ends, then plug in.
 
+### C2. RJ45 pass-through (current build — desk mic base)
+
+Use the **RJ45 jack as a mechanical connector**, not network:
+
+```text
+Talk switch pad ──solder──► RJ45 pin N  (switched leg)
+Other switch pad ──────────► RJ45 pin M  (return / GND)
+        │                           │
+        └── Cat5 (2 conductors) ────┘
+                    │
+              Pi GPIO header
+         pin 11 (GPIO17) + pin 9 (GND)
+```
+
+**“One wire” on the board** = one new solder from the Talk pad to an RJ45 pin; the **return** still needs a second path (second RJ45 pin, or existing board GND tied to another RJ45 pin you meter once).
+
+| Test | Pass |
+|------|------|
+| Talk **up** | Open (OL) between signal RJ45 pin and GND RJ45 pin |
+| Talk **held** | Beep (~0 Ω) between those two RJ45 pins |
+| Mic **unpowered** | No amp, no XLR — dry contact only |
+
+**Do not:** plug this RJ45 into the Pi’s Ethernet port, a switch, or the MA-8120 amp. Only the **two chosen pins** go to GPIO17 + GND.
+
+Label each desk: which RJ45 pins = signal / GND (same pinout on all four mics).
+
 ---
 
 ## D. Show server (Mac Mini or laptop)
@@ -164,7 +192,7 @@ IP change → edit unit `SHOW_URL` → `sudo systemctl restart desk-agent`.
 - [x] PTT dry-contact pair identified  
 - [x] Inner-row GPIO17 + GND confirmed  
 - [x] Foreground agent + show server toggle channel 1 (alligator clips)  
-- [ ] Permanent solder + strain relief; meter clean open/close at Duponts  
+- [ ] Permanent solder + strain relief; RJ45 pinout labeled; meter clean open/close at RJ45 (or Dupont) ends  
 - [ ] `desk-agent` systemd enabled; works after close terminal + reboot  
 - [ ] Stable show network (Ethernet preferred); kiosk `/desk/1` still OK  
 - [ ] Clone wiring + agent for desks 2–4  

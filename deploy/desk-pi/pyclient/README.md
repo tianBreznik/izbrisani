@@ -29,10 +29,28 @@ mv ~/.config/autostart/desk-kiosk.desktop ~/.config/autostart/desk-kiosk.desktop
 
 ### Foreground test
 
+**Best:** open **Terminal on the Pi desktop** (keyboard + monitor), not SSH:
+
 ```bash
 cd ~/izbrisani-pyclient
 DESK_ID=2 SHOW_URL=http://MAC_IP:3847 GPIOZERO_PIN_FACTORY=lgpio python3 desk_client.py
 ```
+
+**Over SSH** the desktop may be running but X11 is not wired to your session — use:
+
+```bash
+DISPLAY=:0 SDL_VIDEODRIVER=x11 DESK_ID=2 SHOW_URL=http://MAC_IP:3847 GPIOZERO_PIN_FACTORY=lgpio \
+  python3 desk_client.py
+```
+
+If X11 still fails (or no desktop), try direct framebuffer:
+
+```bash
+SDL_VIDEODRIVER=kmsdrm DESK_ID=2 SHOW_URL=http://MAC_IP:3847 GPIOZERO_PIN_FACTORY=lgpio \
+  python3 desk_client.py
+```
+
+Pi must be **logged into the desktop** (autologin), not stuck at the login screen.
 
 Press channel **2** on Mac `npm run control` — subtitles should appear.  
 Mic Talk button should open/close the channel (same wiring as `desk_agent.py`).
@@ -89,3 +107,9 @@ Press **Enter** to simulate button; use `npm run control` keys 1–4.
 | Pi 3B+ | **pyclient** | recommended |
 
 Same Mac Mini server; no server changes needed.
+
+## Checklist
+
+→ **[`CHECKLIST.md`](./CHECKLIST.md)** — install, **quick retest** (control + mic), **systemd + reboot**, Pi 4 migration
+
+**Fleet plan:** 3B+ requires pyclient; migrate Pi 4s to pyclient after desk-2 retest + reboot pass (same stack, runs lighter than Chromium).

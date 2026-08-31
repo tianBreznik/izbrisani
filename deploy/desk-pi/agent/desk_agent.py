@@ -150,9 +150,13 @@ def run_gpio() -> None:
             led = LED(LED_GPIO)
             log("PWMLED failed; using on/off LED")
 
-    # DAP mic Talk pads: NC (idle = short to GND, Talk = open)
-    button.when_released = on_button_pressed
-    log(f"button BCM{BUTTON_GPIO} (NC); LED={LED_GPIO}; {SHOW_URL}")
+    # Default NO: Talk shorts GPIO→GND. BUTTON_NC=1 if idle is shorted / fire on open.
+    if os.environ.get("BUTTON_NC", "").lower() in ("1", "true", "yes"):
+        button.when_released = on_button_pressed
+        log(f"button BCM{BUTTON_GPIO} (NC); LED={LED_GPIO}; {SHOW_URL}")
+    else:
+        button.when_pressed = on_button_pressed
+        log(f"button BCM{BUTTON_GPIO} (NO); LED={LED_GPIO}; {SHOW_URL}")
     state_listener()
     led_loop(led)
 
