@@ -77,7 +77,9 @@ See [`checkpoint_seance.md`](./checkpoint_seance.md). Digital `/shadow/1` `/shad
 
 ## 4. Network / power / shadows
 
-Unchanged: dedicated switch; Mac dual display → shadows; label cables; PDU for Mac + 4 Pi + panels + 2 projectors + Kodak.
+Unchanged: dedicated show Wi‑Fi (see [`NETWORK.md`](./NETWORK.md)); Mac dual display → shadows; label cables; PDU for Mac + 4 Pi + panels + ESP32 + Kodak.
+
+**Network (locked for now):** zero-switch wireless — Kodak desk Pi = Wi‑Fi AP; Mac, desks, Shelly, **ESP32** all join that SSID.
 
 See also `CHECKLIST.md`.
 

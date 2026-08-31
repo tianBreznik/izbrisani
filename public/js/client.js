@@ -91,6 +91,18 @@
 
   async function closeSession(sessionKey) {
     if (!player || player.sessionKey !== sessionKey || player.closing) return;
+    // Followers hold the last cue until the server goes idle (don't blank early).
+    if (state.channelId !== deskId) {
+      player.closing = true;
+      if (player.rafId) cancelAnimationFrame(player.rafId);
+      player.rafId = null;
+      paintCue(
+        player.lineEl,
+        player.wrapEl,
+        cueAt(player.cues, Math.max(0, player.endAt - 0.001))
+      );
+      return;
+    }
     const closeGen = closeAbortGen;
     player.closing = true;
     try {
@@ -132,7 +144,13 @@
     if (wrapEl) wrapEl.classList.toggle("subtitles--empty", !text);
   }
 
-  async function startPlayer(ch, sessionKey) {
+  function sessionElapsedS(updatedAtMs) {
+    const opened = Number(updatedAtMs);
+    if (!Number.isFinite(opened) || opened <= 0) return 0;
+    return Math.max(0, (Date.now() - opened) / 1000);
+  }
+
+  async function startPlayer(ch, sessionKey, playAudio) {
     stopPlayer();
     const gen = ++playerGeneration;
     const { lineEl, wrapEl, audioEl } = mountPlayerShell();
@@ -153,7 +171,26 @@
     }
 
     const endAt = cues[cues.length - 1].end;
-    const hasAudio = !!ch.audio;
+    let elapsed = sessionElapsedS(state.updatedAt);
+    if (endAt > 0 && elapsed >= endAt) {
+      player = {
+        sessionKey,
+        deskId,
+        cues,
+        endAt,
+        lineEl,
+        wrapEl,
+        audioEl,
+        closing: true,
+        rafId: null,
+        useAudio: false,
+        clock0: performance.now() - elapsed * 1000,
+      };
+      paintCue(lineEl, wrapEl, cueAt(cues, endAt - 0.001));
+      return;
+    }
+
+    const hasAudio = !!(playAudio && ch.audio);
 
     player = {
       sessionKey,
@@ -166,10 +203,10 @@
       closing: false,
       rafId: null,
       useAudio: hasAudio,
-      clock0: hasAudio ? null : performance.now(),
+      clock0: performance.now() - elapsed * 1000,
     };
 
-    paintCue(lineEl, wrapEl, cueAt(cues, 0));
+    paintCue(lineEl, wrapEl, cueAt(cues, elapsed));
 
     if (hasAudio) {
       audioEl.src = ch.audio;
@@ -184,16 +221,25 @@
       });
       try {
         await audioEl.play();
+        elapsed = sessionElapsedS(state.updatedAt);
+        if (elapsed > 0.05 && Number.isFinite(audioEl.duration)) {
+          audioEl.currentTime = Math.min(elapsed, Math.max(0, audioEl.duration - 0.05));
+        }
+        player.clock0 = performance.now() - sessionElapsedS(state.updatedAt) * 1000;
       } catch (err) {
         console.warn("audio play blocked — check kiosk autoplay policy", err);
-        lineEl.textContent = "tap / allow autoplay for audio";
-        wrapEl.classList.add("subtitles--error");
+        // Fall back to wall-clock subtitles so the session can still end.
+        player.useAudio = false;
+        player.clock0 = performance.now() - sessionElapsedS(state.updatedAt) * 1000;
+        lineEl.textContent = lineEl.textContent || "";
+        wrapEl.classList.remove("subtitles--error");
+        paintCue(lineEl, wrapEl, cueAt(cues, sessionElapsedS(state.updatedAt)));
       }
       if (gen !== playerGeneration) return;
     }
 
     const tick = () => {
-      if (!player || player.sessionKey !== sessionKey) return;
+      if (!player || player.sessionKey !== sessionKey || player.closing) return;
       let t;
       if (player.useAudio && player.audioEl) {
         t = player.audioEl.currentTime;
@@ -217,24 +263,27 @@
 
   function render() {
     const root = document.getElementById("app");
-    const ch = channels.find((c) => c.id === deskId);
-    if (!ch) {
-      stopPlayer();
-      root.innerHTML = `<p class="standby">desk ${deskId} — not found</p>`;
-      return;
-    }
-
-    const live = state.status === "channel_open" && state.channelId === deskId;
+    const live =
+      state.status === "channel_open" && Number.isFinite(state.channelId);
     if (!live) {
       stopPlayer();
       root.innerHTML = `<div class="desk desk--idle"><p class="standby">desk ${deskId} — idle</p></div>`;
       return;
     }
 
-    const sessionKey = `${state.channelId}:${state.updatedAt || 0}`;
-    if (player && player.sessionKey === sessionKey && !player.closing) return;
+    const ch = channels.find((c) => c.id === state.channelId);
+    if (!ch) {
+      stopPlayer();
+      root.innerHTML = `<p class="standby">channel ${state.channelId} — not found</p>`;
+      return;
+    }
 
-    startPlayer(ch, sessionKey);
+    const sessionKey = `${state.channelId}:${state.updatedAt || 0}`;
+    // Same session: keep playing, or hold last cue if already closing.
+    if (player && player.sessionKey === sessionKey) return;
+
+    // All desks show live channel subtitles; only the opening desk plays audio.
+    startPlayer(ch, sessionKey, state.channelId === deskId);
   }
 
   async function init() {
@@ -256,7 +305,7 @@
     }
     if (msg.type === "channels") {
       channels = msg.payload.channels;
-      if (state.status === "channel_open" && state.channelId === deskId) {
+      if (state.status === "channel_open") {
         stopPlayer();
       }
       render();

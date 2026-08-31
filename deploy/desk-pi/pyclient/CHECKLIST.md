@@ -32,7 +32,7 @@ Desk: **___**  Board: **3B+ / Pi 4**  User: **___**  Pi IP: **___**
 
 Mac: `npm run control` running. Pi: pyclient in foreground (or already on systemd).
 
-- [ ] Press **N** on control → subtitles appear on **this desk only**
+- [ ] Press **N** on control → **all desks** show channel N subtitles (not only desk N)
 - [ ] Press **N** again (or **Esc**) → idle, subtitles stop
 - [ ] Press another channel while busy → ignored on this desk
 - [ ] **Mic Talk** (if wired) → opens this desk’s channel

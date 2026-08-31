@@ -1,12 +1,12 @@
 # Desk story content (audio + subtitles)
 
-Each desk plays **one recording** with **timed sentence subtitles** (film style), then the session **auto-closes**.
+Each **channel** (desk button 1–4) has one recording + timed WebVTT. When that channel opens, **all four screens** show the same subtitles. Audio plays on the **opening desk** only (until a shared speaker path exists).
 
-## Files per desk
+## Files per channel
 
 | File | Required | Example |
 |------|----------|---------|
-| `subtitles/desk-N.vtt` | Yes (for timed text) | WebVTT cues |
+| `subtitles/desk-N.vtt` | Yes | WebVTT cues timed to the recording |
 | `audio/desk-N.mp3` | When ready | Spoken essay |
 
 Reference both in `channels.json`:
@@ -19,7 +19,15 @@ Reference both in `channels.json`:
 }
 ```
 
-Set `"audio": null` while waiting for recordings — subtitles still run on cue timing (clock-only test).
+Set `"audio": null` while waiting for recordings — all screens still run on cue timing (clock-only).
+
+## Drop-in (when files arrive)
+
+1. Put final `content/subtitles/desk-1.vtt` … `desk-4.vtt` (overwrite placeholders).
+2. Put `content/audio/desk-1.mp3` … `desk-4.mp3`.
+3. Point `audio` in `channels.json` (paths above).
+4. On Mac: `curl -X POST http://127.0.0.1:3847/api/reload-content` (or restart `npm start`).
+5. Copy updated pyclient to Pis only if client code changed — **content is served from the Mac**; desks fetch VTT/MP3 over HTTP.
 
 ## WebVTT format
 
@@ -44,15 +52,8 @@ Rules:
 - One visible line at a time on the desk screen (film subtitles).
 - Export from DaVinci, Subtitle Edit, or hand-edit.
 
-## Upload workflow
+## Kiosk / pyclient audio
 
-1. Add `content/subtitles/desk-N.vtt` (timed to your script).
-2. Add `content/audio/desk-N.mp3` when recorded.
-3. Update `channels.json` paths.
-4. On Mac: `curl -X POST http://localhost:3847/api/reload-content` (or restart `npm start`).
-5. Desk Pi kiosk may need a refresh once.
+- **Pyclient:** pygame mixer on the opening desk; followers are silent (subtitles only).
+- **Chromium:** needs `--autoplay-policy=no-user-gesture-required` (see `deploy/desk-pi/README.md`).
 
-## Kiosk autoplay (Pi)
-
-Chromium may block audio until autoplay is allowed. On desk Pis, use kiosk flags (see `deploy/desk-pi/README.md`):  
-`--autoplay-policy=no-user-gesture-required`

@@ -26,7 +26,7 @@ Desk Pi ×4
 
 Exclusive: other desks get `409` while busy; same desk press toggles close.
 
-Docs: **`deploy/`** (especially `desk-pi/agent/`, `PHYSICAL.md`, `CHECKLIST.md`).
+See also: [`SHOW_DAY.md`](./SHOW_DAY.md) — staff power-on / launchd + systemd.
 
 ---
 

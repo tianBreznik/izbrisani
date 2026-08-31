@@ -13,9 +13,11 @@
 
 ## B. Network
 
-- [ ] Switch on; Mac IP: `_______________`
-- [ ] desk-1…4 on LAN; ping OK
-- [ ] Desk browser: `http://MAC_IP:3847/api/health` → ok
+- [ ] **Zero-switch wireless** (`NETWORK.md`): desk-4 AP up; SSID known
+- [ ] Mac + desk-1…3 + Shelly + **ESP32** on that SSID
+- [ ] Mac IP: `_______________` (e.g. 192.168.50.10)
+- [ ] Desk browser/pyclient: `http://MAC_IP:3847/api/health` → ok
+- [ ] ESP32 ping / séance URL reachable from Mac
 
 ## C. Mac hub
 
@@ -28,7 +30,7 @@
 **Pyclient (recommended):** see [`desk-pi/pyclient/CHECKLIST.md`](./desk-pi/pyclient/CHECKLIST.md)
 
 - [ ] Hostname `desk-N`; pyclient or Chromium → `/desk/N`
-- [ ] Control opens channel N → subtitles on that desk only
+- [ ] Control opens channel N → **all four desks** show channel N subtitles
 - [ ] Quick retest: control + mic toggle; survives reboot (systemd)
 
 **Legacy Chromium kiosk:** [`desk-pi/setup-kiosk.sh`](./desk-pi/setup-kiosk.sh) — Pi 4 only if not on pyclient yet

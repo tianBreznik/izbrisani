@@ -148,6 +148,21 @@ def cue_at(cues: list[dict[str, Any]], t: float) -> dict[str, Any] | None:
     return None
 
 
+def session_elapsed_s(updated_at_ms: Any) -> float:
+    """Seconds since channel open, from server updatedAt (ms epoch).
+
+    All desks share the same timeline so slow VTT fetch / Pi 3 vs Pi 4
+    start times do not desync subtitles. Assumes LAN clocks are roughly NTP'd.
+    """
+    try:
+        opened = float(updated_at_ms)
+    except (TypeError, ValueError):
+        return 0.0
+    if opened <= 0:
+        return 0.0
+    return max(0.0, (time.time() * 1000.0 - opened) / 1000.0)
+
+
 @dataclass
 class PlayerState:
     session_key: str
@@ -173,17 +188,34 @@ class ShowClient:
         self.audio_path: str | None = None
         self._last_button_at = 0.0
 
-    def channel_for_desk(self) -> dict[str, Any] | None:
-        return next((c for c in self.channels if c.get("id") == DESK_ID), None)
+    def channel_for_id(self, channel_id: int) -> dict[str, Any] | None:
+        return next((c for c in self.channels if c.get("id") == channel_id), None)
+
+    def live_channel(self) -> dict[str, Any] | None:
+        if self.state.get("status") != "channel_open":
+            return None
+        cid = self.state.get("channelId")
+        try:
+            cid = int(cid)
+        except (TypeError, ValueError):
+            return None
+        return self.channel_for_id(cid)
 
     def session_key(self) -> str:
         return f"{self.state.get('channelId')}:{self.state.get('updatedAt', 0)}"
 
-    def is_live(self) -> bool:
-        return (
-            self.state.get("status") == "channel_open"
-            and self.state.get("channelId") == DESK_ID
-        )
+    def is_open(self) -> bool:
+        """Any channel live — all desks show that channel's subtitles."""
+        return self.state.get("status") == "channel_open" and self.live_channel() is not None
+
+    def is_owner(self) -> bool:
+        """This desk's button opened the live channel (owns audio + auto-close)."""
+        if self.state.get("status") != "channel_open":
+            return False
+        try:
+            return int(self.state.get("channelId")) == DESK_ID
+        except (TypeError, ValueError):
+            return False
 
     def on_button_pressed(self) -> None:
         now = time.monotonic()
@@ -223,20 +255,33 @@ class ShowClient:
     def close_session(self, session_key: str) -> None:
         if not self.player or self.player.session_key != session_key or self.player.closing:
             return
+        # Followers must not tear down the screen — hold the last cue until the
+        # server goes idle (owner auto-close / Esc). Their local clock can finish
+        # earlier than the owner's audio clock.
+        if not self.is_owner():
+            self.player.closing = True
+            if self.player.end_at > 0:
+                self.paint_cue(cue_at(self.player.cues, self.player.end_at - 0.001))
+            return
         close_gen = self.close_abort_gen
         self.player.closing = True
         try:
             s = http_get_json("/api/state")
             if close_gen != self.close_abort_gen:
                 return
-            if s.get("status") != "channel_open" or s.get("channelId") != DESK_ID:
+            if s.get("status") != "channel_open":
+                return
+            try:
+                if int(s.get("channelId")) != DESK_ID:
+                    return
+            except (TypeError, ValueError):
                 return
             http_post("/api/channel/close")
             log("auto-close → idle")
         except Exception as err:  # noqa: BLE001
             log(f"auto-close failed: {err}")
 
-    def start_player(self, ch: dict[str, Any], session_key: str) -> None:
+    def start_player(self, ch: dict[str, Any], session_key: str, play_audio: bool) -> None:
         import pygame
 
         self.stop_player()
@@ -260,17 +305,30 @@ class ShowClient:
             return
 
         end_at = cues[-1]["end"]
-        audio_url = abs_url(ch.get("audio"))
+        audio_url = abs_url(ch.get("audio")) if play_audio else None
         has_audio = bool(audio_url)
+        elapsed = session_elapsed_s(self.state.get("updatedAt"))
+        if end_at > 0 and elapsed >= end_at:
+            # Opened so long ago the story is already over — wait for idle.
+            self.player = PlayerState(
+                session_key=session_key,
+                cues=cues,
+                end_at=end_at,
+                has_audio=False,
+                clock0=time.monotonic() - elapsed,
+                closing=True,
+            )
+            self.paint_cue(cue_at(cues, end_at - 0.001))
+            return
 
         self.player = PlayerState(
             session_key=session_key,
             cues=cues,
             end_at=end_at,
             has_audio=has_audio,
-            clock0=time.monotonic(),
+            clock0=time.monotonic() - elapsed,
         )
-        self.paint_cue(cue_at(cues, 0.0))
+        self.paint_cue(cue_at(cues, elapsed))
 
         if has_audio and audio_url:
             try:
@@ -285,15 +343,31 @@ class ShowClient:
                 self.audio_path = path
                 if not pygame.mixer.get_init():
                     pygame.mixer.init(frequency=44100)
+                # Recompute after download so seek matches owner/followers.
+                elapsed = session_elapsed_s(self.state.get("updatedAt"))
+                if end_at > 0 and elapsed >= end_at:
+                    os.remove(path)
+                    self.audio_path = None
+                    self.player.has_audio = False
+                    self.player.closing = True
+                    self.paint_cue(cue_at(cues, end_at - 0.001))
+                    return
                 pygame.mixer.music.load(path)
                 pygame.mixer.music.play()
-                self.player.clock0 = time.monotonic()
+                if elapsed > 0.05:
+                    try:
+                        pygame.mixer.music.set_pos(elapsed)
+                    except Exception as err:  # noqa: BLE001
+                        log(f"audio seek skipped: {err}")
+                self.player.clock0 = time.monotonic() - elapsed
             except Exception as err:  # noqa: BLE001
                 if gen != self.player_generation:
                     return
-                self.screen_message = "audio failed to load"
-                self.screen_error = True
-                log(f"audio error: {err}")
+                # Keep wall-clock subtitles so the session can still auto-close.
+                self.player.has_audio = False
+                self.screen_error = False
+                log(f"audio error (subtitles continue): {err}")
+                self.paint_cue(cue_at(cues, session_elapsed_s(self.state.get("updatedAt"))))
                 return
 
         if gen != self.player_generation:
@@ -308,23 +382,20 @@ class ShowClient:
         self.screen_error = False
 
     def sync_render(self) -> None:
-        ch = self.channel_for_desk()
-        if not ch:
-            self.stop_player()
-            self.screen_message = f"desk {DESK_ID} — not found"
-            self.screen_error = True
-            return
-
-        if not self.is_live():
+        ch = self.live_channel()
+        if not self.is_open() or not ch:
             self.stop_player()
             self.screen_message = ""
             self.screen_error = False
             return
 
         sk = self.session_key()
-        if self.player and self.player.session_key == sk and not self.player.closing:
+        # Same session: keep playing, or hold last cue if already closing.
+        # Do NOT restart on hardware re-broadcasts when closing=True.
+        if self.player and self.player.session_key == sk:
             return
-        self.start_player(ch, sk)
+        # All desks show the live channel's VTT; only the opening desk plays audio.
+        self.start_player(ch, sk, play_audio=self.is_owner())
 
     def tick_player(self) -> None:
         if not self.player or self.player.closing:
@@ -357,7 +428,7 @@ class ShowClient:
 
     def apply_channels(self, channels: list[dict[str, Any]]) -> None:
         self.channels = channels
-        if self.is_live():
+        if self.is_open():
             self.stop_player()
         self.sync_render()
 
@@ -574,7 +645,7 @@ class ShowClient:
             self.tick_player()
 
             screen.fill((0, 0, 0))
-            if self.is_live() or self.screen_message:
+            if self.is_open() or self.screen_message:
                 if self.screen_message:
                     sub = self.render_subtitle(
                         pygame, font, self.screen_message, self.screen_error
