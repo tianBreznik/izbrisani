@@ -8,6 +8,8 @@ Env:
   DESK_ID          1–4
   SHOW_URL         http://MAC_IP:3847
   BUTTON_GPIO      BCM pin (default 17)
+  BUTTON_NC=1      fire on open (legacy NC pads); default NO = fire on short
+  BUTTON_COOLDOWN_MS  ignore extra edges after a press (default 400)
   LED_GPIO         optional BCM pin for idle glow
   MOCK=1           Enter = button; windowed if no fullscreen
   WINDOWED=1       1024×600 window (dev / desktop)
@@ -35,6 +37,7 @@ from typing import Any
 DESK_ID = int(os.environ.get("DESK_ID", "1"))
 SHOW_URL = os.environ.get("SHOW_URL", "http://127.0.0.1:3847").rstrip("/")
 BUTTON_GPIO = int(os.environ.get("BUTTON_GPIO", "17"))
+BUTTON_COOLDOWN_S = max(0.0, float(os.environ.get("BUTTON_COOLDOWN_MS", "400")) / 1000.0)
 LED_RAW = os.environ.get("LED_GPIO", "27").strip()
 LED_GPIO = int(LED_RAW) if LED_RAW else None
 MOCK = os.environ.get("MOCK", "").lower() in ("1", "true", "yes")
@@ -168,6 +171,7 @@ class ShowClient:
         self.screen_message = ""
         self.screen_error = False
         self.audio_path: str | None = None
+        self._last_button_at = 0.0
 
     def channel_for_desk(self) -> dict[str, Any] | None:
         return next((c for c in self.channels if c.get("id") == DESK_ID), None)
@@ -182,6 +186,11 @@ class ShowClient:
         )
 
     def on_button_pressed(self) -> None:
+        now = time.monotonic()
+        if now - self._last_button_at < BUTTON_COOLDOWN_S:
+            log("button ignored (cooldown)")
+            return
+        self._last_button_at = now
         try:
             result = http_post(f"/api/channel/{DESK_ID}/open")
             log(f"open → {result.get('status')} {result.get('channelId', '')}")
@@ -394,13 +403,13 @@ class ShowClient:
         from gpiozero import Button, LED, PWMLED
 
         # NO dry contact: Talk shorts GPIO→GND. Use BUTTON_NC=1 if idle is shorted.
-        button = Button(BUTTON_GPIO, pull_up=True, bounce_time=0.05)
+        button = Button(BUTTON_GPIO, pull_up=True, bounce_time=0.2)
         if os.environ.get("BUTTON_NC", "").lower() in ("1", "true", "yes"):
             button.when_released = self.on_button_pressed
             log(f"button BCM{BUTTON_GPIO} (NC — fire on open)")
         else:
             button.when_pressed = self.on_button_pressed
-            log(f"button BCM{BUTTON_GPIO} (NO — fire on short to GND)")
+            log(f"button BCM{BUTTON_GPIO} (NO — fire on short to GND, cooldown {int(BUTTON_COOLDOWN_S*1000)}ms)")
 
         led = None
         if LED_GPIO is not None:

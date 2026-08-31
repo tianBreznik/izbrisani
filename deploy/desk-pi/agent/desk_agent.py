@@ -3,7 +3,7 @@
 Desk Pi button agent.
 
 DESK_ID, SHOW_URL, BUTTON_GPIO (BCM, to GND), LED_GPIO (optional), MOCK=1.
-DAP MA-8120PM Talk pads are NC: idle short, Talk opens → fire on release edge.
+Default NO: Talk shorts to GND. BUTTON_NC=1 for legacy NC pads. BUTTON_COOLDOWN_MS=400.
 """
 
 from __future__ import annotations
@@ -20,12 +20,14 @@ import urllib.request
 DESK_ID = int(os.environ.get("DESK_ID", "1"))
 SHOW_URL = os.environ.get("SHOW_URL", "http://127.0.0.1:3847").rstrip("/")
 BUTTON_GPIO = int(os.environ.get("BUTTON_GPIO", "17"))
+BUTTON_COOLDOWN_S = max(0.0, float(os.environ.get("BUTTON_COOLDOWN_MS", "400")) / 1000.0)
 LED_RAW = os.environ.get("LED_GPIO", "27").strip()
 LED_GPIO = int(LED_RAW) if LED_RAW else None
 MOCK = os.environ.get("MOCK", "").lower() in ("1", "true", "yes")
 
 state_lock = threading.Lock()
 show_state = {"status": "idle"}
+_last_button_at = 0.0
 
 
 def log(msg: str) -> None:
@@ -49,6 +51,12 @@ def fetch_state() -> dict:
 
 
 def on_button_pressed() -> None:
+    global _last_button_at
+    now = time.monotonic()
+    if now - _last_button_at < BUTTON_COOLDOWN_S:
+        log("button ignored (cooldown)")
+        return
+    _last_button_at = now
     try:
         result = api_post(f"/api/channel/{DESK_ID}/open")
         log(f"open → {result.get('status')} {result.get('channelId', '')}")
@@ -141,7 +149,7 @@ def led_loop(led) -> None:
 def run_gpio() -> None:
     from gpiozero import Button, PWMLED, LED
 
-    button = Button(BUTTON_GPIO, pull_up=True, bounce_time=0.05)
+    button = Button(BUTTON_GPIO, pull_up=True, bounce_time=0.2)
     led = None
     if LED_GPIO is not None:
         try:
@@ -156,7 +164,7 @@ def run_gpio() -> None:
         log(f"button BCM{BUTTON_GPIO} (NC); LED={LED_GPIO}; {SHOW_URL}")
     else:
         button.when_pressed = on_button_pressed
-        log(f"button BCM{BUTTON_GPIO} (NO); LED={LED_GPIO}; {SHOW_URL}")
+        log(f"button BCM{BUTTON_GPIO} (NO, cooldown {int(BUTTON_COOLDOWN_S*1000)}ms); LED={LED_GPIO}; {SHOW_URL}")
     state_listener()
     led_loop(led)
 
