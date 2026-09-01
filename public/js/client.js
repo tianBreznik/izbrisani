@@ -167,9 +167,16 @@
     };
   }
 
+  function normalizeCueText(text) {
+    return String(text)
+      .replace(/<[^>]*>/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
   function paintCue(lineEl, wrapEl, cue) {
     if (!lineEl) return;
-    const text = cue ? cue.text : "";
+    const text = cue ? normalizeCueText(cue.text) : "";
     if (lineEl.textContent === text) return;
     lineEl.textContent = text;
     if (wrapEl) wrapEl.classList.toggle("subtitles--empty", !text);
