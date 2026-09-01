@@ -67,7 +67,7 @@ sudo systemctl restart desk-agent
 | Situation | Result |
 |-----------|--------|
 | Idle, press | Open this desk’s channel |
-| This channel live, press again | Toggle close |
+| Any channel live, press again (any desk) | Ignored (`409 channel_busy`) |
 | Other channel live, press | Ignored (`409 channel_busy`) |
 
 Kodak is **not** driven from the desk — only from the Mac hub relay.

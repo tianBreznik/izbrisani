@@ -246,7 +246,7 @@ How the Kodak carousel should respond to **desk mic / button clicks** (and chann
 
 ### What exists in software today
 
-- Desk button → `POST /api/channel/N/open` (toggle close on same desk)  
+- Desk button → `POST /api/channel/N/open` (ignored while any channel live)  
 - `hardware.js` → Kodak stub ON/OFF + séance start/stop  
 - **No** Forward pulse logic yet  
 

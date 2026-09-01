@@ -93,4 +93,4 @@ See also `CHECKLIST.md`.
 4. Remaining desks  
 5. Kodak relay last  
 
-Exclusive rule: while a channel is live, other desk buttons get `409` (ignored). Same desk press again toggles close. Control panel uses `?force=1` to override.
+Exclusive rule: while a channel is live, **any** desk button press is ignored (`409 channel_busy`). Session ends when monologue/subtitles finish or operator closes. Control panel uses `?force=1` to override.

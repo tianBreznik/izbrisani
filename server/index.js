@@ -92,25 +92,12 @@ app.post("/api/channel/:id/open", (req, res) => {
     return res.status(404).json({ error: `Unknown channel ${channelId}` });
   }
 
-  if (
-    !force &&
-    showState.status === "channel_open" &&
-    showState.channelId !== channelId
-  ) {
+  if (!force && showState.status === "channel_open") {
     return res.status(409).json({
       error: "channel_busy",
       activeChannelId: showState.channelId,
       ...getPublicState(),
     });
-  }
-
-  if (
-    !force &&
-    showState.status === "channel_open" &&
-    showState.channelId === channelId
-  ) {
-    setShowState({ status: "idle" });
-    return res.json(getPublicState());
   }
 
   setShowState({ status: "channel_open", channelId });

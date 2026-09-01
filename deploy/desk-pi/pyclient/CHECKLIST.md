@@ -33,10 +33,10 @@ Desk: **___**  Board: **3B+ / Pi 4**  User: **___**  Pi IP: **___**
 Mac: `npm run control` running. Pi: pyclient in foreground (or already on systemd).
 
 - [ ] Press **N** on control → **all desks** show channel N subtitles (not only desk N)
-- [ ] Press **N** again (or **Esc**) → idle, subtitles stop
-- [ ] Press another channel while busy → ignored on this desk
+- [ ] **Esc** → idle, subtitles stop (mic presses while live are ignored)
+- [ ] Press another channel while busy → force-switch (control) or `409` (desk mic)
 - [ ] **Mic Talk** (if wired) → opens this desk’s channel
-- [ ] **Mic Talk** again while live → closes (toggle)
+- [ ] **Mic Talk** again while live → ignored (`409`); idle only when story ends or Esc
 - [ ] Subtitle position/readability OK on Waveshare (70%, white on black)
 - [ ] No Chromium window competing for the display
 

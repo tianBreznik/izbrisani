@@ -5,11 +5,59 @@
     : Number(document.body.dataset.deskId);
 
   const protocol = location.protocol === "https:" ? "wss:" : "ws:";
+  const allowTalk =
+    location.hostname === "localhost" ||
+    location.hostname === "127.0.0.1" ||
+    new URLSearchParams(location.search).has("talk");
   let channels = [];
   let state = { status: "idle" };
   let player = null;
   let playerGeneration = 0;
   let closeAbortGen = 0;
+
+  let talkStatusTimer = null;
+
+  function showTalkStatus(msg, isError) {
+    const el = document.getElementById("desk-talk-status");
+    if (!el) return;
+    el.textContent = msg;
+    el.hidden = !msg;
+    el.classList.toggle("desk-talk-status--error", !!isError);
+    if (talkStatusTimer) clearTimeout(talkStatusTimer);
+    if (!msg) return;
+    talkStatusTimer = setTimeout(() => {
+      el.hidden = true;
+      el.textContent = "";
+    }, 2500);
+  }
+
+  async function onTalkPressed() {
+    if (!allowTalk) return;
+    try {
+      const res = await fetch(`/api/channel/${deskId}/open`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      });
+      if (res.status === 409) {
+        const json = await res.json();
+        showTalkStatus(`busy — channel ${json.activeChannelId} live`, true);
+        return;
+      }
+      if (!res.ok) {
+        showTalkStatus(`open failed (${res.status})`, true);
+        return;
+      }
+      showTalkStatus("", false);
+    } catch (err) {
+      showTalkStatus(String(err.message || err), true);
+    }
+  }
+
+  function bindTalkUi(root) {
+    const btn = root.querySelector("#desk-talk");
+    if (btn) btn.addEventListener("click", onTalkPressed);
+  }
 
   function esc(s) {
     return String(s)
@@ -250,7 +298,12 @@
       state.status === "channel_open" && Number.isFinite(state.channelId);
     if (!live) {
       stopPlayer();
-      root.innerHTML = `<div class="desk desk--idle"><p class="standby">desk ${deskId} — idle</p></div>`;
+      const talkUi = allowTalk
+        ? `<button type="button" class="desk-talk" id="desk-talk">Talk</button>
+           <p class="desk-talk-status" id="desk-talk-status" hidden></p>`
+        : "";
+      root.innerHTML = `<div class="desk desk--idle"><p class="standby">desk ${deskId} — idle</p>${talkUi}</div>`;
+      if (allowTalk) bindTalkUi(root);
       return;
     }
 
@@ -277,6 +330,15 @@
     channels = c.channels;
     state = s;
     render();
+
+    if (allowTalk) {
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        if (e.target && e.target.closest("input, textarea, button")) return;
+        e.preventDefault();
+        onTalkPressed();
+      });
+    }
   }
 
   const socket = new WebSocket(`${protocol}//${location.host}`);

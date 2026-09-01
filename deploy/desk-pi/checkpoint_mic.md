@@ -32,7 +32,7 @@ Mic PTT (dry contact)
   → show server (Mac Mini or laptop)
 ```
 
-Same desk press again toggles close. Other channel live → ignored (`409`).
+While any channel is live, press again on **any** desk → ignored (`409 channel_busy`). Idle when monologue/subtitles end or operator closes.
 
 ---
 

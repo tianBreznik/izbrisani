@@ -24,7 +24,7 @@ Desk Pi ×4
 
 **No Pico.** Buttons live on each desk → that Pi’s GPIO. Kodak is Mac-side relay only.
 
-Exclusive: other desks get `409` while busy; same desk press toggles close.
+Exclusive: any desk press while a channel is live gets `409 channel_busy` (same or other desk). Session ends when audio/subtitles finish (`requestClose`) or operator closes (control Esc / `POST /api/channel/close`). Control panel uses `?force=1` to override.
 
 See also: [`SHOW_DAY.md`](./SHOW_DAY.md) — staff power-on / launchd + systemd.
 

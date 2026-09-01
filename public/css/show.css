@@ -163,6 +163,40 @@ body[data-mode="desk"] .standby {
   font-weight: 400;
 }
 
+/* Bench Talk — localhost or ?talk=1 only (hidden on show Pis) */
+body[data-mode="desk"] .desk-talk {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  padding: 12px 28px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background: #1a1a1a;
+  color: #ccc;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+body[data-mode="desk"] .desk-talk:hover {
+  border-color: #888;
+  color: #fff;
+}
+
+body[data-mode="desk"] .desk-talk-status {
+  position: absolute;
+  right: 20px;
+  bottom: 68px;
+  margin: 0;
+  color: #888;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.85rem;
+}
+
+body[data-mode="desk"] .desk-talk-status--error {
+  color: #c66;
+}
+
 /* shadow outputs */
 body[data-mode="shadow"],
 body[data-mode="projector"] {
