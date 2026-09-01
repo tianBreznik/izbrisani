@@ -106,7 +106,7 @@ body[data-mode="desk"] .desk--live {
 body[data-mode="desk"] .subtitles {
   position: absolute;
   left: 50%;
-  top: 70%;
+  top: 50%;
   width: 880px;
   transform: translate(-50%, -50%);
   box-sizing: border-box;
