@@ -1,6 +1,4 @@
-// ============================================================
-// BENCH TEST ONLY — headphones / built-in output (stereo)
-// ============================================================
+// bench-headphones.scd  v2  (no outer parens — re-open from disk if parse error)
 //
 // NOT for show day. Use anatomija_pregona-2026-09-01.scd with the
 // 8ch USB interface in the gallery.
@@ -167,14 +165,7 @@ s.waitForBoot({
     "".postln;
     "LOOP: running (front bed only, quiet)".postln;
     "SHOWERS: listening on /shower 1–4".postln;
-    "Then: npm start + desk Talk or ~testShower.value(1)".postln;
+    "Then: npm start + desk Talk".postln;
     "========================================".postln;
 
 });
-
-
-~testShower = { |station|
-    NetAddr("127.0.0.1", NetAddr.langPort).sendMsg("/shower", station);
-};
-
-// ~testShower.value(1);
