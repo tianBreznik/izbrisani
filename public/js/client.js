@@ -329,6 +329,14 @@
     startPlayer(ch, sessionKey, false);
   }
 
+  const DESK_W = 1024;
+  const DESK_H = 600;
+
+  function fitDeskViewport() {
+    const scale = Math.min(window.innerWidth / DESK_W, window.innerHeight / DESK_H, 1);
+    document.body.style.transform = scale < 1 ? `scale(${scale})` : "";
+  }
+
   async function init() {
     const [c, s] = await Promise.all([
       fetch("/api/channels").then((r) => r.json()),
@@ -337,6 +345,9 @@
     channels = c.channels;
     state = s;
     render();
+
+    fitDeskViewport();
+    window.addEventListener("resize", fitDeskViewport);
 
     if (allowTalk) {
       document.addEventListener("keydown", (e) => {
