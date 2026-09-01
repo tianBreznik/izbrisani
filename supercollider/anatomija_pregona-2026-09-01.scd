@@ -1,4 +1,3 @@
-(
 // ============================================================
 // EXHIBITION AUDIO ENGINE — SHOW (production)
 // ============================================================
@@ -308,11 +307,8 @@ s.waitForBoot({
     "========================================".postln;
 
 });
-)
 
-(
+
 ~testShower = { |station|
-    NetAddr("127.0.0.1", NetAddr.langPort)
-        .sendMsg("/shower", station);
+    NetAddr("127.0.0.1", NetAddr.langPort).sendMsg("/shower", station);
 };
-)
