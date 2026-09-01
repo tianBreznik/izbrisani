@@ -124,6 +124,44 @@ Label each desk: which RJ45 pins = signal / GND (same pinout on all four mics).
 
 ---
 
+## C3. **HIGHEST PRIORITY — external pull-up (desk-2 lab finding)**
+
+**Symptom:** Screw ↔ screw with Talk **up** reads **~1–1.3 kΩ** (not OL). Talk **held** &lt;10 Ω.  
+`gpio-test-raw.py` starts **LOW / PRESSED** immediately; Talk does nothing (both states read LOW).
+
+**Cause:** ~1 kΩ leak in parallel with the switch. Pi internal pull-up (~50 kΩ) loses → pin ~0.07 V.  
+**Fix:** **1 kΩ** pull-up (or **470–560 Ω** for extra margin). Wire at **screw terminals** (Method 3):
+
+```text
+Pi pin 9  (GND)  ◄── Dupont ◄── screw A ◄── mic
+Pi pin 11 (GPIO17) ◄── Dupont ◄── screw B ◄── mic
+                              └── 1 kΩ leg 1 (same screw as GPIO wire)
+Pi pin 1  (3.3 V) ◄── Dupont ◄── 1 kΩ leg 2
+```
+
+| Part | Where |
+|------|--------|
+| Mic → GND | Dupont → **physical pin 9** |
+| Mic → signal | Dupont → **physical pin 11** (BCM17) |
+| Resistor | One leg in **GPIO screw** with pin-11 wire; other leg → short wire + Dupont → **pin 1** |
+
+**Pin 1** = 3.3 V, top of GPIO header by SD card (inner row). Not pin 9.
+
+**Test (Pi on):**
+
+```bash
+sudo systemctl stop desk-client desk-agent
+GPIOZERO_PIN_FACTORY=lgpio python3 ~/gpio-test-raw.py
+```
+
+Talk up → **HIGH**. Talk held → **LOW**. Then `sudo systemctl start desk-client`.
+
+**Values:** 1 kΩ OK for ~1030–1120 Ω leak (~1.7 V HIGH). 500 Ω safer if leak dips lower (~2.2 V HIGH).
+
+**TODO:** Install on **all four desks** before show. Long-term: re-solder for OL when Talk up (true dry contact).
+
+---
+
 ## D. Show server (Mac Mini or laptop)
 
 ```bash
@@ -192,6 +230,7 @@ IP change → edit unit `SHOW_URL` → `sudo systemctl restart desk-agent`.
 - [x] PTT dry-contact pair identified  
 - [x] Inner-row GPIO17 + GND confirmed  
 - [x] Foreground agent + show server toggle channel 1 (alligator clips)  
+- [ ] **HIGHEST PRIORITY:** External **1 kΩ** (or 470–560 Ω) pull-up at screw terminals (§ C3); gpio-test-raw HIGH/LOW; desk_client opens channel on Talk  
 - [ ] Permanent solder + strain relief; RJ45 pinout labeled; meter clean open/close at RJ45 (or Dupont) ends  
 - [ ] `desk-agent` systemd enabled; works after close terminal + reboot  
 - [ ] Stable show network (Ethernet preferred); kiosk `/desk/1` still OK  

@@ -6,7 +6,7 @@
       "country": "Republic of Example",
       "delegate": "Ambassador Ana Kovač",
       "subtitles": "/content/subtitles/desk-1.vtt",
-      "audio": null,
+      "audio": "/content/audio/vox-01.wav",
       "shadow": 1,
       "shadowMedia": "/assets/candleinholder.gif"
     },
@@ -15,7 +15,7 @@
       "country": "United Territories of Sample",
       "delegate": "Minister James Okonkwo",
       "subtitles": "/content/subtitles/desk-2.vtt",
-      "audio": null,
+      "audio": "/content/audio/vox-02.wav",
       "shadow": 1,
       "shadowMedia": "/assets/apple2.gif"
     },
@@ -24,7 +24,7 @@
       "country": "Free State of Demo",
       "delegate": "Dr. Yuki Tanaka",
       "subtitles": "/content/subtitles/desk-3.vtt",
-      "audio": null,
+      "audio": "/content/audio/vox-03.wav",
       "shadow": 2,
       "shadowMedia": "/assets/HShoeT.gif"
     },
@@ -33,7 +33,7 @@
       "country": "Provisional Council of Test",
       "delegate": "Representative Sam Rivera",
       "subtitles": "/content/subtitles/desk-4.vtt",
-      "audio": null,
+      "audio": "/content/audio/vox-04.wav",
       "shadow": 2,
       "shadowMedia": "/assets/shoes_27421.gif"
     }

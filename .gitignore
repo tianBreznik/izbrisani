@@ -2,3 +2,7 @@ node_modules/
 .DS_Store
 .env
 .idea/workspace.xml
+
+# Ambient loops — too large for GitHub; copy to Mini directly
+content/audio/ambient/loop-front.wav
+content/audio/ambient/loop-back.wav

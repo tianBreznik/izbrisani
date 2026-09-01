@@ -3,7 +3,7 @@
 ## Architecture (current)
 
 ```text
-Mac Mini = show server + terminal operator + ESP32 séance + Kodak
+Mac Mini = show server + SuperCollider (8ch) + terminal operator + ESP32 séance + Kodak
 Desk Pi ×4 = Chromium kiosk /desk/N + GPIO button agent
 ```
 
@@ -20,6 +20,8 @@ Desk Pi ×4 = Chromium kiosk /desk/N + GPIO button agent
 | [`desk-pi/agent/`](./desk-pi/agent/) | **GPIO companion** |
 | [`checkpoint_kodak.md`](./checkpoint_kodak.md) | Kodak Plan A: 6-pin relay; Plan B: IR blaster |
 | [`checkpoint_seance.md`](./checkpoint_seance.md) | ESP32 séance lights |
+| [`checkpoint_audio.md`](./checkpoint_audio.md) | SuperCollider 8ch + OSC monologues |
+| [`sc-osc-map.json`](./sc-osc-map.json) | OSC addresses (confirm with Tisa) |
 | [`mac/open-shadows.sh`](./mac/open-shadows.sh) | Legacy — not needed on Mac Mini |
 
 ## Mac Mini
@@ -29,8 +31,8 @@ npm install
 npm start                 # leave running (SSH ok)
 # second session:
 npm run control           # keys 1–4 / Esc — SHOW_URL optional
-# optional Kodak / séance env on the npm start process:
-# KODAK_FORWARD='…' ESP32_URL='…' npm start
+# optional Kodak / séance / OSC env on the npm start process:
+# KODAK_FORWARD='…' ESP32_URL='…' AUDIO_BACKEND=osc npm start
 ```
 
 ## Each desk Pi

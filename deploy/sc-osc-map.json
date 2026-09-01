@@ -1,0 +1,28 @@
+{
+  "_note": "Matches Tisa's SuperCollider patch (supercollider/anatomija_pregona-2026-09-01.scd). SC loads WAVs at boot; Node only sends station 1–4.",
+
+  "outbound": {
+    "host": "127.0.0.1",
+    "port": 57120,
+    "monologueTrigger": {
+      "address": "/shower",
+      "deskArgType": "i",
+      "deskIndexBase": 1,
+      "includeAudioPath": false
+    },
+    "monologueStop": {
+      "address": "/shower/stop",
+      "args": [],
+      "_note": "Not implemented in SC patch yet — harmless if SC ignores unknown OSC"
+    }
+  },
+
+  "inbound": {
+    "listenPort": 57121,
+    "done": {
+      "address": "/izbrisani/monologue/done",
+      "matchDeskArg": false,
+      "_note": "Not sent by SC patch yet — server uses VTT timer fallback"
+    }
+  }
+}

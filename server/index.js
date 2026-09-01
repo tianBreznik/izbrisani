@@ -8,7 +8,7 @@ const {
   getHardwareState,
   setHardwareChangeListener,
 } = require("./hardware");
-const storyAudio = require("./story-audio");
+const audioBackend = require("./audio-backend");
 
 const PORT = Number(process.env.PORT) || 3847;
 const HOST = process.env.HOST || "0.0.0.0";
@@ -56,7 +56,7 @@ function setShowState(next) {
   broadcastState();
 }
 
-storyAudio.configure({
+audioBackend.configure({
   repoRoot: ROOT,
   getChannels,
   requestClose: () => {
@@ -64,6 +64,12 @@ storyAudio.configure({
       setShowState({ status: "idle" });
     }
   },
+});
+
+process.on("SIGTERM", () => {
+  if (typeof audioBackend.shutdown === "function") {
+    audioBackend.shutdown();
+  }
 });
 
 app.get("/api/health", (_req, res) => {

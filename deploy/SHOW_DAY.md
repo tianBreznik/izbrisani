@@ -8,14 +8,14 @@ Goal: museum staff power everything on; show runs without SSH or Terminal babysi
 |--------|--------|
 | Desk **N** Talk | Channel **N** opens (exclusive; others get busy) |
 | **All 4 screens** | Show channel **N** subtitles together |
-| Audio | Mac Mini → amp → speakers (`afplay` / `content/audio/desk-N.mp3`) |
-| Session end | Auto-close when Mac story audio ends (or VTT timer if no MP3), same-desk Talk / control Esc |
+| Audio | Mac Mini → **SuperCollider** (8ch) → amps/speakers; Node sends OSC on channel open |
+| Session end | SC sends OSC **done**, or VTT timer fallback; same-desk Talk / control Esc |
 
 ## Boot stack
 
 ```text
 Power on
-  ├── Mac Mini → launchd → npm show server (:3847)  [KeepAlive]
+  ├── Mac Mini → SuperCollider (8ch ambient loop) → then launchd → npm start (:3847)
   ├── desk-1…4 → autologin desktop → systemd desk-client → pyclient
   └── Staff (optional): open control TUI / Shelly / Kodak front switch
 ```
@@ -23,11 +23,12 @@ Power on
 ### Mac Mini (once)
 
 1. Repo at a fixed path (e.g. `/Users/moderna/izbrisani`).
-2. Copy [`mac/com.izbrisani.show.plist.example`](./mac/com.izbrisani.show.plist.example) → `~/Library/LaunchAgents/com.izbrisani.show.plist`.
-3. Edit `node` path + WorkingDirectory to match this Mini.
-4. `launchctl load ~/Library/LaunchAgents/com.izbrisani.show.plist`
-5. Reboot Mini once; confirm `curl -s http://127.0.0.1:3847/api/health` → ok.
-6. Prefer **Ethernet** + **fixed IP** (or DHCP reservation) so desk `SHOW_URL` never drifts.
+2. **SuperCollider** running with Tisa’s patch (8ch interface; ambient loop before show). See [`checkpoint_audio.md`](./checkpoint_audio.md).
+3. Copy [`mac/com.izbrisani.show.plist.example`](./mac/com.izbrisani.show.plist.example) → `~/Library/LaunchAgents/com.izbrisani.show.plist`.
+4. Edit `node` path + WorkingDirectory to match this Mini; set `AUDIO_BACKEND=osc` in plist env if needed.
+5. `launchctl load ~/Library/LaunchAgents/com.izbrisani.show.plist`
+6. Reboot Mini once; confirm `curl -s http://127.0.0.1:3847/api/health` → ok.
+7. Prefer **fixed IP** on `izbrisani-show` so desk `SHOW_URL` never drifts.
 
 Staff “button” for the Mini is just: **leave it on** (or one wall switch on a PDU that powers Mini + switch + Pis).
 
@@ -57,6 +58,7 @@ Staff “button” for desks: **PDU / wall power** — they come up alone.
 ## Survivability checklist
 
 - [ ] Mini fixed IP documented on the staff card
+- [ ] SuperCollider + 8ch interface up before `npm start` (`checkpoint_audio.md`)
 - [ ] launchd KeepAlive; log at `/tmp/izbrisani-show.log`
 - [ ] Each Pi: `systemctl is-enabled desk-client`
 - [ ] Each Pi: `SHOW_URL` points at Mini fixed IP

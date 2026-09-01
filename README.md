@@ -30,14 +30,16 @@ Mac Mini — no browser control panel. Operator is a **terminal TUI** (`server/c
 - [`deploy/CHECKLIST.md`](./deploy/CHECKLIST.md) — on-site checklist  
 - [`deploy/desk-pi/`](./deploy/desk-pi/) — kiosk + GPIO agent  
 - [`deploy/checkpoint_kodak.md`](./deploy/checkpoint_kodak.md) — Kodak Plan A/B  
+- [`deploy/checkpoint_audio.md`](./deploy/checkpoint_audio.md) — SuperCollider 8ch + OSC  
 
 ## Content
 
-Edit `content/channels.json` (`essay`, later `audio`).
+Edit `content/channels.json` (subtitles + mono `audio` WAV paths for SC).
 
 ## Physical I/O
 
-- **Desk buttons:** `deploy/desk-pi/agent/` on each Pi
+- **Desk buttons:** `deploy/desk-pi/pyclient/` on each Pi
+- **Story audio:** SuperCollider on Mac Mini — `deploy/checkpoint_audio.md` (`AUDIO_BACKEND=osc`)
 - **Kodak:** Plan A 6-pin relay — see `deploy/checkpoint_kodak.md`
 - **Séance lights (ESP32):** `ESP32_URL` + `SEANCE_SETTLE_MS` — see `deploy/checkpoint_seance.md`
 
