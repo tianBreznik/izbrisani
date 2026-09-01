@@ -1,5 +1,6 @@
 const { exec } = require("child_process");
 const { promisify } = require("util");
+const storyAudio = require("./story-audio");
 
 const execAsync = promisify(exec);
 
@@ -32,6 +33,8 @@ const hardwareState = {
     configured: false,
     desk: null,
     phase: "idle",
+    source: "mac",
+    lastError: null,
   },
 };
 
@@ -48,13 +51,17 @@ function getHardwareState() {
 }
 
 function syncSpeakers(showState) {
+  const sa = storyAudio.getStatus();
+  hardwareState.speakers.configured = sa.configured;
+  hardwareState.speakers.source = sa.source || "mac";
   if (showState?.status === "channel_open") {
     hardwareState.speakers.desk = showState.channelId;
-    hardwareState.speakers.phase = "playing";
+    hardwareState.speakers.phase = sa.phase || "playing";
   } else {
     hardwareState.speakers.desk = null;
     hardwareState.speakers.phase = "idle";
   }
+  hardwareState.speakers.lastError = sa.lastError;
 }
 
 function setSeanceIdle() {
@@ -143,6 +150,7 @@ function stateKey(state) {
 
 function onShowStateChange(prev, next) {
   syncSpeakers(next);
+  storyAudio.onShowStateChange(prev, next);
 
   if (stateKey(prev) === stateKey(next)) {
     emitHardwareChange();
@@ -163,6 +171,7 @@ function onShowStateChange(prev, next) {
     });
   } else {
     console.log("[hardware] idle");
+    storyAudio.stopForClose();
     kodakOff();
     cancelSettle();
     seanceGen += 1;

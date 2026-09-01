@@ -89,34 +89,17 @@
     player = null;
   }
 
-  async function closeSession(sessionKey) {
+  function closeSession(sessionKey) {
     if (!player || player.sessionKey !== sessionKey || player.closing) return;
-    // Followers hold the last cue until the server goes idle (don't blank early).
-    if (state.channelId !== deskId) {
-      player.closing = true;
-      if (player.rafId) cancelAnimationFrame(player.rafId);
-      player.rafId = null;
-      paintCue(
-        player.lineEl,
-        player.wrapEl,
-        cueAt(player.cues, Math.max(0, player.endAt - 0.001))
-      );
-      return;
-    }
-    const closeGen = closeAbortGen;
+    // Mac Mini plays story audio and auto-closes; desks hold the last cue.
     player.closing = true;
-    try {
-      const s = await fetch("/api/state").then((r) => r.json());
-      if (closeGen !== closeAbortGen) return;
-      if (s.status !== "channel_open" || s.channelId !== deskId) return;
-      await fetch("/api/channel/close", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: "{}",
-      });
-    } catch (err) {
-      console.error("auto-close failed", err);
-    }
+    if (player.rafId) cancelAnimationFrame(player.rafId);
+    player.rafId = null;
+    paintCue(
+      player.lineEl,
+      player.wrapEl,
+      cueAt(player.cues, Math.max(0, player.endAt - 0.001))
+    );
   }
 
   function mountPlayerShell() {
@@ -250,8 +233,8 @@
       } else {
         t = (performance.now() - player.clock0) / 1000;
         if (t >= endAt) {
+          player.closing = true;
           paintCue(player.lineEl, player.wrapEl, cueAt(player.cues, endAt - 0.001));
-          closeSession(sessionKey);
           return;
         }
       }
@@ -282,8 +265,8 @@
     // Same session: keep playing, or hold last cue if already closing.
     if (player && player.sessionKey === sessionKey) return;
 
-    // All desks show live channel subtitles; only the opening desk plays audio.
-    startPlayer(ch, sessionKey, state.channelId === deskId);
+    // All desks show live channel subtitles; audio plays on the Mac Mini only.
+    startPlayer(ch, sessionKey, false);
   }
 
   async function init() {

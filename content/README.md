@@ -1,6 +1,6 @@
 # Desk story content (audio + subtitles)
 
-Each **channel** (desk button 1–4) has one recording + timed WebVTT. When that channel opens, **all four screens** show the same subtitles. Audio plays on the **opening desk** only (until a shared speaker path exists).
+Each **channel** (desk button 1–4) has one recording + timed WebVTT. When that channel opens, **all four screens** show the same subtitles. **Audio plays on the Mac Mini** (amp + speakers), not on the desk Pis.
 
 ## Files per channel
 
@@ -52,8 +52,14 @@ Rules:
 - One visible line at a time on the desk screen (film subtitles).
 - Export from DaVinci, Subtitle Edit, or hand-edit.
 
-## Kiosk / pyclient audio
+## Mac Mini story audio
 
-- **Pyclient:** pygame mixer on the opening desk; followers are silent (subtitles only).
-- **Chromium:** needs `--autoplay-policy=no-user-gesture-required` (see `deploy/desk-pi/README.md`).
+- **`server/story-audio.js`** — on channel open, plays `content/audio/desk-N.mp3` via **`afplay`** (macOS) or **`ffplay`** (Linux). When the file ends (or the VTT timer if `"audio": null`), the server auto-closes the channel.
+- Disable with **`STORY_AUDIO=0`** (VTT timer still auto-closes).
+- Override player: **`STORY_AUDIO_PLAYER=mpv`** or **`STORY_AUDIO_CMD='afplay %FILE%'`**.
+
+## Desk / kiosk playback
+
+- **Pyclient & Chromium:** subtitles only — no desk speaker audio.
+- Subtitles stay on the **last cue** until the Mac closes the channel (Esc / auto-close).
 

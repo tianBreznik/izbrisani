@@ -209,7 +209,7 @@ class ShowClient:
         return self.state.get("status") == "channel_open" and self.live_channel() is not None
 
     def is_owner(self) -> bool:
-        """This desk's button opened the live channel (owns audio + auto-close)."""
+        """True when this desk opened the live channel (GPIO / local button)."""
         if self.state.get("status") != "channel_open":
             return False
         try:
@@ -252,36 +252,6 @@ class ShowClient:
                 pass
         self.audio_path = None
 
-    def close_session(self, session_key: str) -> None:
-        if not self.player or self.player.session_key != session_key or self.player.closing:
-            return
-        # Followers must not tear down the screen — hold the last cue until the
-        # server goes idle (owner auto-close / Esc). Their local clock can finish
-        # earlier than the owner's audio clock.
-        if not self.is_owner():
-            self.player.closing = True
-            if self.player.end_at > 0:
-                self.paint_cue(cue_at(self.player.cues, self.player.end_at - 0.001))
-            return
-        close_gen = self.close_abort_gen
-        self.player.closing = True
-        try:
-            s = http_get_json("/api/state")
-            if close_gen != self.close_abort_gen:
-                return
-            if s.get("status") != "channel_open":
-                return
-            try:
-                if int(s.get("channelId")) != DESK_ID:
-                    return
-            except (TypeError, ValueError):
-                return
-            http_post("/api/channel/close")
-            log("auto-close → idle")
-        except Exception as err:  # noqa: BLE001
-            log(f"auto-close failed: {err}")
-
-    def start_player(self, ch: dict[str, Any], session_key: str, play_audio: bool) -> None:
         import pygame
 
         self.stop_player()
@@ -394,8 +364,8 @@ class ShowClient:
         # Do NOT restart on hardware re-broadcasts when closing=True.
         if self.player and self.player.session_key == sk:
             return
-        # All desks show the live channel's VTT; only the opening desk plays audio.
-        self.start_player(ch, sk, play_audio=self.is_owner())
+        # All desks show the live channel's VTT; audio plays on the Mac Mini only.
+        self.start_player(ch, sk, play_audio=False)
 
     def tick_player(self) -> None:
         if not self.player or self.player.closing:
@@ -405,19 +375,9 @@ class ShowClient:
             return
 
         t = time.monotonic() - p.clock0
-        import pygame
-
-        if p.has_audio and pygame.mixer.get_init():
-            if p.end_at > 0 and t >= p.end_at - 0.05:
-                self.close_session(p.session_key)
-                return
-            if t > 0.5 and not pygame.mixer.music.get_busy():
-                self.paint_cue(cue_at(p.cues, min(t, p.end_at - 0.001)))
-                self.close_session(p.session_key)
-                return
-        elif t >= p.end_at:
+        if p.end_at > 0 and t >= p.end_at:
+            self.player.closing = True
             self.paint_cue(cue_at(p.cues, p.end_at - 0.001))
-            self.close_session(p.session_key)
             return
 
         self.paint_cue(cue_at(p.cues, t))
@@ -471,16 +431,30 @@ class ShowClient:
             time.sleep(1.5)
 
     def gpio_thread(self) -> None:
-        from gpiozero import Button, LED, PWMLED
+        try:
+            from gpiozero import Button, LED, PWMLED
+        except Exception as err:  # noqa: BLE001
+            log(f"gpiozero import failed: {err} — install python3-gpiozero python3-lgpio")
+            return
 
-        # NO dry contact: Talk shorts GPIO→GND. Use BUTTON_NC=1 if idle is shorted.
-        button = Button(BUTTON_GPIO, pull_up=True, bounce_time=0.2)
+        try:
+            button = Button(BUTTON_GPIO, pull_up=True, bounce_time=0.2)
+        except Exception as err:  # noqa: BLE001
+            log(f"Button(BCM{BUTTON_GPIO}) failed: {err} — pin busy or no permission?")
+            return
+
         if os.environ.get("BUTTON_NC", "").lower() in ("1", "true", "yes"):
             button.when_released = self.on_button_pressed
             log(f"button BCM{BUTTON_GPIO} (NC — fire on open)")
         else:
             button.when_pressed = self.on_button_pressed
             log(f"button BCM{BUTTON_GPIO} (NO — fire on short to GND, cooldown {int(BUTTON_COOLDOWN_S*1000)}ms)")
+
+        try:
+            idle_pressed = button.is_pressed
+            log(f"button idle is_pressed={idle_pressed} (expect False; True = stuck short or wrong NC/NO)")
+        except Exception as err:  # noqa: BLE001
+            log(f"button read failed: {err}")
 
         led = None
         if LED_GPIO is not None:

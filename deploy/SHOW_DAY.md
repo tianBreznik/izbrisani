@@ -8,8 +8,8 @@ Goal: museum staff power everything on; show runs without SSH or Terminal babysi
 |--------|--------|
 | Desk **N** Talk | Channel **N** opens (exclusive; others get busy) |
 | **All 4 screens** | Show channel **N** subtitles together |
-| Audio | Plays only on the **opening** desk’s Pi (not 4× copies) until speakers/Mac path exists |
-| Session end | Auto-close when that desk’s story ends, or same-desk Talk / control Esc |
+| Audio | Mac Mini → amp → speakers (`afplay` / `content/audio/desk-N.mp3`) |
+| Session end | Auto-close when Mac story audio ends (or VTT timer if no MP3), same-desk Talk / control Esc |
 
 ## Boot stack
 
@@ -46,7 +46,7 @@ Staff “button” for desks: **PDU / wall power** — they come up alone.
 2. Wait ~2 min; confirm Mini is on `izbrisani-show`.
 3. Kodak: front switch **ON**; Shelly on.
 4. Optional: laptop `ssh mini` → `npm run control` for force keys / Esc.
-5. Spot-check: press desk-1 Talk → **all four** screens show desk-1 text.
+5. Spot-check: press desk-1 Talk → **all four** screens show desk-1 text; **speakers** play from Mac.
 
 ### Daily close
 

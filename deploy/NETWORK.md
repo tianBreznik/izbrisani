@@ -27,7 +27,31 @@ ESP32 is **not** optional — same SSID as the Mac so `ESP32_URL` works.
 | **Shelly** | AP client; fixed IP; `KODAK_POWER_*` from Mac |
 | **ESP32** | AP client; fixed IP; `ESP32_URL` from Mac |
 
-Show brain stays on the **Mac**. The Pi is the **radio**, not Node.
+Show brain stays on the **Mac Mini**. The Pi is the **radio**, not Node.
+
+---
+
+## Two Macs (do not confuse)
+
+| Machine | Wi‑Fi | Internet | Role |
+|---------|-------|----------|------|
+| **Dev laptop** (Cursor / scp) | Lab or home Wi‑Fi | Yes | Code, copy files, ssh when Pis are on lab net |
+| **Mac Mini** (show server) | **`izbrisani-show` only** | Not required | `npm start` at `192.168.50.10:3847` |
+
+- **Do not** put the dev laptop on `izbrisani-show` for daily work — that SSID has **no internet**.
+- Manual IP `192.168.50.10` is set **on the Mac Mini**, on the **`izbrisani-show` network profile only**. Lab/home Wi‑Fi on any Mac stays **DHCP** (macOS settings are per network).
+- Dev laptop may join `izbrisani-show` briefly to test, then switch back to lab Wi‑Fi.
+
+---
+
+## Progress log
+
+| Date | Note |
+|------|------|
+| 2026-09-01 | desk-4 Pi 4: `setup-show-ap.sh` run; SSID **`izbrisani-show`** AP up |
+| 2026-09-01 | **TODO:** Mac Mini + desk-1…4 + Shelly + ESP32 join show Wi‑Fi; Mini static `.10` |
+| 2026-09-01 | **TODO:** desk-4 AP survives reboot; password on staff card |
+| 2026-09-01 | Dev laptop stays on lab Wi‑Fi — not the show AP |
 
 ---
 
