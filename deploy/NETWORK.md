@@ -1,19 +1,20 @@
-# Show network — zero-switch wireless (locked for now)
+# Show network — dedicated router (locked)
 
-**Decision (2026-08-31):** No Ethernet switch. **Kodak desk Pi** runs a **Wi‑Fi access point**. Everything joins that SSID.
+**Decision (2026-09-02):** A **physical router** provides Wi‑Fi and DHCP. Desk Pis (including desk-4) are **clients only** — no Pi access point.
 
 ```text
-desk-4 Pi (Kodak + AP + DHCP)
-        │  2.4 GHz Wi‑Fi
+Router (gateway + DHCP + 2.4 GHz Wi‑Fi)
+        │
         ├── Mac Mini          npm start :3847
         ├── desk-1 Pi
         ├── desk-2 Pi
         ├── desk-3 Pi
+        ├── desk-4 Pi
         ├── Shelly Plug       Kodak mains
         └── ESP32             séance (required)
 ```
 
-ESP32 is **not** optional — same SSID as the Mac so `ESP32_URL` works.
+ESP32 is **not** optional — same LAN as the Mac so `ESP32_URL` works.
 
 ---
 
@@ -21,13 +22,13 @@ ESP32 is **not** optional — same SSID as the Mac so `ESP32_URL` works.
 
 | Device | Role on this LAN |
 |--------|------------------|
-| **desk-4 (Pi 4 preferred)** | Wi‑Fi AP + DHCP + pyclient `DESK_ID=4` |
-| **Mac Mini** | Show server only (joins AP as client) |
-| **desk-1…3** | AP clients + pyclient |
-| **Shelly** | AP client; fixed IP; `KODAK_POWER_*` from Mac |
-| **ESP32** | AP client; fixed IP; `ESP32_URL` from Mac |
+| **Router** | Gateway, DHCP, Wi‑Fi (2.4 GHz for IoT) |
+| **Mac Mini** | Show server only |
+| **desk-1…4** | Wi‑Fi clients + pyclient |
+| **Shelly** | Wi‑Fi client; fixed IP or DHCP reservation; HTTP from Mac |
+| **ESP32** | Wi‑Fi client; fixed IP or DHCP reservation; HTTP from Mac |
 
-Show brain stays on the **Mac Mini**. The Pi is the **radio**, not Node.
+Show brain stays on the **Mac Mini**.
 
 ---
 
@@ -36,11 +37,10 @@ Show brain stays on the **Mac Mini**. The Pi is the **radio**, not Node.
 | Machine | Wi‑Fi | Internet | Role |
 |---------|-------|----------|------|
 | **Dev laptop** (Cursor / scp) | Lab or home Wi‑Fi | Yes | Code, copy files, ssh when Pis are on lab net |
-| **Mac Mini** (show server) | **`izbrisani-show` only** | Not required | `npm start` at `192.168.50.10:3847` |
+| **Mac Mini** (show server) | **Show router SSID** | Optional | `npm start` at `192.168.50.10:3847` |
 
-- **Do not** put the dev laptop on `izbrisani-show` for daily work — that SSID has **no internet**.
-- Manual IP `192.168.50.10` is set **on the Mac Mini**, on the **`izbrisani-show` network profile only**. Lab/home Wi‑Fi on any Mac stays **DHCP** (macOS settings are per network).
-- Dev laptop may join `izbrisani-show` briefly to test, then switch back to lab Wi‑Fi.
+- Configure the Mac Mini’s show-network profile with a **static IP** or rely on a **DHCP reservation** on the router.
+- Dev laptop joins the show Wi‑Fi only briefly for on-site testing.
 
 ---
 
@@ -48,28 +48,29 @@ Show brain stays on the **Mac Mini**. The Pi is the **radio**, not Node.
 
 | Date | Note |
 |------|------|
-| 2026-09-01 | desk-4 Pi 4: `setup-show-ap.sh` run; SSID **`izbrisani-show`** AP up |
-| 2026-09-01 | **TODO:** Mac Mini + desk-1…4 + Shelly + ESP32 join show Wi‑Fi; Mini static `.10` |
-| 2026-09-01 | **TODO:** desk-4 AP survives reboot; password on staff card |
-| 2026-09-01 | Dev laptop stays on lab Wi‑Fi — not the show AP |
+| 2026-09-01 | desk-4 Pi 4: `setup-show-ap.sh` run (superseded) |
+| 2026-09-02 | **Locked:** dedicated router replaces Pi AP |
+| 2026-09-02 | **TODO:** router SSID/password on staff card; DHCP reservations for Mac, Shelly, ESP32 |
 
 ---
 
-## Addressing
+## Addressing (suggested — configure on router)
 
-| Host | IP |
-|------|-----|
-| desk-4 AP (gateway) | `192.168.50.1` |
-| Mac Mini | `192.168.50.10` (static or DHCP reservation) |
-| desk-1 | `192.168.50.11` |
-| desk-2 | `192.168.50.12` |
-| desk-3 | `192.168.50.13` |
-| Shelly | `192.168.50.20` |
-| ESP32 | `192.168.50.30` |
+Use one subnet consistently. Example `192.168.50.0/24`:
 
-- **SSID:** `izbrisani-show`
-- **Password:** choose once (≥8 chars); write on staff card
-- **Band:** 2.4 GHz only
+| Host | IP | How |
+|------|-----|-----|
+| **Router (gateway)** | `192.168.50.1` | Router LAN settings |
+| Mac Mini | `192.168.50.10` | DHCP reservation or static on Mac |
+| desk-1 | `192.168.50.11` | DHCP reservation (optional) |
+| desk-2 | `192.168.50.12` | DHCP reservation (optional) |
+| desk-3 | `192.168.50.13` | DHCP reservation (optional) |
+| desk-4 | `192.168.50.14` | DHCP reservation (optional) |
+| **Shelly** | `192.168.50.20` | **DHCP reservation on router** (recommended) |
+| **ESP32** | `192.168.50.30` | DHCP reservation or static in firmware |
+
+- **SSID / password:** set on the router; write on staff card.
+- **Band:** 2.4 GHz required for Shelly + ESP32; 5 GHz optional for Mac if supported.
 
 Every desk pyclient / agent:
 
@@ -79,57 +80,56 @@ SHOW_URL=http://192.168.50.10:3847
 
 ---
 
-## 1. Create the AP (on desk-4)
+## 1. Router setup
 
-Copy script from the Mac, then run on the Pi:
+1. Place router; power on.
+2. Configure LAN (e.g. `192.168.50.1/24`).
+3. Create Wi‑Fi SSID + password (2.4 GHz enabled).
+4. Add **DHCP reservations** for at least:
+   - Mac Mini → `.10`
+   - Shelly → `.20`
+   - ESP32 → `.30`
+5. Optional: reservations for desk-1…4 (`.11`–`.14`) for easier SSH.
 
-```bash
-# Mac (adjust user/IP if desk-4 is still on lab Wi-Fi)
-scp deploy/desk-pi/setup-show-ap.sh moderna@DESK4_IP:~/
+**Shelly (easiest path):** join router Wi‑Fi via Shelly app → in the **router admin UI**, reserve `192.168.50.20` for the Shelly’s MAC address. No static IP needed on the Shelly itself.
 
-# desk-4
-sudo bash ~/setup-show-ap.sh 'YOUR_PASSWORD'
-# optional 2nd arg if Wi-Fi isn't auto-detected:
-# sudo bash ~/setup-show-ap.sh 'YOUR_PASSWORD' wlan0
-```
-
-Script creates NetworkManager connection `izbrisani-ap` with autoconnect, address `192.168.50.1/24`, DHCP for clients.
-
-**Verify:**
+**Verify Shelly from Mac:**
 
 ```bash
-nmcli connection show --active
-ip -4 addr show wlan0
-# From another phone: see SSID izbrisani-show
+curl -X POST -d '{"id":0,"on":true}'  "http://192.168.50.20/rpc/Switch.Set"
+curl -X POST -d '{"id":0,"on":false}' "http://192.168.50.20/rpc/Switch.Set"
 ```
 
-**Reboot test (required):**
+Tell the show server:
 
 ```bash
-sudo reboot
-# after boot — AP must come back without keyboard
-nmcli -t -f NAME,DEVICE connection show --active
+export SHELLY_URL=http://192.168.50.20
+# or set "shellyUrl" in deploy/kodak-carousel.json
 ```
-
-Use a **Pi 4**. Do not run the AP on a 3B+.
 
 ---
 
-## 2. Join Mac Mini
+## 2. Mac Mini
 
-1. Wi‑Fi → `izbrisani-show` → password.
-2. Prefer static IP **192.168.50.10**, subnet `255.255.255.0`, router `192.168.50.1` (DNS can be `192.168.50.1` or empty).
-3. Start show: `cd ~/izbrisani && npm start`
-4. Check: `curl -s http://127.0.0.1:3847/api/health`
+1. Wi‑Fi → show SSID → password.
+2. Static IP **192.168.50.10** on the Mac, **or** DHCP reservation on router.
+3. Gateway = router (`192.168.50.1`).
+4. Start show: `cd ~/izbrisani && npm start`
+5. Check: `curl -s http://127.0.0.1:3847/api/health`
+
+```bash
+export ESP32_URL=http://192.168.50.30
+export SHELLY_URL=http://192.168.50.20
+```
 
 ---
 
-## 3. Join desk-1…3
+## 3. Desk Pis (desk-1…4)
 
 ```bash
 # On each desk Pi (GUI Wi-Fi or nmcli)
-sudo nmcli dev wifi connect izbrisani-show password 'YOUR_PASSWORD'
-hostname -I   # should be 192.168.50.x
+sudo nmcli dev wifi connect YOUR_SSID password 'YOUR_PASSWORD'
+hostname -I
 curl -s http://192.168.50.10:3847/api/health
 ```
 
@@ -144,57 +144,49 @@ sudo systemctl daemon-reload
 sudo systemctl restart desk-client
 ```
 
-Optional static IPs `.11` / `.12` / `.13` via NM or `dhcpcd` — helps SSH.
-
 ---
 
 ## 4. Shelly + ESP32
 
-1. Put each in setup mode; join `izbrisani-show`.
-2. Set fixed IPs `.20` (Shelly) and `.30` (ESP32) in their apps / portals if possible.
-3. On Mac:
+1. Shelly app / web UI → join **router Wi‑Fi** (2.4 GHz).
+2. ESP32 firmware → same SSID.
+3. Fixed addresses via router DHCP reservations (preferred) or device static IP with gateway `192.168.50.1`.
 
-```bash
-export KODAK_POWER_ON='curl -s -X POST -d "{\"id\":0,\"on\":true}" "http://192.168.50.20/rpc/Switch.Set"'
-export KODAK_POWER_OFF='curl -s -X POST -d "{\"id\":0,\"on\":false}" "http://192.168.50.20/rpc/Switch.Set"'
-export ESP32_URL='http://192.168.50.30'
-```
+Kodak power is controlled by `server/kodak-carousel.js` via `SHELLY_URL` — no manual curl during the show.
 
 ---
 
 ## Staff day
 
-1. Power **desk-4 first** (AP up).
-2. Power Mac + other desks + Shelly + ESP32.
-3. Wait until Mini is on `izbrisani-show`; health check OK.
-4. Kodak front switch / Shelly as usual.
+1. Power **router first**; wait for Wi‑Fi up.
+2. Power Mac Mini + desk Pis + panels + ESP32 + Shelly.
+3. Confirm Mac health: `curl http://192.168.50.10:3847/api/health`
+4. Kodak front switch **ON**; Shelly starts OFF (server turns on for desk-4 carousel).
 
-No museum Wi‑Fi. No switch.
+No museum Wi‑Fi required for show operation.
 
 ---
 
 ## Checklist
 
-- [ ] desk-4 is a **Pi 4**
-- [ ] `setup-show-ap.sh` run; SSID/password on staff card
-- [ ] Reboot desk-4 → AP returns
-- [ ] Mac on AP at `.10`; `npm start` OK
-- [ ] desk-1…3 on AP; `SHOW_URL` → `.10`
-- [ ] Shelly on AP; power curl from Mac
-- [ ] ESP32 on AP; séance from Mac
+- [ ] Router configured; SSID/password on staff card
+- [ ] DHCP reservations: Mac `.10`, Shelly `.20`, ESP32 `.30`
+- [ ] Mac on show Wi‑Fi; `npm start` OK
+- [ ] desk-1…4 on show Wi‑Fi; `SHOW_URL` → `.10`
+- [ ] Shelly curl ON/OFF from Mac
+- [ ] ESP32 séance from Mac
 - [ ] Control open → all four screens sync
 
 ---
 
-## Later (not now)
+## Deprecated
 
-- Hybrid: Ethernet for Mac/desks + Wi‑Fi AP for Shelly/ESP32.
-- Move show server onto desk-4 (not planned).
+- **`deploy/desk-pi/setup-show-ap.sh`** — Pi-as-AP fallback only; do not use if a router is installed.
 
 ## Related
 
-- `deploy/desk-pi/setup-show-ap.sh` — AP installer
 - `deploy/SHOW_DAY.md` — staff boot
 - `deploy/checkpoint_seance.md` — ESP32
-- `deploy/checkpoint_kodak.md` — Shelly
+- `deploy/checkpoint_kodak.md` — Shelly + Kodak relay
 - `deploy/desk-pi/pyclient/` — desk display
+- `deploy/kodak-carousel.json` — `shellyUrl`, `slideCount`

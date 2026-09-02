@@ -28,7 +28,7 @@ Power on
 4. Edit `node` path + WorkingDirectory to match this Mini; set `AUDIO_BACKEND=osc` in plist env if needed.
 5. `launchctl load ~/Library/LaunchAgents/com.izbrisani.show.plist`
 6. Reboot Mini once; confirm `curl -s http://127.0.0.1:3847/api/health` → ok.
-7. Prefer **fixed IP** on `izbrisani-show` so desk `SHOW_URL` never drifts.
+7. Prefer **fixed IP** (or router DHCP reservation) on the show Wi‑Fi so desk `SHOW_URL` never drifts.
 
 Staff “button” for the Mini is just: **leave it on** (or one wall switch on a PDU that powers Mini + switch + Pis).
 
@@ -43,8 +43,8 @@ Staff “button” for desks: **PDU / wall power** — they come up alone.
 
 ### Daily open (staff card — short)
 
-1. Power PDU (desk-4 **first** so the AP is up, then Mini + other desks + panels + ESP32 + Shelly).
-2. Wait ~2 min; confirm Mini is on `izbrisani-show`.
+1. Power PDU (**router first**, then Mini + desk Pis + panels + ESP32 + Shelly).
+2. Wait ~2 min; confirm Mini health: `curl http://MAC_IP:3847/api/health`
 3. Kodak: front switch **ON**; Shelly on.
 4. Optional: laptop `ssh mini` → `npm run control` for force keys / Esc.
 5. Spot-check: press desk-1 Talk → **all four** screens show desk-1 text; **speakers** play from Mac.
@@ -62,7 +62,7 @@ Staff “button” for desks: **PDU / wall power** — they come up alone.
 - [ ] launchd KeepAlive; log at `/tmp/izbrisani-show.log`
 - [ ] Each Pi: `systemctl is-enabled desk-client`
 - [ ] Each Pi: `SHOW_URL` points at Mini fixed IP
-- [ ] desk-4 Wi‑Fi AP persists across reboot (`NETWORK.md`)
+- [ ] Router + show Wi‑Fi configured (`NETWORK.md`); SSID/password on staff card
 - [ ] ESP32 + Shelly on same SSID as Mini
 - [ ] Spare SD
 
@@ -74,4 +74,4 @@ Staff “button” for desks: **PDU / wall power** — they come up alone.
 
 ## Related
 
-- [`NETWORK.md`](./NETWORK.md) — zero-switch wireless (Kodak Pi AP)
+- [`NETWORK.md`](./NETWORK.md) — dedicated router

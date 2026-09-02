@@ -66,8 +66,18 @@ function errSuffix(block) {
 function kodakLine(hw) {
   const k = hw?.kodak;
   if (!k) return "kodak     —";
-  const relay = k.relay === "on" ? "relay ON" : "relay OFF";
-  return `kodak     ${relay}${tag(k.configured)}${errSuffix(k)}`;
+  const stub = tag(k.configured);
+  if (k.phase === "advancing") {
+    return `kodak     slide ${k.slide}/${k.slideCount}  power ${k.power}${stub}${errSuffix(k)}`;
+  }
+  if (k.phase === "warming") {
+    return `kodak     warming up  power ${k.power}${stub}${errSuffix(k)}`;
+  }
+  if (k.phase === "power-off") {
+    return `kodak     shutting down${stub}${errSuffix(k)}`;
+  }
+  const desk = k.triggerDesk ?? 4;
+  return `kodak     idle (desk ${desk} session-end)${stub}${errSuffix(k)}`;
 }
 
 function seanceLine(hw) {

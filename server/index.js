@@ -48,11 +48,11 @@ function broadcastState() {
 
 setHardwareChangeListener(broadcastState);
 
-function setShowState(next) {
+function setShowState(next, meta = {}) {
   const prev = showState;
   showState = next;
   stateUpdatedAt = Date.now();
-  onShowStateChange(prev, next);
+  onShowStateChange(prev, next, meta);
   broadcastState();
 }
 
@@ -61,7 +61,7 @@ audioBackend.configure({
   getChannels,
   requestClose: () => {
     if (showState.status === "channel_open") {
-      setShowState({ status: "idle" });
+      setShowState({ status: "idle" }, { closeReason: "session-end" });
     }
   },
 });
@@ -105,7 +105,7 @@ app.post("/api/channel/:id/open", (req, res) => {
 });
 
 app.post("/api/channel/close", (_req, res) => {
-  setShowState({ status: "idle" });
+  setShowState({ status: "idle" }, { closeReason: "manual" });
   res.json(getPublicState());
 });
 

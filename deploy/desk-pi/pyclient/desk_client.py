@@ -8,7 +8,6 @@ Env:
   DESK_ID          1–4
   SHOW_URL         http://MAC_IP:3847
   BUTTON_GPIO      BCM pin (default 17)
-  BUTTON_NC=1      fire on open (legacy NC pads); default NO = fire on short
   BUTTON_COOLDOWN_MS  ignore extra edges after a press (default 400)
   LED_GPIO         optional BCM pin for idle glow
   MOCK=1           Enter = button; windowed if no fullscreen
@@ -52,10 +51,11 @@ LINE_HEIGHT = 1.38
 TEXT_COLOR = (236, 236, 230)  # #ecece6
 SHADOW_COLOR = (0, 0, 0)
 ERROR_COLOR = (204, 68, 68)
-STANDBY_COLOR = (85, 85, 85)
 MAX_TEXT_WIDTH = 880
 H_PAD = 48
-SUBTITLE_Y_RATIO = 0.70
+SUBTITLE_Y_RATIO = 0.55
+# Waveshare bezel — slightly above pure black so idle screen blends on IPS.
+DISPLAY_BG_COLOR = (17, 17, 17)
 
 
 def log(msg: str) -> None:
@@ -205,11 +205,11 @@ class ShowClient:
         return f"{self.state.get('channelId')}:{self.state.get('updatedAt', 0)}"
 
     def is_open(self) -> bool:
-        """Any channel live — all desks show that channel's subtitles."""
+        """True when any desk has a live channel (global show state from server)."""
         return self.state.get("status") == "channel_open" and self.live_channel() is not None
 
     def is_owner(self) -> bool:
-        """True when this desk opened the live channel (GPIO / local button)."""
+        """True when this Pi's desk opened the live channel (informational only)."""
         if self.state.get("status") != "channel_open":
             return False
         try:
@@ -218,9 +218,12 @@ class ShowClient:
             return False
 
     def on_button_pressed(self) -> None:
+        # self.state is the global show state (WebSocket from Mac) — any live channel
+        # blocks Talk on every desk, not only the desk that opened it.
+        if self.is_open():
+            return
         now = time.monotonic()
         if now - self._last_button_at < BUTTON_COOLDOWN_S:
-            log("button ignored (cooldown)")
             return
         self._last_button_at = now
         try:
@@ -443,12 +446,8 @@ class ShowClient:
             log(f"Button(BCM{BUTTON_GPIO}) failed: {err} — pin busy or no permission?")
             return
 
-        if os.environ.get("BUTTON_NC", "").lower() in ("1", "true", "yes"):
-            button.when_released = self.on_button_pressed
-            log(f"button BCM{BUTTON_GPIO} (NC — fire on open)")
-        else:
-            button.when_pressed = self.on_button_pressed
-            log(f"button BCM{BUTTON_GPIO} (NO — fire on short to GND, cooldown {int(BUTTON_COOLDOWN_S*1000)}ms)")
+        button.when_pressed = self.on_button_pressed
+        log(f"button BCM{BUTTON_GPIO} (Talk shorts to GND, cooldown {int(BUTTON_COOLDOWN_S*1000)}ms)")
 
         try:
             idle_pressed = button.is_pressed
@@ -618,18 +617,14 @@ class ShowClient:
 
             self.tick_player()
 
-            screen.fill((0, 0, 0))
-            if self.is_open() or self.screen_message:
-                if self.screen_message:
-                    sub = self.render_subtitle(
-                        pygame, font, self.screen_message, self.screen_error
-                    )
-                    if sub:
-                        y_center = int(HEIGHT * SUBTITLE_Y_RATIO)
-                        screen.blit(sub, (0, y_center - sub.get_height() // 2))
-            else:
-                standby = font.render(f"desk {DESK_ID} — idle", True, STANDBY_COLOR)
-                screen.blit(standby, (20, 16))
+            screen.fill(DISPLAY_BG_COLOR)
+            if (self.is_open() or self.screen_message) and self.screen_message:
+                sub = self.render_subtitle(
+                    pygame, font, self.screen_message, self.screen_error
+                )
+                if sub:
+                    y_center = int(HEIGHT * SUBTITLE_Y_RATIO)
+                    screen.blit(sub, (0, y_center - sub.get_height() // 2))
 
             pygame.display.flip()
             clock.tick(30)

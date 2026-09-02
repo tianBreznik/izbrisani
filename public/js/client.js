@@ -33,6 +33,7 @@
 
   async function onTalkPressed() {
     if (!allowTalk) return;
+    if (state.status === "channel_open") return;
     try {
       const res = await fetch(`/api/channel/${deskId}/open`, {
         method: "POST",

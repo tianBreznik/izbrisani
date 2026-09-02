@@ -68,7 +68,8 @@ Label on unit: **Kodak Ektalite 500 slide projector**. No earlier repo note had 
 |-------|------|
 | Museum / show day **opens** | Staff → **ON** |
 | Museum / show day **closes** | Staff → **NO LIGHT** or off |
-| Desk **channel open / close** | **No lamp change** — only slide **forward** pulse (when algorithm says) + séance lights |
+| Desk **channel open** (1–3) | **No Kodak** — séance lights only |
+| Desk **4** monologue **finished** → idle | **Forward pulse** (`KODAK_FORWARD`) or relay ON stub |
 
 Per-channel lamp toggling is **ruled out**: halogen thermal stress, visitor abuse (rapid Talk spam), unstable fan/lamp cycling.
 
@@ -247,7 +248,7 @@ How the Kodak carousel should respond to **desk mic / button clicks** (and chann
 ### What exists in software today
 
 - Desk button → `POST /api/channel/N/open` (ignored while any channel live)  
-- `hardware.js` → Kodak stub ON/OFF + séance start/stop  
+- `hardware.js` → Kodak forward on **desk 4 session end** only; séance on channel open  
 - **No** Forward pulse logic yet  
 
 ### When specified, implement in

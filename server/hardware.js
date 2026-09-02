@@ -1,11 +1,6 @@
-const { exec } = require("child_process");
-const { promisify } = require("util");
 const audioBackend = require("./audio-backend");
+const kodakCarousel = require("./kodak-carousel");
 
-const execAsync = promisify(exec);
-
-const RELAY_ON = process.env.KODAK_RELAY_ON || "";
-const RELAY_OFF = process.env.KODAK_RELAY_OFF || "";
 const ESP32_URL = (process.env.ESP32_URL || process.env.SEANCE_URL || "").replace(
   /\/$/,
   ""
@@ -18,8 +13,12 @@ let onHardwareChange = null;
 
 const hardwareState = {
   kodak: {
-    configured: !!(RELAY_ON || RELAY_OFF),
-    relay: "off",
+    configured: false,
+    phase: "idle",
+    power: "off",
+    slide: 0,
+    slideCount: 0,
+    triggerDesk: 4,
     lastError: null,
   },
   seance: {
@@ -40,6 +39,10 @@ const hardwareState = {
 
 function setHardwareChangeListener(fn) {
   onHardwareChange = fn;
+  kodakCarousel.setStatusChangeListener(() => {
+    syncKodak();
+    emitHardwareChange();
+  });
 }
 
 function emitHardwareChange() {
@@ -47,7 +50,21 @@ function emitHardwareChange() {
 }
 
 function getHardwareState() {
+  syncKodak();
   return JSON.parse(JSON.stringify(hardwareState));
+}
+
+function syncKodak() {
+  const k = kodakCarousel.getStatus();
+  hardwareState.kodak = {
+    configured: k.configured,
+    phase: k.phase,
+    power: k.power,
+    slide: k.slide,
+    slideCount: k.slideCount,
+    triggerDesk: k.triggerDesk,
+    lastError: k.lastError,
+  };
 }
 
 function syncSpeakers(showState) {
@@ -67,33 +84,6 @@ function syncSpeakers(showState) {
 function setSeanceIdle() {
   hardwareState.seance.phase = "idle";
   hardwareState.seance.light = null;
-}
-
-async function runRelay(cmd, label, target) {
-  hardwareState.kodak.relay = target;
-  if (!cmd) {
-    console.log(`[hardware] ${label} (stub — set KODAK_RELAY_ON/OFF)`);
-    hardwareState.kodak.lastError = null;
-    emitHardwareChange();
-    return;
-  }
-  try {
-    await execAsync(cmd, { timeout: 3000 });
-    hardwareState.kodak.lastError = null;
-    console.log(`[hardware] ${label} ok: ${cmd}`);
-  } catch (err) {
-    hardwareState.kodak.lastError = String(err.message || err);
-    console.error(`[hardware] ${label} failed:`, err.message || err);
-  }
-  emitHardwareChange();
-}
-
-function kodakOn() {
-  return runRelay(RELAY_ON, "Kodak ON", "on");
-}
-
-function kodakOff() {
-  return runRelay(RELAY_OFF, "Kodak OFF", "off");
 }
 
 async function seanceGet(path, label) {
@@ -148,7 +138,7 @@ function stateKey(state) {
   return state?.status === "channel_open" ? `open:${state.channelId}` : "idle";
 }
 
-function onShowStateChange(prev, next) {
+function onShowStateChange(prev, next, meta = {}) {
   syncSpeakers(next);
   audioBackend.onShowStateChange(prev, next);
 
@@ -162,7 +152,6 @@ function onShowStateChange(prev, next) {
     cancelSettle();
     const gen = ++seanceGen;
     const lightIndex = next.channelId - 1;
-    kodakOn();
     seanceStartHunt().finally(() => {
       settleTimer = setTimeout(() => {
         if (gen !== seanceGen) return;
@@ -172,11 +161,19 @@ function onShowStateChange(prev, next) {
   } else {
     console.log("[hardware] idle");
     audioBackend.stopForClose();
-    kodakOff();
+    const endedDesk =
+      prev?.status === "channel_open" ? prev.channelId : null;
+    const closeReason = meta.closeReason || "manual";
+    if (endedDesk != null) {
+      kodakCarousel.onDeskSessionEnd(endedDesk, closeReason);
+    }
     cancelSettle();
     seanceGen += 1;
     seanceStopLight("all");
   }
+
+  syncKodak();
+  emitHardwareChange();
 }
 
 module.exports = {

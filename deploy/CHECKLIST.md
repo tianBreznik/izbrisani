@@ -13,8 +13,8 @@
 
 ## B. Network
 
-- [ ] **Zero-switch wireless** (`NETWORK.md`): desk-4 AP up; SSID known
-- [ ] Mac + desk-1…3 + Shelly + **ESP32** on that SSID
+- [ ] **Dedicated router** (`NETWORK.md`): SSID known; DHCP reservations for Mac, Shelly, ESP32
+- [ ] Mac + desk-1…4 + Shelly + **ESP32** on show Wi‑Fi
 - [ ] Mac IP: `_______________` (e.g. 192.168.50.10)
 - [ ] Desk browser/pyclient: `http://MAC_IP:3847/api/health` → ok
 - [ ] ESP32 ping / séance URL reachable from Mac
