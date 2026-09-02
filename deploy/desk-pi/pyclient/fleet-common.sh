@@ -22,7 +22,8 @@ fleet_load_env() {
 
   REPO_ROOT="$(cd "$HERE/../../.." && pwd)"
   SSH_KEY="${SSH_KEY:-$HOME/.ssh/izbrisani_ed25519}"
-  CONTROL_DIR="${SSH_CONTROL_DIR:-$HOME/.ssh/izbrisani-ctl}"
+  # Keep control sockets in the repo (not ~/.ssh) — fewer permission issues on macOS.
+  CONTROL_DIR="${SSH_CONTROL_DIR:-$HERE/logs/ssh-ctl}"
   mkdir -p "$CONTROL_DIR"
   chmod 700 "$CONTROL_DIR" 2>/dev/null || true
 }
