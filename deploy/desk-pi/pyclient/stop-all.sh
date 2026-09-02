@@ -1,35 +1,46 @@
 #!/usr/bin/env bash
 # Stop desk_client.py on all four Pis.
+# Passwordless after: ./setup-ssh-keys.sh
 #
-# Usage (from this directory):
 #   ./stop-all.sh
+#
+# Optional: STOP_SERVER=1 ./stop-all.sh  — also stop local npm show server
 
 set -uo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-ENV_FILE="${DESKS_ENV:-$HERE/desks.env.local}"
+# shellcheck disable=SC1091
+source "$HERE/fleet-common.sh"
+fleet_load_env
 
-if [[ ! -f "$ENV_FILE" ]]; then
-  echo "missing $ENV_FILE — copy desks.env.example → desks.env.local and set IPs" >&2
-  exit 1
-fi
-# shellcheck disable=SC1090
-source "$ENV_FILE"
+fleet_require_keys || exit 1
 
-hosts=(
-  "${DESK_1:?}"
-  "${DESK_2:?}"
-  "${DESK_3:?}"
-  "${DESK_4:?}"
-)
-
-for host in "${hosts[@]}"; do
+while IFS= read -r host; do
   echo "→ stop on $host"
-  if ssh -o ConnectTimeout=8 "$host" 'pkill -f desk_client.py; sleep 0.3; pgrep -af desk_client.py || echo stopped'; then
+  if fleet_ssh "$host" 'pkill -f desk_client.py; sleep 0.3; pgrep -af desk_client.py || echo stopped'; then
     :
   else
     echo "  (ssh failed — host down or wrong IP?)"
   fi
-done
+done < <(fleet_hosts)
+
+if [[ "${STOP_SERVER:-}" == "1" ]]; then
+  if [[ -f "$HERE/logs/show-server.pid" ]]; then
+    pid="$(cat "$HERE/logs/show-server.pid" 2>/dev/null || true)"
+    if [[ -n "${pid:-}" ]] && kill -0 "$pid" 2>/dev/null; then
+      echo "→ stop show server pid $pid"
+      kill "$pid" 2>/dev/null || true
+    fi
+  fi
+  # Also free port if a stray node holds it
+  if command -v lsof >/dev/null; then
+    pids="$(lsof -ti :3847 2>/dev/null || true)"
+    if [[ -n "$pids" ]]; then
+      echo "→ kill port 3847: $pids"
+      # shellcheck disable=SC2086
+      kill $pids 2>/dev/null || true
+    fi
+  fi
+fi
 
 echo "done"

@@ -1,51 +1,32 @@
 #!/usr/bin/env bash
-# Push desk_client.py to all four Pis via SSH (cat | ssh — works when scp is broken).
+# Push desk_client.py to all four Pis (cat | ssh).
+# Passwordless after: ./setup-ssh-keys.sh
 #
-# Usage (from anywhere):
-#   ./deploy/desk-pi/pyclient/push-all.sh
-#
-# Requires desks.env.local (copy from desks.env.example).
+#   ./push-all.sh
 
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-SRC="$HERE/desk_client.py"
-ENV_FILE="${DESKS_ENV:-$HERE/desks.env.local}"
+# shellcheck disable=SC1091
+source "$HERE/fleet-common.sh"
+fleet_load_env
 
+SRC="$HERE/desk_client.py"
 if [[ ! -f "$SRC" ]]; then
   echo "missing $SRC" >&2
   exit 1
 fi
-if [[ ! -f "$ENV_FILE" ]]; then
-  echo "missing $ENV_FILE — copy desks.env.example → desks.env.local and set IPs" >&2
-  exit 1
-fi
-# shellcheck disable=SC1090
-source "$ENV_FILE"
 
-PI_USER="${PI_USER:-moderna}"
-# Always use the Pi home path. Sourcing `REMOTE_DIR=~/…` on a Mac expands to
-# /Users/… and mkdir then fails on the Pi ("cannot create directory ‘Users’").
-case "${REMOTE_DIR:-}" in
-  /home/*) ;;
-  *) REMOTE_DIR="/home/${PI_USER}/izbrisani-pyclient" ;;
-esac
+fleet_require_keys
 
-echo "REMOTE_DIR=$REMOTE_DIR (from $ENV_FILE)"
+echo "REMOTE_DIR=$REMOTE_DIR"
+echo "SSH_KEY=$SSH_KEY"
 
-hosts=(
-  "${DESK_1:?set DESK_1 in $ENV_FILE}"
-  "${DESK_2:?set DESK_2 in $ENV_FILE}"
-  "${DESK_3:?set DESK_3 in $ENV_FILE}"
-  "${DESK_4:?set DESK_4 in $ENV_FILE}"
-)
-
-for host in "${hosts[@]}"; do
-  echo "→ push $SRC → $host:$REMOTE_DIR/desk_client.py"
-  ssh "$host" "mkdir -p '$REMOTE_DIR'"
-  # Avoid scp path quirks on old macOS — stream over SSH.
-  cat "$SRC" | ssh "$host" "cat > '$REMOTE_DIR/desk_client.py'"
-  ssh "$host" "wc -c '$REMOTE_DIR/desk_client.py'"
-done
+while IFS= read -r host; do
+  echo "→ push → $host:$REMOTE_DIR/desk_client.py"
+  fleet_ssh "$host" "mkdir -p '$REMOTE_DIR'"
+  cat "$SRC" | fleet_ssh "$host" "cat > '$REMOTE_DIR/desk_client.py'"
+  fleet_ssh "$host" "wc -c '$REMOTE_DIR/desk_client.py'"
+done < <(fleet_hosts)
 
 echo "done — all four Pis updated"

@@ -1,54 +1,38 @@
 #!/usr/bin/env bash
-# Start desk_client.py on all four Pis over SSH (display on each Pi desktop).
+# Start show server (if needed) + desk_client.py on all four Pis.
+# Passwordless after: ./setup-ssh-keys.sh
 #
-# Usage:
-#   ./deploy/desk-pi/pyclient/start-all.sh
-#
-# Requires desks.env.local. Mac must already be running: npm start
+#   ./start-all.sh
 
 set -uo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
-ENV_FILE="${DESKS_ENV:-$HERE/desks.env.local}"
+# shellcheck disable=SC1091
+source "$HERE/fleet-common.sh"
+fleet_load_env
 
-if [[ ! -f "$ENV_FILE" ]]; then
-  echo "missing $ENV_FILE — copy desks.env.example → desks.env.local and set IPs" >&2
-  exit 1
-fi
-# shellcheck disable=SC1090
-source "$ENV_FILE"
-
-SHOW_URL="${SHOW_URL:?set SHOW_URL in $ENV_FILE}"
-PI_USER="${PI_USER:-moderna}"
+SHOW_URL="${SHOW_URL:?set SHOW_URL in desks.env.local}"
 PYTHON="${PYTHON:-/usr/bin/python3}"
 
-case "${REMOTE_DIR:-}" in
-  /home/*) ;;
-  *) REMOTE_DIR="/home/${PI_USER}/izbrisani-pyclient" ;;
-esac
+echo "SHOW_URL=$SHOW_URL"
+echo "REMOTE_DIR=$REMOTE_DIR"
 
-echo "REMOTE_DIR=$REMOTE_DIR SHOW_URL=$SHOW_URL"
+if ! fleet_ensure_show_server; then
+  exit 1
+fi
 
-pairs=(
-  "1:${DESK_1:?}"
-  "2:${DESK_2:?}"
-  "3:${DESK_3:?}"
-  "4:${DESK_4:?}"
-)
+fleet_require_keys || exit 1
 
 ok=0
 fail=0
 
-for entry in "${pairs[@]}"; do
+while IFS= read -r entry; do
   id="${entry%%:*}"
   host="${entry#*:}"
   echo ""
   echo "→ start desk $id on $host"
 
-  # Run a small remote script: kill old client, start new one under nohup,
-  # then report whether a process is listening. Avoid ssh -f (easy to
-  # return before the remote command actually launches).
-  if ! ssh -o ConnectTimeout=8 "$host" bash -s <<EOF
+  if ! fleet_ssh "$host" bash -s <<EOF
 set -e
 cd '$REMOTE_DIR'
 test -f desk_client.py
@@ -71,16 +55,14 @@ tail -n 30 \$HOME/desk_client.log || true
 exit 1
 EOF
   then
-    echo "✗ desk $id failed (ssh or remote start)"
+    echo "✗ desk $id failed"
     fail=$((fail + 1))
   else
     echo "✓ desk $id"
     ok=$((ok + 1))
   fi
-done
+done < <(fleet_pairs)
 
 echo ""
-echo "done — started $ok / 4  (failed $fail)"
-if [[ "$fail" -gt 0 ]]; then
-  exit 1
-fi
+echo "done — desks $ok / 4  (failed $fail)"
+[[ "$fail" -eq 0 ]]
