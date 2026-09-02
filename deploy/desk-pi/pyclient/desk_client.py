@@ -209,6 +209,11 @@ class ShowClient:
         """True when any desk has a live channel (global show state from server)."""
         return self.state.get("status") == "channel_open" and self.live_channel() is not None
 
+    def is_show_busy(self) -> bool:
+        """True when Talk must be ignored (live channel or Kodak carousel)."""
+        status = self.state.get("status")
+        return status == "channel_open" or status == "kodak"
+
     def is_owner(self) -> bool:
         """True when this Pi's desk opened the live channel (informational only)."""
         if self.state.get("status") != "channel_open":
@@ -221,7 +226,7 @@ class ShowClient:
     def on_button_pressed(self) -> None:
         # self.state is the global show state (WebSocket from Mac) — any live channel
         # blocks Talk on every desk, not only the desk that opened it.
-        if self.is_open():
+        if self.is_show_busy():
             return
         now = time.monotonic()
         if now - self._last_button_at < BUTTON_COOLDOWN_S:

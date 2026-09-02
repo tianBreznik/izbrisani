@@ -33,7 +33,7 @@
 
   async function onTalkPressed() {
     if (!allowTalk) return;
-    if (state.status === "channel_open") return;
+    if (state.status === "channel_open" || state.status === "kodak") return;
     try {
       const res = await fetch(`/api/channel/${deskId}/open`, {
         method: "POST",
@@ -42,7 +42,11 @@
       });
       if (res.status === 409) {
         const json = await res.json();
-        showTalkStatus(`busy — channel ${json.activeChannelId} live`, true);
+        const why =
+          json.reason === "kodak"
+            ? "busy — kodak carousel"
+            : `busy — channel ${json.activeChannelId} live`;
+        showTalkStatus(why, true);
         return;
       }
       if (!res.ok) {

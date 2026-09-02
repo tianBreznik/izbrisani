@@ -1,5 +1,5 @@
 /**
- * USB HID relay — Forward pulse for Kodak wired remote (Plan A).
+ * USB HID relay — pulse a channel (Kodak wired remote Forward / Reverse).
  */
 
 const HID = require("node-hid");
@@ -31,7 +31,7 @@ function setRelay(hid, channel, on) {
   hid.write(buf);
 }
 
-async function pulseForward(options = {}) {
+async function pulseChannel(options = {}) {
   const vid = Number(options.vid ?? DEFAULT_VID);
   const pid = Number(options.pid ?? DEFAULT_PID);
   const channel = Number(options.channel ?? 1);
@@ -53,7 +53,13 @@ async function pulseForward(options = {}) {
   }
 }
 
+/** Alias for scripts / older callers */
+async function pulseForward(options = {}) {
+  return pulseChannel(options);
+}
+
 module.exports = {
+  pulseChannel,
   pulseForward,
   DEFAULT_VID,
   DEFAULT_PID,

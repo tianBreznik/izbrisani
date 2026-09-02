@@ -50,6 +50,13 @@ function stateLine() {
   if (state.status === "channel_open") {
     return `OPEN  channel ${state.channelId}`;
   }
+  if (state.status === "kodak") {
+    const k = state.hardware?.kodak;
+    if (k?.phase === "advancing") {
+      return `KODAK  slide ${k.slide}/${k.slideCount}`;
+    }
+    return "KODAK  busy";
+  }
   return "IDLE";
 }
 

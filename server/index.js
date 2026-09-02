@@ -9,6 +9,7 @@ const {
   setHardwareChangeListener,
 } = require("./hardware");
 const audioBackend = require("./audio-backend");
+const kodakCarousel = require("./kodak-carousel");
 
 const PORT = Number(process.env.PORT) || 3847;
 const HOST = process.env.HOST || "0.0.0.0";
@@ -47,6 +48,16 @@ function broadcastState() {
 }
 
 setHardwareChangeListener(broadcastState);
+
+kodakCarousel.setBusyChangeListener((busy) => {
+  if (busy) {
+    if (showState.status !== "kodak") {
+      setShowState({ status: "kodak" });
+    }
+  } else if (showState.status === "kodak") {
+    setShowState({ status: "idle" });
+  }
+});
 
 function setShowState(next, meta = {}) {
   const prev = showState;
@@ -92,10 +103,11 @@ app.post("/api/channel/:id/open", (req, res) => {
     return res.status(404).json({ error: `Unknown channel ${channelId}` });
   }
 
-  if (!force && showState.status === "channel_open") {
+  if (!force && (showState.status === "channel_open" || showState.status === "kodak" || kodakCarousel.isBusy())) {
     return res.status(409).json({
       error: "channel_busy",
-      activeChannelId: showState.channelId,
+      reason: showState.status === "kodak" || kodakCarousel.isBusy() ? "kodak" : "channel",
+      activeChannelId: showState.channelId || null,
       ...getPublicState(),
     });
   }

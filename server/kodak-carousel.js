@@ -1,14 +1,18 @@
 /**
- * Desk 4 session end → Shelly ON → N× Forward → Shelly OFF.
+ * Desk 4 session end → Shelly ON → N× advance pulses → Shelly OFF.
  *
  * Config: deploy/kodak-carousel.json (slideCount, timings, relay channel).
  * Shelly URL: json shellyUrl or env SHELLY_URL (e.g. http://192.168.50.20).
  * Disable: KODAK_ENABLED=0
+ *
+ * While running, show status is "kodak" and other desk opens get 409.
+ * If tray goes 0→80 instead of 0→1, set invertDirection: true (uses reverse
+ * relay channel — wire ch2 to Forward, or rewire ch1 to Forward pads).
  */
 
 const fs = require("fs");
 const path = require("path");
-const { pulseForward } = require("./kodak-relay");
+const { pulseChannel } = require("./kodak-relay");
 
 const CONFIG_PATH =
   process.env.KODAK_CONFIG_PATH ||
@@ -17,6 +21,7 @@ const CONFIG_PATH =
 let config = null;
 let running = false;
 let onStatusChange = null;
+let onBusyChange = null;
 
 const status = {
   configured: false,
@@ -27,6 +32,8 @@ const status = {
   slideCount: 0,
   triggerDesk: 4,
   lastError: null,
+  invertDirection: false,
+  activeRelayChannel: 1,
 };
 
 function disabled() {
@@ -42,6 +49,8 @@ function loadConfig() {
       triggerDesk: Number(raw.triggerDesk ?? 4),
       slideCount: Number(raw.slideCount ?? 36),
       relayChannel: Number(raw.relayChannel ?? 1),
+      reverseRelayChannel: Number(raw.reverseRelayChannel ?? 2),
+      invertDirection: Boolean(raw.invertDirection),
       pulseMs: Number(raw.pulseMs ?? 300),
       intervalMs: Number(raw.intervalMs ?? 2000),
       warmupMs: Number(raw.warmupMs ?? 5000),
@@ -54,6 +63,8 @@ function loadConfig() {
       triggerDesk: 4,
       slideCount: 36,
       relayChannel: 1,
+      reverseRelayChannel: 2,
+      invertDirection: false,
       pulseMs: 300,
       intervalMs: 2000,
       warmupMs: 8000,
@@ -71,22 +82,35 @@ function loadConfig() {
   config.shellyUrl = shelly;
   status.triggerDesk = config.triggerDesk;
   status.slideCount = config.slideCount;
+  status.invertDirection = config.invertDirection;
   status.configured = !!shelly;
   status.enabled = !disabled();
   return config;
+}
+
+function advanceChannel(cfg) {
+  return cfg.invertDirection ? cfg.reverseRelayChannel : cfg.relayChannel;
 }
 
 function setStatusChangeListener(fn) {
   onStatusChange = fn;
 }
 
+function setBusyChangeListener(fn) {
+  onBusyChange = fn;
+}
+
 function emitStatus() {
   if (onStatusChange) onStatusChange();
 }
 
+function isBusy() {
+  return running;
+}
+
 function getStatus() {
   loadConfig();
-  return { ...status };
+  return { ...status, busy: running };
 }
 
 async function shellySet(on) {
@@ -119,6 +143,7 @@ function sleep(ms) {
 
 /**
  * Run one full tray loop after desk 4 monologue ends (session-end only).
+ * Holds the show busy until complete so other desks cannot open.
  */
 async function runCarouselLoop() {
   loadConfig();
@@ -132,14 +157,22 @@ async function runCarouselLoop() {
   }
 
   const cfg = config;
+  const channel = advanceChannel(cfg);
   running = true;
   status.lastError = null;
   status.phase = "warming";
   status.slide = 0;
+  status.activeRelayChannel = channel;
+  status.invertDirection = cfg.invertDirection;
   emitStatus();
+  if (onBusyChange) onBusyChange(true);
+
+  const dirLabel = cfg.invertDirection
+    ? `reverse-ch${channel} (invertDirection)`
+    : `forward-ch${channel}`;
 
   console.log(
-    `[kodak] carousel start — ${cfg.slideCount} forward pulses (desk ${cfg.triggerDesk} ended)`
+    `[kodak] carousel start — ${cfg.slideCount} pulses via ${dirLabel} (desk ${cfg.triggerDesk} ended)`
   );
 
   try {
@@ -152,9 +185,9 @@ async function runCarouselLoop() {
     for (let i = 1; i <= cfg.slideCount; i += 1) {
       status.slide = i;
       emitStatus();
-      console.log(`[kodak] forward ${i}/${cfg.slideCount}`);
-      await pulseForward({
-        channel: cfg.relayChannel,
+      console.log(`[kodak] pulse ${i}/${cfg.slideCount} ch${channel}`);
+      await pulseChannel({
+        channel,
         pulseMs: cfg.pulseMs,
         vid: cfg.hidVid,
         pid: cfg.hidPid,
@@ -170,7 +203,7 @@ async function runCarouselLoop() {
 
     status.phase = "idle";
     status.slide = 0;
-    console.log("[kodak] carousel complete — back at 0, power off");
+    console.log("[kodak] carousel complete — back at gate, power off");
   } catch (err) {
     status.lastError = String(err.message || err);
     status.phase = "idle";
@@ -183,6 +216,7 @@ async function runCarouselLoop() {
   } finally {
     running = false;
     emitStatus();
+    if (onBusyChange) onBusyChange(false);
   }
 }
 
@@ -197,7 +231,9 @@ function onDeskSessionEnd(deskId, closeReason) {
 
 module.exports = {
   getStatus,
+  isBusy,
   setStatusChangeListener,
+  setBusyChangeListener,
   onDeskSessionEnd,
   runCarouselLoop,
 };

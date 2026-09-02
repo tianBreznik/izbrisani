@@ -1,9 +1,11 @@
 {
-  "_note": "Desk 4 session end → full tray loop. Ektalite 500 uses Kodak round trays: 80 (EKTAPRO 80, most common) or 140 (thin mounts only). slideCount = tray capacity — one Forward pulse per slot; align slot 0 at gate before show, then N pulses returns to 0.",
+  "_note": "Desk 4 session end → full tray loop. Align gate at 0 before show. Each pulse = one step. slideCount pulses: 0→1→…→(slideCount) then next show starts at that position — for 0→1→…→80→0 use slideCount 81 (80 steps to slide 80, +1 back to 0). If tray goes 0→80 (reverse), invertDirection + reverseRelayChannel, or rewire Forward to relayChannel.",
 
   "triggerDesk": 4,
-  "slideCount": 80,
+  "slideCount": 81,
   "relayChannel": 1,
+  "reverseRelayChannel": 2,
+  "invertDirection": true,
   "pulseMs": 300,
   "intervalMs": 2000,
   "warmupMs": 8000,

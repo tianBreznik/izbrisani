@@ -64,6 +64,9 @@ function syncKodak() {
     slideCount: k.slideCount,
     triggerDesk: k.triggerDesk,
     lastError: k.lastError,
+    busy: !!k.busy,
+    invertDirection: !!k.invertDirection,
+    activeRelayChannel: k.activeRelayChannel,
   };
 }
 
@@ -135,7 +138,9 @@ function cancelSettle() {
 }
 
 function stateKey(state) {
-  return state?.status === "channel_open" ? `open:${state.channelId}` : "idle";
+  if (state?.status === "channel_open") return `open:${state.channelId}`;
+  if (state?.status === "kodak") return "kodak";
+  return "idle";
 }
 
 function onShowStateChange(prev, next, meta = {}) {
@@ -158,6 +163,11 @@ function onShowStateChange(prev, next, meta = {}) {
         seanceStopLight(lightIndex);
       }, SETTLE_MS);
     });
+  } else if (next.status === "kodak") {
+    console.log("[hardware] kodak carousel busy");
+    cancelSettle();
+    seanceGen += 1;
+    seanceStopLight("all");
   } else {
     console.log("[hardware] idle");
     audioBackend.stopForClose();
