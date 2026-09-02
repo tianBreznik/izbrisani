@@ -17,7 +17,7 @@ cp desks.env.example desks.env.local   # once — set SHOW_URL + DESK_1…4 host
 ./stop-all.sh                          # kill all four
 ```
 
-`desks.env.local` is machine-specific (IPs); keep it out of git if it has venue addresses.
+`desks.env.local` holds `SHOW_URL` + desk hosts for the fleet scripts (committed so the Mini/laptop stay in sync). Update IPs when the show network changes.
 
 ## Pi 3B+ install
 
