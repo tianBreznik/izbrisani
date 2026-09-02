@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Stop desk_client.py on all four Pis.
 #
-# Usage:
-#   ./deploy/desk-pi/pyclient/stop-all.sh
+# Usage (from this directory):
+#   ./stop-all.sh
 
-set -euo pipefail
+set -uo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ENV_FILE="${DESKS_ENV:-$HERE/desks.env.local}"
@@ -25,7 +25,11 @@ hosts=(
 
 for host in "${hosts[@]}"; do
   echo "→ stop on $host"
-  ssh "$host" "pkill -f desk_client.py || true"
+  if ssh -o ConnectTimeout=8 "$host" 'pkill -f desk_client.py; sleep 0.3; pgrep -af desk_client.py || echo stopped'; then
+    :
+  else
+    echo "  (ssh failed — host down or wrong IP?)"
+  fi
 done
 
 echo "done"
