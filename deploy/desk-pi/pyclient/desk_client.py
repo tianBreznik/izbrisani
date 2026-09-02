@@ -55,8 +55,8 @@ ERROR_COLOR = (204, 68, 68)
 MAX_TEXT_WIDTH = 880
 H_PAD = 48
 SUBTITLE_Y_RATIO = 0.55
-# Waveshare bezel — slightly above pure black so idle screen blends on IPS.
-DISPLAY_BG_COLOR = (17, 17, 17)
+# Match Waveshare bezel — pure black so idle screen blends with the frame.
+DISPLAY_BG_COLOR = (0, 0, 0)
 
 
 def log(msg: str) -> None:
@@ -670,6 +670,7 @@ class ShowClient:
         import pygame
 
         screen = self.init_pygame_display(pygame)
+        pygame.mouse.set_visible(False)
         clock = pygame.time.Clock()
         regular_font, italic_font = self.load_fonts(pygame)
 
