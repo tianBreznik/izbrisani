@@ -19,13 +19,15 @@ fi
 source "$ENV_FILE"
 
 SHOW_URL="${SHOW_URL:?set SHOW_URL in $ENV_FILE}"
-REMOTE_DIR="${REMOTE_DIR:-/home/moderna/izbrisani-pyclient}"
+PI_USER="${PI_USER:-moderna}"
 PYTHON="${PYTHON:-python3}"
 
-if [[ "$REMOTE_DIR" == "~"* ]]; then
-  remote_user="${PI_USER:-moderna}"
-  REMOTE_DIR="/home/${remote_user}${REMOTE_DIR:1}"
-fi
+case "${REMOTE_DIR:-}" in
+  /home/*) ;;
+  *) REMOTE_DIR="/home/${PI_USER}/izbrisani-pyclient" ;;
+esac
+
+echo "REMOTE_DIR=$REMOTE_DIR SHOW_URL=$SHOW_URL"
 
 pairs=(
   "1:${DESK_1:?}"
@@ -47,5 +49,5 @@ for entry in "${pairs[@]}"; do
     nohup $PYTHON desk_client.py >\$HOME/desk_client.log 2>&1 &"
 done
 
-echo "done — clients launching (logs: ~/desk_client.log on each Pi)"
+echo "done — clients launching (logs: \$HOME/desk_client.log on each Pi)"
 echo "check: ssh … 'tail -n 20 ~/desk_client.log'"

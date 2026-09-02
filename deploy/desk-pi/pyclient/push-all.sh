@@ -23,13 +23,15 @@ fi
 # shellcheck disable=SC1090
 source "$ENV_FILE"
 
-REMOTE_DIR="${REMOTE_DIR:-/home/moderna/izbrisani-pyclient}"
-# If someone still has ~/… in env, expand it on the Mac to a wrong /Users path —
-# rewrite bare ~ to the remote user home instead.
-if [[ "$REMOTE_DIR" == "~"* ]]; then
-  remote_user="${PI_USER:-moderna}"
-  REMOTE_DIR="/home/${remote_user}${REMOTE_DIR:1}"
-fi
+PI_USER="${PI_USER:-moderna}"
+# Always use the Pi home path. Sourcing `REMOTE_DIR=~/…` on a Mac expands to
+# /Users/… and mkdir then fails on the Pi ("cannot create directory ‘Users’").
+case "${REMOTE_DIR:-}" in
+  /home/*) ;;
+  *) REMOTE_DIR="/home/${PI_USER}/izbrisani-pyclient" ;;
+esac
+
+echo "REMOTE_DIR=$REMOTE_DIR (from $ENV_FILE)"
 
 hosts=(
   "${DESK_1:?set DESK_1 in $ENV_FILE}"
