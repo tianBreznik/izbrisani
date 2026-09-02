@@ -1,6 +1,6 @@
 # Checkpoint: Kodak Ektalite control
 
-Status: **Plan A (locked) — wired remote Forward button + USB relay (1 channel).** Forward only — **no reverse**. IR kit / USB IR blaster = backup only. **When** to pulse (slide algorithm) — still TBD. Software: pulse `KODAK_FORWARD` (not ON/OFF).
+Status: **Plan A (locked) — wired remote Forward + USB relay (ch1).** Forward only. **Show logic (locked):** desk **4** monologue ends naturally → Shelly ON → **80** forward pulses → Shelly OFF. Config: `deploy/kodak-carousel.json`, `SHELLY_URL` on Mac.
 
 Séance lights replace digital shadow projectors; Kodak stays as the **analog film** output.
 
@@ -18,8 +18,8 @@ Séance lights replace digital shadow projectors; Kodak stays as the **analog fi
 | 2026-08-29 | **Plan A (locked):** Mac → **USB relay ch1** → parallel across **wired remote Forward** switch. Plug stays in projector 6-pin. |
 | 2026-08-29 | **Forward only** — reverse not needed for show |
 | 2026-08-29 | IR hand TX + receiver (873 5086) / USB IR blaster = **manual / fallback only** |
-| 2026-08-31 | **Smart plug acquired:** **Shelly Plug S Gen3** (EU). Mains path: wall → Shelly → Kodak cord; **no cord splice**. Front switch left **ON** for show run. Local HTTP from Mac (`curl` to fixed LAN IP). ~~Tasmota / Nous A8T~~ not used — IoTronX had no stock. |
-| 2026-08-31 | **Shelly setup TODO:** join museum Wi‑Fi (2.4 GHz), fixed IP, test ON/OFF, set `KODAK_POWER_ON` / `KODAK_POWER_OFF` env on Mac Mini. |
+| 2026-08-31 | **Smart plug acquired:** **Shelly Plug S Gen3** (EU). Mains: wall → Shelly → Kodak cord. Local HTTP from Mac (`SHELLY_URL` or `shellyUrl` in json). |
+| 2026-09-02 | **Carousel locked:** desk 4 `session-end` only → `server/kodak-carousel.js` (not manual env curls). 80-slide tray. |
 
 Wired remote stays plugged into the projector for the run. Staff can still press Forward by hand (parallel with relay).
 
@@ -34,14 +34,16 @@ Wall ──► Shelly Plug S Gen3 ──► Kodak mains plug
 **Do not** plug RJ45 or desk Pis into this — Mac-side only, same as USB relay.
 
 ```bash
-# ON / OFF (set SHELLY_IP after setup; auth off or add credentials)
-curl -X POST -d '{"id":0,"on":true}'  "http://SHELLY_IP/rpc/Switch.Set"
-curl -X POST -d '{"id":0,"on":false}' "http://SHELLY_IP/rpc/Switch.Set"
+# ON / OFF (after Shelly is on show Wi‑Fi, e.g. 192.168.50.20)
+curl -X POST -d '{"id":0,"on":true}'  "http://192.168.50.20/rpc/Switch.Set"
+curl -X POST -d '{"id":0,"on":false}' "http://192.168.50.20/rpc/Switch.Set"
 ```
 
+Show server:
+
 ```bash
-export KODAK_POWER_ON='curl -s -X POST -d "{\"id\":0,\"on\":true}" "http://SHELLY_IP/rpc/Switch.Set"'
-export KODAK_POWER_OFF='curl -s -X POST -d "{\"id\":0,\"on\":false}" "http://SHELLY_IP/rpc/Switch.Set"'
+export SHELLY_URL=http://192.168.50.20
+# or "shellyUrl" in deploy/kodak-carousel.json
 ```
 
 ---
@@ -69,7 +71,7 @@ Label on unit: **Kodak Ektalite 500 slide projector**. No earlier repo note had 
 | Museum / show day **opens** | Staff → **ON** |
 | Museum / show day **closes** | Staff → **NO LIGHT** or off |
 | Desk **channel open** (1–3) | **No Kodak** — séance lights only |
-| Desk **4** monologue **finished** → idle | **Forward pulse** (`KODAK_FORWARD`) or relay ON stub |
+| Desk **4** monologue **finished** (session-end) | **Carousel:** Shelly ON → 80× Forward → Shelly OFF |
 
 Per-channel lamp toggling is **ruled out**: halogen thermal stress, visitor abuse (rapid Talk spam), unstable fan/lamp cycling.
 
@@ -187,8 +189,8 @@ Opening the projector you may find:
 - [ ] Wired remote plugged into projector 6-pin  
 - [ ] Open remote; meter Forward switch (two pads while button held)  
 - [ ] USB relay on Mac; wire **ch1 COM+NO** across those pads  
-- [ ] Pulse test: one slide step per command  
-- [ ] Set `KODAK_FORWARD` env (below)  
+- [ ] Pulse test: one slide step per command (`npm run kodak:pulse`)
+- [ ] Full carousel bench test with `SHELLY_URL` set
 - [ ] IR kit stays in kit bag as backup  
 
 **Rough work:** ~**1–2 hours** (open remote, solder/screw, pulse tune).
@@ -206,57 +208,37 @@ Opening the projector you may find:
 
 ## Software
 
-`server/hardware.js` still has ON/OFF stubs — replace with **forward pulse only**.
+Implemented in `server/kodak-carousel.js` + `server/kodak-relay.js`, wired from `server/hardware.js` on desk **4** `session-end` only (not Esc / manual close).
 
-**Bench pulse (no Homebrew):** Node script — Mac Mini on **Sierra / Node 16** is OK if you use pinned `node-hid@2.1.2` (already in `package.json`). Do **not** upgrade to Node 18 on Sierra (unsupported).
+| Setting | File / env |
+|---------|------------|
+| Tray size | `slideCount: 80` in `deploy/kodak-carousel.json` |
+| Shelly URL | `SHELLY_URL` or `shellyUrl` in json |
+| Timings | `warmupMs`, `intervalMs`, `pulseMs` in json |
+| Disable | `KODAK_ENABLED=0` |
+
+**Bench pulse (single step):**
 
 ```bash
-xcode-select --install          # if native build needed
 cd /path/to/izbrisani
-npm install                     # EBADENGINE noise for some deps is OK if install finishes
 npm run kodak:pulse
 npm run kodak:loop              # repeat until Ctrl+C
-```
-
-Later for show server:
-
-```bash
-export KODAK_FORWARD='npm run kodak:pulse'
-# or: node /path/to/izbrisani/scripts/kodak-pulse.js
 ```
 
 Do **not** rely on Homebrew `usbrelay` on old Mac Minis.
 
 ---
 
-## Slide movement algorithm — **NOT SPECIFIED**
+## Carousel algorithm (locked)
 
-How the Kodak carousel should respond to **desk mic / button clicks** (and channel open/close) is **not defined yet**. `server/hardware.js` cannot be finalized until this is agreed with the artists / show logic.
-
-### Open questions
-
-| Question | Status |
+| Question | Answer |
 |----------|--------|
-| On **channel open**: one Forward pulse? | TBD |
-| **One pulse** per open vs continuous while live? | TBD |
-| On **channel close** / idle: another Forward, or nothing? | TBD |
-| Desk **1–4** different pulse counts? | TBD |
-| Relationship to **ESP32 séance** timing? | TBD |
-| **Direction** | **Locked: Forward only** | Done |
-| **Kodak lamp** | **Locked:** exhibition hours (staff) | Done |
-
-### What exists in software today
-
-- Desk button → `POST /api/channel/N/open` (ignored while any channel live)  
-- `hardware.js` → Kodak forward on **desk 4 session end** only; séance on channel open  
-- **No** Forward pulse logic yet  
-
-### When specified, implement in
-
-- `server/hardware.js` — `KODAK_FORWARD` pulse on the agreed events  
-- Drop reverse / ON-OFF lamp stubs for carousel  
-
-**Revisit after:** bench pulse test + artist/show meeting.
+| **When** | Desk **4** monologue ends naturally (`session-end` — VTT timer or future SC done) |
+| **Not when** | Esc, operator close, desks 1–3 ending |
+| **Sequence** | Shelly ON → warmup → **80** forward HID pulses (slot 0 → … → 0) → Shelly OFF |
+| **Direction** | Forward only |
+| **Lamp** | Front switch ON for show; Shelly cuts mains between carousel runs |
+| **Séance** | Independent — ESP32 on channel **open**, not tied to Kodak |
 
 ---
 
@@ -270,7 +252,9 @@ How the Kodak carousel should respond to **desk mic / button clicks** (and chann
 
 ## Related
 
-- `server/hardware.js` — hooks (to extend)  
+- `server/kodak-carousel.js` — Shelly + full tray loop  
+- `server/kodak-relay.js` — single Forward HID pulse  
+- `server/hardware.js` — triggers carousel on desk 4 session-end  
 - `deploy/checkpoint_seance.md` — ESP32 lights  
 - `INVENTORY.md` § E  
 - `deploy/PHYSICAL.md` § 3  

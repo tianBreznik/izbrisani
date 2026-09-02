@@ -1,0 +1,16 @@
+[Unit]
+Description=anatomija pregona desk %i pyclient
+After=network-online.target graphical.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=moderna
+WorkingDirectory=/home/moderna/izbrisani-pyclient
+EnvironmentFile=-/etc/izbrisani/desk-%i.env
+ExecStart=/usr/bin/python3 /home/moderna/izbrisani-pyclient/desk_client.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=graphical.target

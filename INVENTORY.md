@@ -38,7 +38,7 @@ Status columns are for meeting notes: **HAVE / NEED / TBD**.
 | *Alt:* **Waveshare 7inch HDMI LCD (H) with case** | same qty | — | Only if temporary case needed before print |
 | HDMI cable (Pi → screen) | **5** | NEED | Short |
 | USB power for panel | **5** | NEED | Usually micro-USB; do **not** connect touch USB if present |
-| 3D-printed desk cases / bezels | **4** | TBD | Measure one panel first |
+| 3D-printed desk cases / bezels | **4** | **HAVE** | Printed |
 | M3 screws / standoffs | 1 kit | NEED | Match panel holes |
 | PETG filament | — | HAVE | Already available |
 
@@ -55,8 +55,8 @@ Status columns are for meeting notes: **HAVE / NEED / TBD**.
 | Dupont / jumper wires | 1 pack | NEED | Pi GPIO |
 | Heat-shrink tubing | small pack | NEED | Insulation |
 | Cable labels | 1 set | NEED | Desk mapping |
-| Resistors (220Ω–1kΩ) | 8–16 | TBD | Only if LEDs are used |
-| LEDs (if not using mic lamps) | 4 | TBD | Idle glow optional |
+| Resistors (pull-up, e.g. 10kΩ) | **4** | **NEED** | One per desk Talk line (BCM17) if not using internal pull-up reliably |
+| LEDs (idle glow) | 4 | optional | BCM27 PWM in pyclient |
 
 Default GPIO target: **button BCM17**, **LED BCM27**, GND common (HDMI panel → GPIO free for buttons).
 
@@ -86,7 +86,8 @@ Do **not** switch 230 V from Pi pins.
 | Directional speakers | **4** | TBD | One per desk |
 | Bass speaker | 1 | TBD | |
 | Audio cables / DACs | TBD | TBD | Depends on speaker type |
-| Spoken essay audio files | 4 | TBD | Not yet wired in software |
+| Spoken essay audio files | 4 | **HAVE** | `content/audio/vox-01.wav` … `vox-04.wav`; SC OSC on channel open |
+| Generative ambient (8ch) | 1 | **HAVE** | Tisa — `loop-front.wav` / `loop-back.wav` in SC patch |
 
 ---
 
@@ -103,10 +104,10 @@ Do **not** switch 230 V from Pi pins.
 | Item | Status |
 |------|--------|
 | Mac Mini runs `npm start` | |
-| Desk kiosk (`/desk/N`) autostart | |
-| Desk GPIO agent (`desk_agent`) | |
-| Kodak relay commands (`KODAK_RELAY_ON/OFF`) | |
-| Spoken audio playback | **not built yet** |
+| Desk pyclient autostart (systemd) | |
+| SuperCollider 8ch + OSC | |
+| Kodak carousel (`kodak-carousel.js` + Shelly + relay) | bench on site |
+| Spoken audio via SC OSC | |
 
 ---
 

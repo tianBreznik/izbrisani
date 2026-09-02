@@ -1,24 +1,20 @@
 # Checkpoint: desk mic PTT → Pi GPIO
 
-Status: **End-to-end proven in lab** (2026-08-26).
+Status: **Soldered on all desks** (2026-09). **TODO:** external **pull-up resistors** on Talk lines if internal `pull_up=True` is unreliable.
 
 ```text
-Talk (alligator clips on mic pads)
-  → Pi inner-row pins 11 + 9 (BCM17 + GND)
-  → desk_agent.py (foreground)
-  → POST /api/channel/1/open
-  → Mac/laptop npm start
-  → channel_open / idle (+ Kodak/séance stubs in hardware.js)
+Talk (soldered mic pads → RJ45 → desk Pi)
+  → Pi BCM17 + GND (inner row pins 11 + 9)
+  → desk_client.py (pygame + GPIO)
+  → POST /api/channel/N/open  (press only; release ignored)
+  → Mac Mini npm start
+  → channel_open until VTT timer / operator Esc
 ```
 
-**Still to do next lab:** permanent solder (clips only so far) → **systemd `desk-agent`** → stable network (`SHOW_URL`).
-
 **Mic model:** DAP Audio **MA-8120PM** Paging Microphone V1  
-**RJ45:** not for amp or Pi Ethernet — **repurpose as a 8-pin cable connector** only (see § C2).
+**RJ45:** cable connector only — not Pi Ethernet (see § C2).
 
-**Lab wiring (2026-08-31):** soldering Talk switch pad → RJ45 pin so one Cat5 run reaches the desk Pi (reuse existing RJ45 hole in base). Multimeter: button pad ↔ chosen RJ45 pin **beeps only while Talk held** = correct.
-
-`desk_agent.py` **is** the real desk software (not a throwaway test client).
+Use **`desk_client.py`** (pyclient) in production, not the legacy `desk_agent.py` split.
 
 ---
 
@@ -26,13 +22,13 @@ Talk (alligator clips on mic pads)
 
 ```text
 Mic PTT (dry contact)
-  → Pi BCM17 + GND
-  → desk_agent.py
+  → Pi BCM17 + GND (+ external pull-up if needed)
+  → desk_client.py
   → POST /api/channel/N/open
-  → show server (Mac Mini or laptop)
+  → show server (Mac Mini)
 ```
 
-While any channel is live, press again on **any** desk → ignored (`409 channel_busy`). Idle when monologue/subtitles end or operator closes.
+While any channel is live, press again on **any** desk → ignored (client guard + `409 channel_busy`). Idle when monologue/subtitles end (VTT timer) or operator closes. **Release does nothing.**
 
 ---
 

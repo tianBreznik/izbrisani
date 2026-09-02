@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Optional — install with: INSTALL_SC=1 ./install.sh
+  SuperCollider must support non-interactive sclang -i patch.scd on this Mac.
+  If unsure, skip this and start SC manually (Login Item).
+-->
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.izbrisani.supercollider</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/bin/bash</string>
+      <string>__AUTOMATION_MAC__/start-supercollider.sh</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/izbrisani-sc.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/izbrisani-sc.err</string>
+  </dict>
+</plist>

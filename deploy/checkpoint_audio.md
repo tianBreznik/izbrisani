@@ -13,7 +13,7 @@ Mac Mini
   │     └── Ch 5–8: mono monologue WAV per desk (triggered by OSC)
   └── npm start (:3847)
         └── on channel open/idle → UDP OSC → SC
-        └── listens for OSC /done → auto-close channel
+        └── VTT timer ends session (show path); SC /done not required
 ```
 
 Desk Pis: **subtitles only** (no speaker audio on Pi).
@@ -27,8 +27,9 @@ File: [`deploy/sc-osc-map.json`](./sc-osc-map.json)
 | Direction | Address (placeholder) | When |
 |-----------|----------------------|------|
 | Node → SC | `/shower` + station `1–4` | `channel_open` |
-| Node → SC | `/shower/stop` (optional; SC patch may ignore) | `idle` |
-| SC → Node | *(not in patch yet)* — use VTT fallback | monologue ended |
+| Node → SC | `/shower/stop` | sent on idle; SC patch may ignore — not required for show |
+| SC → Node | *(optional, not in patch)* | — |
+| Node (fallback) | VTT duration from `desk-N.vtt` | `session-end` → idle + desk 4 Kodak carousel |
 
 Env overrides: `OSC_HOST`, `OSC_PORT` (default `57120`), `OSC_LISTEN_PORT` (default `57121`), `OSC_MAP_PATH`.
 

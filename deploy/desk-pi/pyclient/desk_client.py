@@ -255,8 +255,9 @@ class ShowClient:
                 pass
         self.audio_path = None
 
-        import pygame
-
+    def start_player(
+        self, ch: dict[str, Any], session_key: str, play_audio: bool = False
+    ) -> None:
         self.stop_player()
         gen = self.player_generation = self.player_generation + 1
 
@@ -305,6 +306,8 @@ class ShowClient:
 
         if has_audio and audio_url:
             try:
+                import pygame
+
                 with urllib.request.urlopen(audio_url, timeout=15) as res:
                     suffix = ".mp3" if ".mp3" in audio_url else ".audio"
                     fd, path = tempfile.mkstemp(suffix=suffix)

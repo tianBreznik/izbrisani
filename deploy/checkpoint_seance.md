@@ -8,10 +8,12 @@ Replaces digital shadow projectors for the exhibition. Kodak film: [`checkpoint_
 
 ## Behaviour
 
-| Show state | Kodak | ESP32 |
-|------------|--------|--------|
-| Channel **N** opens (desk 1–4) | ON | `GET /start` then after settle `GET /stop?light=N-1` |
-| Idle (Esc / same-desk close) | OFF | `GET /stop?light=all` |
+| Show state | ESP32 |
+|------------|--------|
+| Channel **N** opens (desk 1–4) | `GET /start` then after settle `GET /stop?light=N-1` |
+| Idle (Esc / session-end) | `GET /stop?light=all` |
+
+Kodak is independent — desk **4** `session-end` only (`checkpoint_kodak.md`). Not tied to channel open/close.
 
 Desk **1→4** maps to MOSFET **0→3** (same as the Python helper: `stop(light_num - 1)`).
 
@@ -24,11 +26,9 @@ Only the **Mini** talks to the ESP32 — not the desk Pis.
 ## Mac Mini env
 
 ```bash
-export ESP32_URL='http://192.168.1.50'
+export ESP32_URL='http://192.168.50.30'
 export SEANCE_SETTLE_MS=3000
-# Kodak unchanged:
-# export KODAK_RELAY_ON='…'
-# export KODAK_RELAY_OFF='…'
+export SHELLY_URL='http://192.168.50.20'   # Kodak carousel — see checkpoint_kodak.md
 npm start
 ```
 
@@ -76,5 +76,5 @@ Not needed: Python REPL on a Pi — Mini Node does the same GETs.
 
 ## Related
 
-- Kodak: `KODAK_RELAY_ON` / `OFF` in `server/hardware.js`
-- Digital `/shadow/1` `/shadow/2` still in the repo; not required if ESP32 is the shadow
+- Kodak: `server/kodak-carousel.js` + `SHELLY_URL`
+- Digital `/shadow/*` in repo — **not used** (ESP32 is the shadow)

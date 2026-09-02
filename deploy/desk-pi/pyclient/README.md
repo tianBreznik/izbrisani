@@ -4,8 +4,8 @@ Lightweight desk display for **Pi 3B+** (and Pi 4). Replaces Chromium kiosk + se
 
 - WebSocket state from Mac Mini
 - WebVTT subtitles + MP3 audio
-- GPIO mic button → `POST /api/channel/N/open`
-- Auto-close when playback ends
+- GPIO mic button → `POST /api/channel/N/open` (press only; ignored while any channel live)
+- Session ends on Mac (VTT timer) — not on button release
 
 ## Pi 3B+ install
 
@@ -53,7 +53,7 @@ SDL_VIDEODRIVER=kmsdrm DESK_ID=2 SHOW_URL=http://MAC_IP:3847 GPIOZERO_PIN_FACTOR
 Pi must be **logged into the desktop** (autologin), not stuck at the login screen.
 
 Press channel **2** on Mac `npm run control` — subtitles should appear.  
-Mic Talk button should open/close the channel (same wiring as `desk_agent.py`).
+Mic Talk opens this desk’s channel once; further presses while live are ignored.
 
 Without GPIO (display-only test):
 

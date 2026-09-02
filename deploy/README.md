@@ -3,11 +3,11 @@
 ## Architecture (current)
 
 ```text
-Mac Mini = show server + SuperCollider (8ch) + terminal operator + ESP32 séance + Kodak
-Desk Pi ×4 = Chromium kiosk /desk/N + GPIO button agent
+Mac Mini = show server + SuperCollider (8ch) + ESP32 séance + Kodak (Shelly + USB relay)
+Desk Pi ×4 = desk_client.py (pygame subtitles + GPIO Talk)
 ```
 
-**No Pico.** Buttons are on each desk → that Pi’s GPIO. Mac has **no GUI** — use `npm run control`.
+**No Pico.** Buttons on each desk → that Pi’s GPIO. Mac has **no GUI** — use `npm run control` for ops.
 
 ## Docs
 
@@ -15,14 +15,13 @@ Desk Pi ×4 = Chromium kiosk /desk/N + GPIO button agent
 |------|---------|
 | [`PHYSICAL.md`](./PHYSICAL.md) | Wiring |
 | [`CHECKLIST.md`](./CHECKLIST.md) | On-site checklist |
-| [`desk-pi/README.md`](./desk-pi/README.md) | Kiosk imaging |
-| [`desk-pi/setup-kiosk.sh`](./desk-pi/setup-kiosk.sh) | Autostart Chromium |
-| [`desk-pi/agent/`](./desk-pi/agent/) | **GPIO companion** |
-| [`checkpoint_kodak.md`](./checkpoint_kodak.md) | Kodak Plan A: 6-pin relay; Plan B: IR blaster |
+| [`NETWORK.md`](./NETWORK.md) | Dedicated router + IPs |
+| [`desk-pi/pyclient/`](./desk-pi/pyclient/) | **Production desk client** |
+| [`desk-pi/agent/`](./desk-pi/agent/) | Legacy GPIO-only agent |
+| [`checkpoint_kodak.md`](./checkpoint_kodak.md) | Kodak carousel + Shelly |
 | [`checkpoint_seance.md`](./checkpoint_seance.md) | ESP32 séance lights |
-| [`checkpoint_audio.md`](./checkpoint_audio.md) | SuperCollider 8ch + OSC monologues |
-| [`sc-osc-map.json`](./sc-osc-map.json) | OSC addresses (confirm with Tisa) |
-| [`mac/open-shadows.sh`](./mac/open-shadows.sh) | Legacy — not needed on Mac Mini |
+| [`checkpoint_audio.md`](./checkpoint_audio.md) | SuperCollider 8ch + OSC |
+| [`automation/`](./automation/) | **Opt-in boot** — test tomorrow without changing current setup |
 
 ## Mac Mini
 
@@ -31,19 +30,18 @@ npm install
 npm start                 # leave running (SSH ok)
 # second session:
 npm run control           # keys 1–4 / Esc — SHOW_URL optional
-# optional Kodak / séance / OSC env on the npm start process:
-# KODAK_FORWARD='…' ESP32_URL='…' AUDIO_BACKEND=osc npm start
+# optional on npm start:
+# SHELLY_URL=http://192.168.50.20 ESP32_URL=http://192.168.50.30 AUDIO_BACKEND=osc
 ```
 
 ## Each desk Pi
 
-1. Kiosk: `sudo bash setup-kiosk.sh N MAC_IP`  
-2. Agent: copy `desk-pi/agent/`, set `DESK_ID` + `SHOW_URL`, enable systemd  
+Pyclient: see [`desk-pi/pyclient/CHECKLIST.md`](./desk-pi/pyclient/CHECKLIST.md) — `desk_client.py` + `desk-client.service`.
 
-## Test agent without hardware
+## Test without hardware
 
 ```bash
-cd deploy/desk-pi/agent
-MOCK=1 DESK_ID=1 SHOW_URL=http://127.0.0.1:3847 python3 desk_agent.py
-# press Enter = button
+# Browser bench (Mac): open /desk/1?talk=1 … /desk/4?talk=1
+# Or pyclient mock:
+MOCK=1 DESK_ID=1 SHOW_URL=http://127.0.0.1:3847 python3 deploy/desk-pi/pyclient/desk_client.py
 ```
