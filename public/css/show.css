@@ -56,33 +56,36 @@ body[data-mode="control"] {
 }
 
 /* desk: 7" 1024x600 — browser kiosk only (pyclient on Pi uses pygame, not this CSS) */
-html.desk-page {
-  min-height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #000;
-}
-
 html.desk-page,
 html.desk-page body {
   margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
 }
 
 body[data-mode="desk"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  color: #fff;
+}
+
+body[data-mode="desk"] #desk-stage {
   position: relative;
   width: 1024px;
   height: 600px;
-  min-width: 1024px;
-  min-height: 600px;
-  overflow: hidden;
-  background: #000;
-  color: #fff;
   flex-shrink: 0;
   transform-origin: center center;
+  background: #000;
+  overflow: hidden;
 }
 
-body[data-mode="desk"] #app {
+body[data-mode="desk"] #desk-stage #app {
   position: absolute;
   inset: 0;
 }
@@ -92,23 +95,25 @@ body[data-mode="desk"] #app {
 }
 
 .desk--idle {
+  position: relative;
   width: 100%;
   height: 100%;
   background: #000;
 }
 
 body[data-mode="desk"] .desk--live {
-  position: absolute;
-  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
   background: #000;
 }
 
 body[data-mode="desk"] .subtitles {
-  position: absolute;
-  left: 50%;
-  top: 50%;
+  position: relative;
   width: 880px;
-  transform: translate(-50%, -50%);
+  max-width: calc(100% - 96px);
   box-sizing: border-box;
   text-align: center;
   background: transparent;

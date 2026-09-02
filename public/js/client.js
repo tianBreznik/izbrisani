@@ -333,8 +333,13 @@
   const DESK_H = 600;
 
   function fitDeskViewport() {
-    const scale = Math.min(window.innerWidth / DESK_W, window.innerHeight / DESK_H, 1);
-    document.body.style.transform = scale < 1 ? `scale(${scale})` : "";
+    const stage = document.getElementById("desk-stage");
+    if (!stage) return;
+    const scale = Math.min(
+      window.innerWidth / DESK_W,
+      window.innerHeight / DESK_H
+    );
+    stage.style.transform = `scale(${scale})`;
   }
 
   async function init() {
