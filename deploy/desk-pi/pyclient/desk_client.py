@@ -24,6 +24,7 @@ import json
 import math
 import os
 import queue
+import re
 import sys
 import tempfile
 import threading
@@ -496,61 +497,134 @@ class ShowClient:
                 break
             self.on_button_pressed()
 
-    def load_font(self, pygame: Any) -> Any:
+    def load_fonts(self, pygame: Any) -> tuple[Any, Any]:
+        """Regular + italic faces for VTT <i> / <em> markup."""
         for name in ("arial", "Arial", "Liberation Sans", "DejaVu Sans", "FreeSans"):
             path = pygame.font.match_font(name)
             if path:
-                return pygame.font.Font(path, FONT_SIZE)
-        return pygame.font.SysFont("sans", FONT_SIZE)
+                regular = pygame.font.Font(path, FONT_SIZE)
+                italic_path = pygame.font.match_font(name, italic=True)
+                if italic_path:
+                    italic = pygame.font.Font(italic_path, FONT_SIZE)
+                else:
+                    italic = pygame.font.SysFont(name, FONT_SIZE, italic=True)
+                return regular, italic
+        regular = pygame.font.SysFont("sans", FONT_SIZE)
+        italic = pygame.font.SysFont("sans", FONT_SIZE, italic=True)
+        return regular, italic
 
-    def wrap_text(self, font: Any, text: str, max_width: int) -> list[str]:
+    @staticmethod
+    def parse_cue_spans(text: str) -> list[tuple[str, bool]]:
+        """Split cue text into (plain_text, italic) runs; strip other tags."""
+        italic_re = re.compile(r"<\s*/?\s*(i|em)\s*>", re.I)
+        other_re = re.compile(r"<[^>]+>")
+        spans: list[tuple[str, bool]] = []
+        italic = False
+        pos = 0
+        for match in italic_re.finditer(text):
+            if match.start() > pos:
+                chunk = other_re.sub("", text[pos : match.start()])
+                if chunk:
+                    spans.append((chunk, italic))
+            italic = not match.group(0).lstrip().lower().startswith("</")
+            pos = match.end()
+        tail = other_re.sub("", text[pos:])
+        if tail:
+            spans.append((tail, italic))
+        if not spans:
+            plain = other_re.sub("", text)
+            if plain:
+                spans.append((plain, False))
+        return spans
+
+    def wrap_styled_text(
+        self,
+        regular: Any,
+        italic: Any,
+        text: str,
+        max_width: int,
+    ) -> list[list[tuple[str, bool]]]:
+        """Word-wrap preserving italic runs. Returns lines of (word, italic)."""
         if not text:
             return []
-        lines: list[str] = []
-        for paragraph in text.split("\n"):
-            words = paragraph.split()
-            if not words:
-                lines.append("")
-                continue
-            current = words[0]
-            for word in words[1:]:
-                trial = current + " " + word
-                if font.size(trial)[0] <= max_width:
-                    current = trial
-                else:
-                    lines.append(current)
-                    current = word
-            lines.append(current)
-        return lines
+        space_w = regular.size(" ")[0]
+        out: list[list[tuple[str, bool]]] = []
 
-    def render_subtitle(self, pygame: Any, font: Any, text: str, error: bool) -> Any:
+        for paragraph in text.split("\n"):
+            spans = self.parse_cue_spans(paragraph)
+            if not spans:
+                out.append([])
+                continue
+            line: list[tuple[str, bool]] = []
+            line_w = 0
+            for chunk, is_italic in spans:
+                font = italic if is_italic else regular
+                for word in chunk.split():
+                    ww = font.size(word)[0]
+                    gap = space_w if line else 0
+                    if line and line_w + gap + ww > max_width:
+                        out.append(line)
+                        line = []
+                        line_w = 0
+                        gap = 0
+                    if gap:
+                        line_w += gap
+                    line.append((word, is_italic))
+                    line_w += ww
+            out.append(line)
+        return out
+
+    def render_subtitle(
+        self,
+        pygame: Any,
+        regular: Any,
+        italic: Any,
+        text: str,
+        error: bool,
+    ) -> Any:
         color = ERROR_COLOR if error else TEXT_COLOR
         max_w = min(MAX_TEXT_WIDTH, WIDTH - 2 * H_PAD)
-        lines = self.wrap_text(font, text, max_w)
+        lines = self.wrap_styled_text(regular, italic, text, max_w)
         if not lines:
             return None
 
         line_px = int(FONT_SIZE * LINE_HEIGHT)
         total_h = line_px * len(lines)
         surf = pygame.Surface((WIDTH, total_h), pygame.SRCALPHA)
+        space_w = regular.size(" ")[0]
+        shadow_offsets = (
+            (1, 0),
+            (-1, 0),
+            (0, 1),
+            (0, -1),
+            (1, 1),
+            (-1, -1),
+            (1, -1),
+            (-1, 1),
+        )
 
-        for i, line in enumerate(lines):
+        for i, words in enumerate(lines):
             y = i * line_px
-            if not error:
-                for dx, dy in (
-                    (1, 0),
-                    (-1, 0),
-                    (0, 1),
-                    (0, -1),
-                    (1, 1),
-                    (-1, -1),
-                    (1, -1),
-                    (-1, 1),
-                ):
-                    shadow = font.render(line, True, SHADOW_COLOR)
-                    surf.blit(shadow, (WIDTH // 2 - shadow.get_width() // 2 + dx, y + dy))
-            rendered = font.render(line, True, color)
-            surf.blit(rendered, (WIDTH // 2 - rendered.get_width() // 2, y))
+            if not words:
+                continue
+            line_w = 0
+            for j, (word, is_italic) in enumerate(words):
+                font = italic if is_italic else regular
+                if j:
+                    line_w += space_w
+                line_w += font.size(word)[0]
+            x = WIDTH // 2 - line_w // 2
+            for j, (word, is_italic) in enumerate(words):
+                font = italic if is_italic else regular
+                if j:
+                    x += space_w
+                if not error:
+                    for dx, dy in shadow_offsets:
+                        shadow = font.render(word, True, SHADOW_COLOR)
+                        surf.blit(shadow, (x + dx, y + dy))
+                rendered = font.render(word, True, color)
+                surf.blit(rendered, (x, y))
+                x += rendered.get_width()
         return surf
 
     def init_pygame_display(self, pygame: Any) -> Any:
@@ -597,7 +671,7 @@ class ShowClient:
 
         screen = self.init_pygame_display(pygame)
         clock = pygame.time.Clock()
-        font = self.load_font(pygame)
+        regular_font, italic_font = self.load_fonts(pygame)
 
         while True:
             while True:
@@ -623,7 +697,11 @@ class ShowClient:
             screen.fill(DISPLAY_BG_COLOR)
             if (self.is_open() or self.screen_message) and self.screen_message:
                 sub = self.render_subtitle(
-                    pygame, font, self.screen_message, self.screen_error
+                    pygame,
+                    regular_font,
+                    italic_font,
+                    self.screen_message,
+                    self.screen_error,
                 )
                 if sub:
                     y_center = int(HEIGHT * SUBTITLE_Y_RATIO)
