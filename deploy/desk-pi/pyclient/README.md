@@ -12,16 +12,10 @@ Lightweight desk display for **Pi 3B+** (and Pi 4). Replaces Chromium kiosk + se
 ```bash
 cd deploy/desk-pi/pyclient
 cp desks.env.example desks.env.local   # once — set SHOW_URL + DESK_1…4 hosts
-
-./setup-ssh-keys.sh                    # once per machine — password once per Pi
 ./push-all.sh                          # cat desk_client.py → every Pi
-./start-all.sh                         # starts npm show server if needed, then all desks
-./stop-all.sh                          # kill desk clients
-STOP_SERVER=1 ./stop-all.sh            # also stop local npm server
+./start-all.sh                         # launch pyclient on every Pi (npm start first)
+./stop-all.sh                          # kill all four
 ```
-
-SSH uses `~/.ssh/izbrisani_ed25519` + connection multiplexing (no password after setup).  
-Temporary passwords: `FLEET_SSH_PASSWORD=1 ./start-all.sh`
 
 `desks.env.local` holds `SHOW_URL` + desk hosts for the fleet scripts (committed so the Mini/laptop stay in sync). Update IPs when the show network changes.
 
