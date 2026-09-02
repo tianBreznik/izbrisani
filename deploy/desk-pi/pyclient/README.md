@@ -7,6 +7,18 @@ Lightweight desk display for **Pi 3B+** (and Pi 4). Replaces Chromium kiosk + se
 - GPIO mic button → `POST /api/channel/N/open` (press only; ignored while any channel live)
 - Session ends on Mac (VTT timer) — not on button release
 
+## Fleet (all four desks from the Mac)
+
+```bash
+cd deploy/desk-pi/pyclient
+cp desks.env.example desks.env.local   # once — set SHOW_URL + DESK_1…4 hosts
+./push-all.sh                          # cat desk_client.py → every Pi
+./start-all.sh                         # launch pyclient on every Pi (npm start first)
+./stop-all.sh                          # kill all four
+```
+
+`desks.env.local` is machine-specific (IPs); keep it out of git if it has venue addresses.
+
 ## Pi 3B+ install
 
 On the desk Pi (SSH or keyboard), with Mac Mini server running:
