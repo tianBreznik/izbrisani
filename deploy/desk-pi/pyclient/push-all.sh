@@ -23,7 +23,13 @@ fi
 # shellcheck disable=SC1090
 source "$ENV_FILE"
 
-REMOTE_DIR="${REMOTE_DIR:-~/izbrisani-pyclient}"
+REMOTE_DIR="${REMOTE_DIR:-/home/moderna/izbrisani-pyclient}"
+# If someone still has ~/… in env, expand it on the Mac to a wrong /Users path —
+# rewrite bare ~ to the remote user home instead.
+if [[ "$REMOTE_DIR" == "~"* ]]; then
+  remote_user="${PI_USER:-moderna}"
+  REMOTE_DIR="/home/${remote_user}${REMOTE_DIR:1}"
+fi
 
 hosts=(
   "${DESK_1:?set DESK_1 in $ENV_FILE}"
@@ -34,10 +40,10 @@ hosts=(
 
 for host in "${hosts[@]}"; do
   echo "→ push $SRC → $host:$REMOTE_DIR/desk_client.py"
-  ssh "$host" "mkdir -p $REMOTE_DIR"
+  ssh "$host" "mkdir -p '$REMOTE_DIR'"
   # Avoid scp path quirks on old macOS — stream over SSH.
-  cat "$SRC" | ssh "$host" "cat > $REMOTE_DIR/desk_client.py"
-  ssh "$host" "wc -c $REMOTE_DIR/desk_client.py"
+  cat "$SRC" | ssh "$host" "cat > '$REMOTE_DIR/desk_client.py'"
+  ssh "$host" "wc -c '$REMOTE_DIR/desk_client.py'"
 done
 
 echo "done — all four Pis updated"

@@ -19,8 +19,13 @@ fi
 source "$ENV_FILE"
 
 SHOW_URL="${SHOW_URL:?set SHOW_URL in $ENV_FILE}"
-REMOTE_DIR="${REMOTE_DIR:-~/izbrisani-pyclient}"
+REMOTE_DIR="${REMOTE_DIR:-/home/moderna/izbrisani-pyclient}"
 PYTHON="${PYTHON:-python3}"
+
+if [[ "$REMOTE_DIR" == "~"* ]]; then
+  remote_user="${PI_USER:-moderna}"
+  REMOTE_DIR="/home/${remote_user}${REMOTE_DIR:1}"
+fi
 
 pairs=(
   "1:${DESK_1:?}"
@@ -33,7 +38,7 @@ for entry in "${pairs[@]}"; do
   id="${entry%%:*}"
   host="${entry#*:}"
   echo "→ start desk $id on $host"
-  ssh -f "$host" "cd $REMOTE_DIR && \
+  ssh -f "$host" "cd '$REMOTE_DIR' && \
     pkill -f 'python3 desk_client.py' 2>/dev/null || true; \
     pkill -f 'desk_client.py' 2>/dev/null || true; \
     DISPLAY=:0 SDL_VIDEODRIVER=x11 \
