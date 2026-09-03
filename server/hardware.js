@@ -84,11 +84,6 @@ function syncSpeakers(showState) {
   hardwareState.speakers.lastError = sa.lastError;
 }
 
-function setSeanceIdle() {
-  hardwareState.seance.phase = "idle";
-  hardwareState.seance.light = null;
-}
-
 async function seanceGet(path, label) {
   if (!ESP32_URL) {
     console.log(`[hardware] ${label} (stub — set ESP32_URL)`);
@@ -112,6 +107,7 @@ async function seanceGet(path, label) {
   emitHardwareChange();
 }
 
+/** Hunt / blink all lights. */
 function seanceStartHunt() {
   hardwareState.seance.phase = "hunting";
   hardwareState.seance.light = null;
@@ -119,15 +115,26 @@ function seanceStartHunt() {
   return seanceGet("/start", "seance START");
 }
 
-function seanceStopLight(light) {
-  if (light === "all") {
-    setSeanceIdle();
-  } else {
-    hardwareState.seance.phase = "settled";
-    hardwareState.seance.light = Number(light);
-  }
+/**
+ * Room dark — after hunt settle (subtitles playing) and through Kodak carousel.
+ * GET /dark
+ */
+function seanceDark() {
+  hardwareState.seance.phase = "dark";
+  hardwareState.seance.light = null;
   emitHardwareChange();
-  return seanceGet(`/stop?light=${encodeURIComponent(String(light))}`, `seance STOP ${light}`);
+  return seanceGet("/dark", "seance DARK");
+}
+
+/**
+ * Resting state when all desks idle — lights on.
+ * GET /stop?light=all
+ */
+function seanceStopAll() {
+  hardwareState.seance.phase = "idle";
+  hardwareState.seance.light = null;
+  emitHardwareChange();
+  return seanceGet("/stop?light=all", "seance STOP all (lights on)");
 }
 
 function cancelSettle() {
@@ -156,30 +163,35 @@ function onShowStateChange(prev, next, meta = {}) {
     console.log(`[hardware] channel ${next.channelId} open`);
     cancelSettle();
     const gen = ++seanceGen;
-    const lightIndex = next.channelId - 1;
     seanceStartHunt().finally(() => {
       settleTimer = setTimeout(() => {
         if (gen !== seanceGen) return;
-        seanceStopLight(lightIndex);
+        seanceDark();
       }, SETTLE_MS);
     });
   } else if (next.status === "kodak") {
-    console.log("[hardware] kodak carousel busy");
+    console.log("[hardware] kodak carousel busy — seance dark");
     cancelSettle();
     seanceGen += 1;
-    seanceStopLight("all");
+    seanceDark();
   } else {
     console.log("[hardware] idle");
     audioBackend.stopForClose();
     const endedDesk =
       prev?.status === "channel_open" ? prev.channelId : null;
     const closeReason = meta.closeReason || "manual";
-    if (endedDesk != null) {
-      kodakCarousel.onDeskSessionEnd(endedDesk, closeReason);
-    }
     cancelSettle();
     seanceGen += 1;
-    seanceStopLight("all");
+    if (endedDesk != null) {
+      // Desk 4 session-end may nest into status "kodak" (busy listener) and
+      // already call seanceDark — do not override with stop-all.
+      kodakCarousel.onDeskSessionEnd(endedDesk, closeReason);
+    }
+    if (kodakCarousel.isBusy()) {
+      seanceDark();
+    } else {
+      seanceStopAll();
+    }
   }
 
   syncKodak();

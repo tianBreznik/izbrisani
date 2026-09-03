@@ -32,9 +32,9 @@ See [`deploy/SHOW_DAY.md`](./deploy/SHOW_DAY.md), [`deploy/NETWORK.md`](./deploy
 
 | State | All desk screens | Audio (SC 8ch) | ESP32 séance | Kodak |
 |-------|------------------|----------------|--------------|-------|
-| `idle` | black | ambient loop | off | Shelly off |
-| `channel_open(n)` | desk *n* subtitles | monologue *n* | hunt → settle on desk | — |
-| desk 4 `session-end` | idle | stop | — | Shelly ON → 80× forward → Shelly OFF |
+| `idle` | black | ambient loop | lights on (`/stop?light=all`) | Shelly off |
+| `channel_open(n)` | desk *n* subtitles | monologue *n* | hunt → `/dark` | — |
+| desk 4 `session-end` / `kodak` | idle / kodak busy | stop | stay `/dark` | Shelly ON → pulses → Shelly OFF |
 
 Shadow projectors (`/shadow/*`) — **not used** in current show.
 

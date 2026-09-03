@@ -91,10 +91,12 @@ function seanceLine(hw) {
   const s = hw?.seance;
   if (!s) return "seance    —";
   let detail;
-  if (s.phase === "settled" && s.light != null) {
-    detail = `settled  desk ${s.light + 1}  (light ${s.light})`;
+  if (s.phase === "dark") {
+    detail = "dark  (subtitles / kodak)";
   } else if (s.phase === "idle") {
-    detail = "all off";
+    detail = "idle  (lights on)";
+  } else if (s.phase === "hunting") {
+    detail = "hunting";
   } else {
     detail = s.phase;
   }

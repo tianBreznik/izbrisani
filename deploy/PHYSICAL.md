@@ -60,12 +60,13 @@ See [`checkpoint_kodak.md`](./checkpoint_kodak.md). Set `SHELLY_URL` on Mac.
 Same show state as Kodak. Mini HTTP to ESP32 on the LAN:
 
 ```text
-channel N open → GET /start → wait SEANCE_SETTLE_MS → GET /stop?light=N-1
-idle           → GET /stop?light=all
+channel N open → GET /start → wait SEANCE_SETTLE_MS → GET /dark
+kodak          → GET /dark
+idle           → GET /stop?light=all   (lights on)
 ```
 
 ```bash
-export ESP32_URL='http://192.168.1.50'
+export ESP32_URL='http://192.168.1.202'
 export SEANCE_SETTLE_MS=3000
 npm start
 ```
